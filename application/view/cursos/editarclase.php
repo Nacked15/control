@@ -1,0 +1,210 @@
+<?php if ($this->clase) { ?>
+<a class='btn btn-naatik btn-sm btn-tiny btn-raised right' id="cancel_edit" title='Volver'>
+    Cerrar &nbsp;<i class="glyphicon glyphicon-remove"></i>
+</a>
+<h4 class="text-center">
+    DATOS DE: <strong class="text-info"><?= $this->clase->name.' '.$this->clase->level; ?></strong>
+</h4>
+<form action="<?= Config::get('URL'); ?>curso/actualizarClase" id="frm_update_clase" method="POST" class="form-horizontal">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="curso" class="col-sm-4" >Curso: </label>
+                <div class="col-sm-8">
+                    <select class="form-control"  name="curso" required="true">
+                        <option value="">Seleccione...</option>
+                        <?php
+                        if ($this->cursos) {
+                            foreach ($this->cursos as $curso) {
+                                if ($this->clase->id_course === $curso->id) {
+                                    echo '<option selected value="'.$curso->id.'">'.$curso->name.'</option>';
+                                } else {
+                                    echo '<option value="'.$curso->id.'">'.$curso->name.'</option>';
+                                }
+                            }
+                        }
+                        ?>
+                    </select>
+                    <input type="hidden" name="clase_id" value="<?= $this->clase->id; ?>">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="grupo" class="col-sm-4 control-label">Grupo: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" id="" name="grupo" required="true">
+                        <option value="">Seleccione...</option>
+                        <?php  
+                        if ($this->niveles) {
+                            foreach ($this->niveles as $nivel) {
+                                if ($this->clase->id_level == $nivel->id ) {
+                                    echo '<option selected value="'.$nivel->id.'">'.$nivel->level.'</option>';
+                                } else {
+                                    echo '<option value="'.$nivel->id.'">'.$nivel->level.'</option>';
+                                }
+                                
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="f_inicio" class="col-sm-4">Fecha de Inicio: </label>
+                <div class="col-sm-8">
+                    <input type="text" 
+                           id="editdate_init" 
+                           class="form-control"
+                           placeholder="Inicia.." 
+                           name="f_inicio"
+                           value="<?= $this->clase->date_init; ?>" 
+                           required>
+                    <input type="hidden" name="horario" value="<?= $this->clase->horario; ?>">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="f_fin" class="col-sm-4 control-label">Fecha Fin: </label>
+                <div class="col-sm-8">
+                    <input type="text" 
+                           id="editdate_end" 
+                           class="form-control"
+                           placeholder="Finaliza.." 
+                           name="f_fin" 
+                           value="<?= $this->clase->date_end; ?>" 
+                           required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="periodo" class="col-sm-4">Periodo: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="ciclo" required="true">
+                       <?php $anioAnt=date("Y")-1; $anioNext=date("Y")+1; ?>
+
+                       <option <?= $anioNext.' A' === $this->clase->year ? 'selected' : '';?> 
+                               value="<?= $anioNext;?> A"><?= $anioNext; ?> A</option>
+                       <option <?= $anioNext.' B' === $this->clase->year ? 'selected' : '';?> 
+                               value="<?= $anioNext;?> B"><?= $anioNext; ?> B</option>
+                       <option <?= date("Y").' A' === $this->clase->year ? 'selected' : '';?> 
+                               value="<?= date('Y');?> A"><?= date("Y"); ?> A</option>
+                       <option <?= date("Y").' B' === $this->clase->year ? 'selected' : '';?> 
+                               value="<?= date('Y');?> B"><?= date("Y"); ?> B</option>
+                       <option <?= $anioAnt.' A' === $this->clase->year ? 'selected' : '';?> 
+                               value="<?= $anioAnt;?> A"><?= $anioAnt; ?> A</option>
+                       <option <?= $anioAnt.' B' === $this->clase->year ? 'selected' : '';?> 
+                               value="<?= $anioAnt;?> B"><?= $anioAnt; ?> B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="dias" class="col-sm-4 control-label">Dias: </label>
+                <div class="col-sm-8">
+                    <select name="dias[]" id="days" style="width: 100%;" class="form-control" multiple>
+                        <?php  
+                        if ($this->diasclase) {
+                            foreach ($this->diasclase as $key) {
+                                if ((int)$key->stat === 1) {
+                                    echo '<option selected value="'.$key->id_day.'">'.$key->name_day.'</option>';
+                                } else {
+                                    echo '<option value="'.$key->id_day.'">'.$key->name_day.'</option>';
+                                }
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+               <label for="h_inicio" class="col-md-4">Hora de Inicio: </label>
+               <div class="col-md-8 bootstrap-timepicker">
+                  <input type="text"
+                         id="timepick3"
+                         name="h_inicio" 
+                         class="form-control" 
+                         placeholder="2:00"
+                         value="<?= date('g:i a', strtotime($this->clase->hour_init)); ?>" 
+                         required>
+               </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+               <label for="h_salida" class="col-md-4 control-label">Hora Salida: </label>
+               <div class="col-md-8 bootstrap-timepicker">
+                  <input type="text"
+                         id="timepick4"
+                         name="h_salida" 
+                         class="form-control" 
+                         placeholder="2:00" 
+                         value="<?= date('g:i a', strtotime($this->clase->hour_end)); ?>" 
+                         required>
+               </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-6">
+            <div class="form-group">
+               <label class="col-md-4">Costo Inscripción: </label>
+               <div class="col-md-8">
+                  <input type="text" 
+                         class="form-control" 
+                         name="inscripcion" 
+                         id="inscripcion"
+                         value="<?= $this->clase->costo_inscripcion; ?>"
+                         placeholder="200">
+               </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+               <label for="h_salida" class="col-md-4 control-label">Maestro: </label>
+               <div class="col-md-8">
+                  <select class="form-control" id="" name="maestro" required="true">
+                        <option value="">Seleccione...</option>
+                        <?php  
+                        if ($this->maestros) {
+                            foreach ($this->maestros as $maestro) {
+                                if ($this->clase->id_teacher === $maestro->user_id) {
+                                    echo '<option selected value="'.$maestro->user_id.'">
+                                        '.$maestro->name.' '.$maestro->lastname.'
+                                      </option>';
+                                } else {
+                                    echo '<option value="'.$maestro->user_id.'">
+                                            '.$maestro->name.' '.$maestro->lastname.'
+                                          </option>';
+                                }
+                            }
+                        }
+                        ?>
+                    </select>
+               </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 col-sm-12 text-center">
+            <!-- <input type="button" class="btn btn-md btn-raised btn-gray left" value="CANCELAR"> -->
+            <input type="submit" id="save_changes" class="btn btn-md btn-raised btn-second" value="GUARDAR">
+        </div>
+    </div><br>
+</form>
+
+<?php } else { ?>
+    <h5 class="text-center text-info">Datos de la clase no encontados..</h5>
+<?php } ?>

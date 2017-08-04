@@ -1,0 +1,267 @@
+button#save:focus {
+	background-color: #aaa;
+}
+button#dismiss:focus {
+	background-color: #aaa;
+}
+#saveTwo:focus {
+	background-color: #aaa;
+}
+#dismissTwo:focus {
+	background-color: #aaa;
+}
+#sectors:hover {
+	-webkit-transform: scale(1.2,1.2);
+	-ms-transform: scale(1.2,1.2);
+	-o-transform: scale(1.2,1.2);
+	transform: scale(1.2,1.2);
+}
+h2.title1 {
+	z-index: 2;
+}
+a#goBack{
+	position: absolute;
+	left: -20px;
+	top: 35px;
+	z-index: 100;
+}
+a#goBackT{
+	position: absolute;
+	right: 10px;
+	top: 7px;
+	z-index: 10;
+}
+a#plus {
+	position: fixed;
+	bottom: 140px;
+	right: 60px;
+	-webkit-transition-property:all;
+	-webkit-transition-duration:500ms;
+	-moz-transition-property:all;
+	-moz-transition-duration:500ms;
+	-ms-transition-property:all;
+	-ms-transition-duration:500ms;
+	transition-property:all;
+	transition-duration:500ms;
+}
+a#plus:hover {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	transform: rotate(180deg);
+	/*transform-origin:right center;*/
+}
+
+a#edit {
+	position: fixed;
+	top: 140px;
+	right: 35px;
+	z-index: 5;
+}
+
+a#del {
+	position: fixed;
+	-ms-top: 110px;
+	-ms-right: 75px;
+	-ms-z-index: 5;
+	top: 110px;
+	right: 75px;
+	z-index: 5;
+}
+
+i#mini { color:  #607d8b; border-radius: 20px;
+}
+div.modal button.mdi-navigation-more-vert {
+	position: fixed;
+	top: 80px; left: 155px;
+	z-index: 2;
+}
+
+div.modal button.mdi-navigation-arrow-back {
+	position: fixed;
+	top: 80px; left: 15px;
+	z-index: 2;
+}
+button.mdi-action-grade {
+	opacity: 0.7;
+	position: fixed;
+	left: 85px; top: 80px;
+	z-index: 2;
+}
+button.mdi-action-grade:hover {
+	opacity: 1;
+}
+
+a#more {
+	position: relative;
+	float: right;
+	top: 15px;
+	right: 15px;
+	margin-bottom: 5px;
+	-webkit-transition-property:all;
+	-webkit-transition-duration:500ms;
+	-moz-transition-property:all;
+	-moz-transition-duration:500ms;
+	-ms-transition-property:all;
+	-ms-transition-duration:500ms;
+	transition-property:all;
+	transition-duration:500ms;
+}
+a#more:hover {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	transform: rotate(180deg);
+	/*transform-origin:right center;*/
+}
+
+a.mdi-navigation-cancel {
+	float: right;
+	top: auto;
+}
+
+div.modal a.mdi-content-create {
+	position: fixed;
+	top: 90px;
+	right: 20px;
+}
+div.modal a.mdi-content-clear {
+	position: fixed;
+	top: 90px;
+	right: 20px;
+}
+div.modal a.mdi-content-clear.teach{
+	position: fixed;
+	top: 90px;
+	right: 100px;
+}
+
+div.modal a.mdi-content-add {
+	position: fixed;
+	top: 90px;
+	right: 20px;
+}
+
+
+i#icon{
+	color: #009688;
+}
+
+i.mdi-action-help 
+{
+	background: #FFEB3B;
+	color: black;
+	font-size: 30px;
+	border-radius: 15px;
+}
+
+a.mdi-action-help {
+	float: right;
+}
+
+a i.mdi-social-person {
+	font-size: 30px;
+}
+
+a#becadosIcons {
+	position: absolute;
+	right: -5px;
+
+}
+
+a.sepIcons {
+	position: absolute;
+	right: -5px;
+
+}
+
+button span.mdi-navigation-close {
+	font-weight: bold;
+}
+button span.mdi-navigation-close:hover {
+	color: #eceff1;
+}
+div.modal div.modal-sm button span.mdi-navigation-close:hover {
+	color: #263238;
+}
+
+div.modal-footer.foo button.btn-primary {
+	position: relative;
+	right: 85px
+}
+
+div.modal-footer.foo button.btn-default {
+	position: relative;
+	right: 80px
+}
+div.modal-footer.foo button.btn-info {
+	position: relative;
+	right: 80px
+}
+
+div.modal div.modal-body a#deletemodal .mdi-content-clear {
+	position: fixed;
+	top:20px;
+	right: 20px;
+}
+
+#markAll {
+	margin-top: 2px !important;
+	padding-left: 1px !important;
+}
+
+.form-horizontal .checkbox{
+	padding-top: 2px !important;
+}
+
+.checkbox label.checkday {
+	padding-right: 8px !important;
+}
+
+span.glyphicon.glyphicon-eye-close {
+	position: relative;
+	padding-left: 50px;
+}
+span.glyphicon.glyphicon-eye-close:hover {
+	cursor: pointer;
+	color: blue;
+}
+span.glyphicon.glyphicon-eye-open {
+	position: relative;
+	padding-left: 50px;
+	color: blue;
+}
+span.glyphicon.glyphicon-eye-open:hover {
+	cursor: pointer;
+	color: black;
+}
+
+span.mdi-action-grade.eval, .evalone, .evaltwo, .evaltre, .evalfour, .evalfive, .evalsix, .evalA, .evalB, .evalC, .evalD {
+	color: #e0e0e0;
+}
+span.mdi-action-grade.eval:hover, .evalone:hover, .evaltwo:hover, .evaltre:hover, .evalfour:hover, .evalfive:hover, .evalsix:hover, .evalA:hover, .evalB:hover, .evalC:hover, .evalD:hover  {
+	cursor: pointer;
+	color: #ffff00;
+}
+.clickedStar {
+	color: #ffea00;
+}
+
+a#quitSep {
+	position: fixed;
+	top: 50px;
+	right: 50px;
+	z-index: 20;
+}
+
+i.checkpay {
+	color: #ccc;
+	font-size: 18;
+}
+
+i.checkpaydone {
+	color: blue;
+	font-size: 18;
+}
