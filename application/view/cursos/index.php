@@ -55,7 +55,8 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" 
+                        <button type="button"
+                                id="btn_new_group" 
                                 class="btn btn-sm btn-main btn-tiny btn-raised btn-add"
                                 data-toggle="modal" 
                                 data-target="#addGroup">
@@ -90,11 +91,11 @@
 </div>
 
 <div id="addCourse" class="modal fade">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title">Crear Nuevo Curso</h4>
+                <h4 class="modal-title">Nuevo Curso</h4>
             </div>
             <div class="modal-body">
             <div class="row">
@@ -103,12 +104,12 @@
                     <input type="text" 
                            id="new_course_name" 
                            name="new_course_name" 
-                           class="form-control" required>
+                           class="form-control text-center" required>
                 </div>
             </div>
             </div>
             <div class="row">
-                <div class="modal-footer col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 text-center">
+                <div class="modal-footer col-md-10 col-md-offset-1 text-center">
                     <button type="button" class="btn btn-sm btn-naatik btn-raised left" data-dismiss="modal">Cancelar</button>
                     <button type="button" id="new_course" class="btn btn-second btn-sm btn-raised right">Crear</button>
                 </div>             
@@ -150,11 +151,11 @@
 </div>
 
 <div id="addGroup" class="modal fade">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title">Crear Nuevo Grupo</h4>
+                <h4 class="modal-title">Nuevo Grupo</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -163,12 +164,12 @@
                         <input type="text" 
                                id="new_group_name" 
                                name="new_group_name" 
-                               class="form-control" required>
+                               class="form-control text-center" required>
                     </div>
                 </div> 
             </div>
             <div class="row">
-                <div class="modal-footer col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 text-center">
+                <div class="modal-footer col-md-10 col-md-offset-1 text-center">
                     <button type="button" class="btn btn-sm btn-naatik btn-raised left" data-dismiss="modal">Cancelar</button>
                     <button type="button" id="new_group" class="btn btn-sm btn-second btn-raised right">Crear</button>
                 </div>             

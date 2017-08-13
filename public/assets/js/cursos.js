@@ -3,6 +3,8 @@ var Cursos = {
 	initialize: function(){
 		console.log('Cursos Initialize');
 		this.tables();
+        this.newCourse();
+        this.newGroup();
         this.getClasses();
         this.getCourses();
         this.getGroups();
@@ -90,6 +92,29 @@ var Cursos = {
         });
     },
 
+    newCourse: function(){
+        let that = this;
+        $('#new_course').click(function() {
+            var curso = $('#new_course_name').val();
+            $.ajax({
+                data: { curso: curso },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/nuevoCurso',
+                success: function(data){
+                    $('#addCourse').modal('hide');
+                    if (data === '1') {
+                        $('#general_snack').attr('data-content', 'Nuevo curso agregado!');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No se agrego el curso, intente de nuevo!');
+                    }
+                    that.getCourses();
+                    
+                }
+            });
+        });
+    },
+
     updateCourse: function(){
         let that = this;
         $('.btn_edit_course').click(function(){
@@ -100,8 +125,8 @@ var Cursos = {
         });
 
         $('#btn_update_course').click(function(){
-            var id    = $('#course_name').val(),
-                curso = $('#course_id').val();
+            var id    = $('#course_id').val(),
+                curso = $('#course_name').val();
 
             $.ajax({
                 data: { id: id, curso: curso },
@@ -128,6 +153,28 @@ var Cursos = {
                 clase_name = $(this).data('name');
                 $('#clase_name').text(clase_name);
                 $('#clase_id').val(clase_id);
+        });
+    },
+
+    newGroup: function(){
+        let that = this;
+        $('#new_group').click(function() {
+            var grupo = $('#new_group_name').val();
+            $.ajax({
+                data: { grupo: grupo },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/nuevoGrupo',
+                success: function(data){
+                    $('#addGroup').modal('hide');
+                    if (data === '1') {
+                        $('#general_snack').attr('data-content', 'Nuevo grupo agregado!');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No se agrego el grupo, intente de nuevo!');
+                    }
+                    that.getGroups();
+                }
+            });
         });
     },
 

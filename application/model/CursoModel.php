@@ -452,7 +452,7 @@ class CursoModel
                                     data-course="'.$curso->name.'" 
                                     class="btn btn-xs btn-info btn-raised btn_edit_course"
                                     data-toggle="modal" 
-                                    data-target="#editCourse" >Edit</button>
+                                    data-target="#editCourse" >Editar</button>
                           </td>'; 
                     echo '</tr>';   
                 }
@@ -462,6 +462,14 @@ class CursoModel
         } else {
             echo '<h5 class="text-info text-center">No existen Cursos registradas.</h5>';
         }
+    }
+
+    public static function newCourse($curso){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $insert = $database->prepare("INSERT INTO courses(name) VALUES(:curso);");
+        $insert->execute(array(':curso' => $curso));
+
+        echo $insert->rowCount() > 0 ? 1 : 0;
     }
 
     public static function updateCourse($id, $curso){
@@ -506,7 +514,7 @@ class CursoModel
                                     data-group="'.$nivel->level.'"
                                     class="btn btn-xs btn-danger btn-raised btn_remove_group"
                                     data-toggle="tooltip" 
-                                    title="Delete">Eliminar</button>
+                                    title="Delete">Borrar</button>
                           </td>'; 
                     echo '</tr>';   
                 }
@@ -516,6 +524,14 @@ class CursoModel
         } else {
            echo '<h5 class="text-info text-center">No existen Grupos registradas.</h5>'; 
         }
+    }
+
+    public static function newGroup($grupo){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $insert = $database->prepare("INSERT INTO levels(level) VALUES(:grupo);");
+        $insert->execute(array(':grupo' => $grupo));
+
+        echo $insert->rowCount() > 0 ? 1 : 0;
     }
 
     public static function updateGroup($id, $grupo){
