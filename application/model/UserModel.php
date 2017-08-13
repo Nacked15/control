@@ -339,4 +339,125 @@ class UserModel
         // return one row (we only have one result or nothing)
         return $query->fetch();
     }
+
+
+    public static function saveNewTask($fecha, $prioridad, $tarea){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $user = Session::get('user_id');
+        $hoy  = H::getTime('Y-m-d');
+
+        $insert = $database->prepare("INSERT INTO tasks(id_user, task, created_at, date_todo, priority) 
+                                                 VALUES(:user, :tarea, :creacion, :fecha, :prioridad);");
+        $insert->execute(array(':user' => $user, ':tarea' => $tarea, ':creacion' => $hoy, ':fecha' => $fecha, ':prioridad' => $prioridad));
+
+        if ($insert->rowCount() > 0) {
+            echo 1;
+        } else { echo 0; }
+    }
+
+    public static function getUserTasks(){
+        $user = Session::get('user_id');
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("SELECT * FROM tasks WHERE id_user = :user;");
+        $query->execute(array(':user' => $user));
+
+        if ($query->rowCount() > 0) {
+            $tareas = $query->fetchAll();
+
+            foreach ($tareas as $row) {
+                switch ((int)$row->priority) {
+                    case 1:
+                        $class = 'warning';
+                        break;
+                    case 2:
+                        $class = 'primary';
+                        break;
+                    case 3:
+                        $class = 'success';
+                        break;
+                }
+                echo '<div class="col-md-4" style="margin-bottom: 15px;">';
+                echo '<div class="panel panel-'.$class.'">';
+                echo '<div class="panel-heading">';
+                    echo '<h3 class="panel-title text-center">Para: '.H::formatDate($row->date_todo).'</h3>';
+                echo '</div>';
+                echo '<div class="panel-body">';
+                    echo $row->task;
+                echo '</div>';
+                echo '<div class="card-footer-basic">';
+                echo '<a data-toggle="tooltip" title="Detail" id="'.$row->id_task.'" class="btn_detail_task">
+                        <i class="glyphicon glyphicon-fullscreen"></i>
+                     </a>';
+                echo '<a data-toggle="tooltip" title="Edit" id="'.$row->id_task.'" class="btn_edit_task">
+                        <i class="glyphicon glyphicon-edit"></i>
+                     </a>';
+                echo '<a data-toggle="tooltip" id="'.$row->id_task.'" title="Delete" class="btn_delete_task">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+            echo '<h4 class="text-center text-primary">No tiene recordatorios, pulse <code><strong>+</strong>Nuevo</code> para crear uno.</h4>';
+        }
+    }
+
+    public static function getTaskByID($tarea){
+        $user = Session::get('user_id');
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = $database->prepare("SELECT * FROM tasks 
+                                   WHERE id_task = :tarea 
+                                     AND id_user = :user;");
+        $sql->execute(array(':tarea' => $tarea, ':user' => $user));
+
+        if ($sql->rowCount() > 0) {
+            return $sql->fetch();
+        }
+    }
+
+    public static function updateTask($id, $fecha, $prioridad, $tarea){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql =  $database->prepare("UPDATE tasks 
+                                    SET task = :tarea,
+                                        date_todo = :fecha,
+                                        priority  = :prioridad
+                                    WHERE id_task = :task;");
+        $save = $sql->execute(array(':tarea' => $tarea,
+                                    ':fecha' => $fecha,
+                                    ':prioridad' => $prioridad,
+                                    ':task'  => $id));
+
+        if ($save) {
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
+
+    public static function deleteUserTask($tarea){
+        $user = Session::get('user_id');
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $delete = $database->prepare("DELETE FROM tasks WHERE id_task = :tarea AND id_user = :usuario;");
+        $delete->execute(array(':tarea' => $tarea, ':usuario' => $user));
+
+        if($delete->rowCount() === 1){
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
 }
+
+                            
+                            
+                                
+                                
+                                
+                            
+                        
+                    

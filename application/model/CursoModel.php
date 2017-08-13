@@ -173,7 +173,7 @@ class CursoModel
 
         if (count($classes) > 0) {
             echo '<div class="table-responsive">';
-            echo '<table id="example" class="table table-bordered table-hover table-striped table-condensed">';
+            echo '<table id="example" class="table table-hover table-striped table-condensed">';
             echo '<thead>';
                 echo '<tr class="info">';
                 echo '<th>ID</th>';
@@ -413,7 +413,6 @@ class CursoModel
         } else {
             echo '<h4 class="text-center text-info">No hay Cursos</h4>';
         }
-        
     }
 
     public static function getGrupos() {
@@ -434,7 +433,7 @@ class CursoModel
 
         if (count($cursos)) {
             echo '<div class="table-responsive">';
-            echo '<table id="tbl_cursos" class="table table-bordered table-hover table-striped">';
+            echo '<table id="tbl_cursos" class="table table-hover table-striped">';
             echo '<thead>';
                 echo '<tr class="info">';
                 echo '<th class="text-center">ID</th>';
@@ -445,11 +444,13 @@ class CursoModel
             echo '<tbody>';
                 foreach ($cursos as $curso) {
                     echo '<tr>';
-                    echo '<td>'.$curso->id.'</td>'; 
-                    echo '<td>'.$curso->name.'</td>'; 
+                    echo '<td class="text-center">'.$curso->id.'</td>'; 
+                    echo '<td class="text-center">'.$curso->name.'</td>'; 
                     echo '<td class="text-center">
-                            <button type="button" 
-                                    class="btn btn-xs btn-info btn-raised"
+                            <button type="button"
+                                    data-id="'.$curso->id.'"
+                                    data-course="'.$curso->name.'" 
+                                    class="btn btn-xs btn-info btn-raised btn_edit_course"
                                     data-toggle="modal" 
                                     data-target="#editCourse" >Edit</button>
                           </td>'; 
@@ -463,12 +464,24 @@ class CursoModel
         }
     }
 
+    public static function updateCourse($id, $curso){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("UPDATE courses SET name = :curso WHERE id = :id;");
+        $update = $query->execute(array(':curso' => $curso, ':id' => $id));
+
+        if ($update) {
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
+
     public static function displayGrupos($groups){
         $grupos = (array)$groups;
 
         if (count($grupos) > 0) {
             echo '<div class="table-responsive">';
-            echo '<table id="tbl_niveles" class="table table-bordered table-hover table-striped">';
+            echo '<table id="tbl_niveles" class="table table-hover table-striped">';
             echo '<thead>';
                 echo '<tr class="info">';
                 echo '<th class="text-center">ID</th>';
@@ -479,17 +492,21 @@ class CursoModel
             echo '<tbody>';
                 foreach ($grupos as $nivel) {
                     echo '<tr>';
-                    echo '<td>'.$nivel->id.'</td>'; 
-                    echo '<td>'.$nivel->level.'</td>'; 
+                    echo '<td class="text-center">'.$nivel->id.'</td>'; 
+                    echo '<td class="text-center">'.$nivel->level.'</td>'; 
                     echo '<td class="text-center">
+                            <button type="button"
+                                    data-id="'.$nivel->id.'"
+                                    data-group="'.$nivel->level.'" 
+                                    class="btn btn-xs btn-info btn-raised btn_edit_group"
+                                    data-toggle="tooltip" 
+                                    title="Edit">Editar</button>
                             <button type="button" 
-                                    class="btn btn-xs btn-info btn-raised"
-                                    data-toggle="modal" 
-                                    data-target="#editGroup">Editar</button>
-                            <button type="button" 
-                                    class="btn btn-xs btn-danger btn-raised"
-                                    data-toggle="modal" 
-                                    data-target="#deleteGroup">Eliminar</button>
+                                    data-id="'.$nivel->id.'"
+                                    data-group="'.$nivel->level.'"
+                                    class="btn btn-xs btn-danger btn-raised btn_remove_group"
+                                    data-toggle="tooltip" 
+                                    title="Delete">Eliminar</button>
                           </td>'; 
                     echo '</tr>';   
                 }
@@ -498,6 +515,32 @@ class CursoModel
             echo '</div>';                  
         } else {
            echo '<h5 class="text-info text-center">No existen Grupos registradas.</h5>'; 
+        }
+    }
+
+    public static function updateGroup($id, $grupo){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE levels SET level = :grupo WHERE id = :id;");
+        $update = $query->execute(array(':grupo' => $grupo, ':id' => $id));
+
+        if ($update) {
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
+
+    public static function deleteGroup($grupo){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $delete = $database->prepare("DELETE FROM levels WHERE id = :grupo;");
+        $delete->execute(array(':grupo' => $grupo));
+
+        if ($delete->rowCount() > 0) {
+            echo 1;
+        } else {
+            echo 0;
         }
     }
 

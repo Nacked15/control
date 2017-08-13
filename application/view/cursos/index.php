@@ -74,7 +74,7 @@
             <div class="tab-pane fade in" id="v_horario">
                 <div class="row">
                     <div class="col-md-12 card-primary">
-                        <div id="curso_list">
+                        <div id="horario_list">
                             <div class="row">
                                 <div class="col-xs-6 col-xs-offset-3 text-center loader">
                                     <h4 class="text-center">Cargando..</h4>
@@ -118,24 +118,31 @@
 </div>
 
 <div id="editCourse" class="modal fade">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title">Actualizar Datos Del Curso</h4>
+                <h4 class="modal-title">Editar Curso</h4>
             </div>
             <div class="modal-body">
             <div class="row">
                 <div class="col-md-10 col-md-offset-1 text-center">
                     <label for="course_name">Nombre del Curso:</label>
-                    <input type="text" id="course_name" name="course_name" class="form-control" required>
+                    <input type="text" 
+                           id="course_name" 
+                           name="course_name"
+                           class="form-control text-center" 
+                           required>
+                    <input type="hidden" 
+                           id="course_id"  
+                           class="form-control">
                 </div>
             </div>
             </div>
             <div class="row">
-                <div class="modal-footer col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 text-center">
+                <div class="modal-footer col-md-10 col-md-offset-1 text-center">
                     <button type="button" class="btn btn-sm btn-naatik btn-raised left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="update_course" class="btn btn-sm btn-second btn-raised right">Guardar</button>
+                    <button type="button" id="btn_update_course" class="btn btn-sm btn-second btn-raised right">Guardar</button>
                 </div>             
             </div>
         </div>
@@ -171,25 +178,27 @@
 </div>
 
 <div id="editGroup" class="modal fade">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title">Actualizar Datos Del Grupo</h4>
+                <h4 class="modal-title">Actualizar Grupo</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1 text-center">
                         <label for="group_name">Nombre del Grupo:</label>
                         <input type="text" 
-                               id="group_name" 
-                               name="group_name" 
-                               class="form-control" required>
+                               id="group_name"  
+                               class="form-control text-center" required>
+                        <input type="hidden" 
+                               id="group_id"  
+                               class="form-control">
                     </div>
                 </div> 
             </div>
             <div class="row">
-                <div class="modal-footer col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 text-center">
+                <div class="modal-footer col-md-10 col-md-offset-1 text-center">
                     <button type="button" class="btn btn-sm btn-naatik btn-raised left" data-dismiss="modal">Cancelar</button>
                     <button type="button" id="update_group" class="btn btn-sm btn-second btn-raised right">Guardar</button>
                 </div>             
@@ -198,12 +207,12 @@
     </div>
 </div>
 
-<div id="deleteGroup" class="modal fade">
+<div id="deleteClass" class="modal fade in">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header modal-delete">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Eliminar Grupo</h4>
+                <h4 class="modal-title text-center">Eliminar Clase</h4>
             </div>
             <div class="modal-body">
                 <p class="text-center">¿Eliminar <strong id="clase_name"></strong>?</p>
@@ -219,21 +228,21 @@
     </div>
 </div>
 
-<div id="deleteClass" class="modal fade">
+<div id="deleteGroup" class="modal fade">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header modal-delete">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Eliminar Clase</h4>
+                <h4 class="modal-title text-center">Eliminar Grupo</h4>
             </div>
             <div class="modal-body">
-                <p class="text-center">¿Eliminar <strong id="clase_name"></strong>?</p>
-                <input type="hidden" id="delete_clase_id">
+                <p class="text-center">¿Eliminar <strong id="g_name"></strong>?</p>
+                <input type="hidden" id="delete_group_id">
             </div>
             <div class="row">
                 <div class="modal-footer col-sm-8 col-sm-offset-2 text-center">
                     <button type="button" class="btn btn-sm btn-gray btn-raised left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-sm btn-danger btn-raised right">Eliminar</button>
+                    <button type="button" id="delete_group" class="btn btn-sm btn-danger btn-raised right">Eliminar</button>
                 </div>
             </div>
         </div>

@@ -12,7 +12,9 @@ class AlumnoController extends Controller
     }
 
     public function index() {
-        $this->View->render('alumnos/index');
+        $this->View->render('alumnos/index', array(
+            'cursos'    => CursoModel::getCourses()
+            ));
     }
 
     public function obtenerAlumnos() {
@@ -21,15 +23,6 @@ class AlumnoController extends Controller
 
     public function obtenerAlumnosTodos() {
         AlumnoModel::getStudentsAll();
-    }
-
-    public function obtenerPerfilAlumno() {
-        $this->View->renderWithoutHeaderAndFooter('alumnos/alumnoprofile', array(
-            'alumno'  => AlumnoModel::getStudentByID(Request::post('student')),
-            'tutor'   => AlumnoModel::getTutorByID(Request::post('tutor')),
-            'clase'   => AlumnoModel::getClaseByID(Request::post('clase')),
-            'address' => AlumnoModel::getAddressByUser(Request::post('student'), Request::post('tutor')),
-        ));
     }
 
     public function nuevo() {
@@ -42,6 +35,72 @@ class AlumnoController extends Controller
             'colony'    => Session::get('addres_colony'),
             'address'   => Session::get('address_id')
         ));
+    }
+
+    public function obtenerPerfilAlumno() {
+        Registry::set('css',array('alumnos&assets/css'));
+        $this->View->renderWithoutHeaderAndFooter('alumnos/alumnoprofile', array(
+            'alumno'  => AlumnoModel::getStudentByID(Request::post('student')),
+            'tutor'   => AlumnoModel::getTutorByID(Request::post('tutor')),
+            'clase'   => AlumnoModel::getClaseByID(Request::post('clase')),
+            'address' => AlumnoModel::getAddressByUser(Request::post('student'), Request::post('tutor')),
+            'cursos'  => CursoModel::getCourses()
+        ));
+    }
+
+    public function actualizarDatosAlumno(){
+        if (Request::post('student_id') && Request::post('name') && Request::post('surname') && Request::post('lastname') && Request::post('genre') && Request::post('edo_civil')) {
+            AlumnoModel::updateStudentData(
+                Request::post('student_id'),
+                Request::post('tutor_id'),
+                Request::post('name'),
+                Request::post('surname'),
+                Request::post('lastname'),
+                Request::post('birthdate'),
+                Request::post('genre'),
+                Request::post('edo_civil'),
+                Request::post('cellphone'),
+                Request::post('reference'),
+                Request::post('street'),
+                Request::post('number'),
+                Request::post('between'),
+                Request::post('colony'),
+                Request::post('sickness'),
+                Request::post('medication'),
+                Request::post('homestay'),
+                Request::post('acta'),
+                Request::post('invoice'),
+                Request::post('comment')
+                );
+            Redirect::to('alumno/index');
+        } else {
+            Session::add('feedback_negative', "Falta información para completar el proceso");
+            Redirect::to('alumno/index');
+        }
+    }
+
+    public function actualizarDatosTutos(){
+        if (Request::post('nombre_tutor') && Request::post('ape_pat') && Request::post('ape_mat')) {
+            updateTutosData(
+                Request::post('id_tutor'),
+                Request::post('nombre_tutor'),
+                Request::post('ape_pat'),
+                Request::post('ape_mat'),
+                Request::post('ocupacion'),
+                Request::post('parentesco'),
+                Request::post('tel_casa'),
+                Request::post('tel_celular'),
+                Request::post('familiar'),
+                Request::post('tel_familiar'));
+        }
+    }
+
+    public function agregarAlumnoGrupo(){
+        if (Request::post('alumno') && Request::post('clase')) {
+            AlumnoModel::AddStudentToClass(Request::post('alumno'), Request::post('clase'));
+        } else {
+            echo 0;
+        }
     }
 
     public function obtenerNivelesCurso() {

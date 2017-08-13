@@ -8,24 +8,23 @@
     <link rel="icon" href="../favicon.ico">
     <!-- CSS -->
     <link href="<?php echo Config::get('URL'); ?>assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo Config::get('URL'); ?>assets/css/snackbar.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/material.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/ripples.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/roboto.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/fileinput.min.css" rel="stylesheet">
-    <link href="<?php echo Config::get('URL'); ?>assets/css/icons.css" rel="stylesheet" >
     <link href="<?php echo Config::get('URL'); ?>assets/css/datepicker.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/bootstrap-timepicker.min.css" rel="stylesheet">
-    <link href="<?php echo Config::get('URL'); ?>assets/css/calendar.css" rel="stylesheet" >
-    <link href="<?php echo Config::get('URL'); ?>assets/css/style.css" rel="stylesheet">
+    <link href="<?php echo Config::get('URL'); ?>assets/css/calendar.css" rel="stylesheet">
+    <link href="<?php echo Config::get('URL'); ?>assets/css/icons.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/cards.css" rel="stylesheet">
+    <link href="<?php echo Config::get('URL'); ?>assets/css/style.css" rel="stylesheet">
     <?php  
         if(Registry::has('css')){
             Registry::get('css');
         }
     ?>
-    <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/style.css" />
-
 </head>
 <body>
 

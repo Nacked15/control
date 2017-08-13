@@ -18,16 +18,21 @@
    font-family: RobotoR;
    src: url(../fonts/RobotoDraftRegular.woff2) format('web open font format');
 }
+
 body {
   background: #d2d6de;
   width: 100%;
+}
+
+.datepicker{
+  z-index: 1150 !important;
 }
 
 .container{
   margin-top: 70px;
 }
 .index-box {
-  padding-top: 6.2em;
+  padding-top: 3.7em;
 }
 
 .naatik-box {
@@ -64,6 +69,7 @@ nav.navbar-fixed-top {
 .naatik-title {
 	display: inline;
 	margin: 0 0 0 20px !important;
+  font-size: 2.35em;
 	color: white;
 }
 
@@ -156,10 +162,6 @@ img.foto-mini {
   
 }
 
-/*.nav-submenu li a {
-  color: rgb(100,100,100)!important;
-  background: rgb(239, 181, 20);
-}*/
 
 .nav-submenu li.active {
   background: rgb(239, 180, 20);
@@ -170,6 +172,7 @@ img.foto-mini {
 
 div.well-content{
   margin-top: 0;
+  padding: 0 !important;
 }
 
 div.mini-box{
@@ -206,7 +209,7 @@ a.change-photo{
 .modal-delete{
     padding-top: 10px!important;
     padding-bottom: 5px!important;
-    background: rgb(220, 55, 55)!important;
+    background: rgba(240, 35, 45, 0.88)!important;
     text-align: center!important;
     text-transform: uppercase!important;
     color: white!important;
@@ -223,6 +226,10 @@ img.loader {
   padding-top: 25px;
 }
 
+code{
+  background: rgba(28,37,120, 0.65);
+  color: white;
+}
 
 table.table>thead>tr.tb_success{
   background: rgba(0,235,60,0.2)!important;
@@ -286,7 +293,7 @@ a.btn-tiny {
 }
 
 .btn-add {
-  margin-top: -10px !important;
+  margin-top: 5px !important;
   margin-bottom: 8px!important;
 }
 
@@ -294,8 +301,77 @@ a.btn-tiny {
   color: #C15B1C;
 }
 
+.dataTables_wrapper {
+  padding-top: 5px;
+}
+
+.dataTables_length {
+  padding-left: 8px;
+}
+
+.dataTables_length label {
+  min-width: 180px;
+}
+
+.dataTables_length select {
+  min-width: 65px;
+}
+
+.dataTables_filter {
+  padding-right: 8px;
+}
+
+.dataTables_filter input[type=search] {
+  min-width: 200px;
+}
+
+.dataTables_info {
+  padding-left: 5px;
+  padding-bottom: 10px;
+}
+
+.dataTables_paginate {
+  padding-right: 5px;
+  padding-bottom: 10px;
+}
+
+.paginate_button {
+  border-radius: 25px!important;
+  background: rgb(239, 199, 20);
+  padding: 0.3em 0.8em!important;
+}
+
 div.hr {
   margin: 0 10px!important;
   padding: 0!important;
   border-top: 1px solid rgb(20, 141, 200)!important;
+}
+
+input[type="text"] {
+  height: 25px !important;
+  font-size: 16px;
+  font-family: ubuntuR;
+}
+
+.texto {
+  border-top: 1px solid rgb(210,210,210);
+  border-right: 1px solid rgb(210,210,210);
+  border-left: 1px solid rgb(210,210,210);
+  border-radius: 3px;
+  font-size: 16px;
+  padding: 5px 8px;
+}
+
+#detail_event {
+  background: rgba(245,245,245,0.80);
+  padding: 5px 10px;
+  text-align: justify;
+  font-size: 16px;
+  font-family: ubuntuR;
+  min-height: 50px;
+}
+
+#prior {
+  padding: 2px!important;
+  font-size: .9em;
 }

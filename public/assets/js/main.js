@@ -6,6 +6,15 @@ var Main = {
         this.tabStudentsActive();
         this.tabClasesActive();
         this.tabNewStActive();
+        // $(".nano").nanoScroller();
+        //= Activar Notificaciones
+        if (Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="popover"]').popover();
+
+        // var notification = new Notification("No se elimino el recordatorio, intente de nuevo!");
     },
 
     tabClasesDestroy: function(){

@@ -24,9 +24,9 @@ class H
             case '07': $mes = 'Julio'; break;
             case '08': $mes = 'Agosto'; break;
             case '09': $mes = 'Septiembre'; break;
-            case '01': $mes = 'Octubre'; break;
-            case '01': $mes = 'Noviembre'; break;
-            case '01': $mes = 'Diciembre'; break;
+            case '10': $mes = 'Octubre'; break;
+            case '11': $mes = 'Noviembre'; break;
+            case '12': $mes = 'Diciembre'; break;
         }
 
         $day = $dia[2].'-'.$mes.'-'.$dia[0];
@@ -47,9 +47,9 @@ class H
             case '07': $mes = 'Jul'; break;
             case '08': $mes = 'Ago'; break;
             case '09': $mes = 'Sep'; break;
-            case '01': $mes = 'Oct'; break;
-            case '01': $mes = 'Nov'; break;
-            case '01': $mes = 'Dic'; break;
+            case '10': $mes = 'Oct'; break;
+            case '11': $mes = 'Nov'; break;
+            case '12': $mes = 'Dic'; break;
         }
 
         $day = $dia[2].'-'.$mes.'-'.$dia[0];

@@ -79,8 +79,20 @@ class CursoController extends Controller
         CursoModel::getCursos();
     }
 
+    public function editarCurso(){
+        CursoModel::updateCourse(Request::post('curso'), Request::post('curso'));
+    }
+
     public function obtenerGrupos(){
         CursoModel::getGrupos();
+    }
+
+    public function editarGrupo(){
+        CursoModel::updateGroup(Request::post('id'), Request::post('grupo'));
+    }
+
+    public function eliminarGrupo(){
+        CursoModel::deleteGroup(Request::post('grupo'));
     }
 
 }

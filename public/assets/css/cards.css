@@ -1,17 +1,60 @@
+@font-face {
+   font-family: ubuntuR;
+   src: url(../fonts/Ubuntu-R.ttf) format('truetype');
+}
+@font-face {
+   font-family: ubuntuB;
+   src: url(../fonts/Ubuntu-B.ttf) format('truetype');
+}
+@font-face {
+   font-family: ubuntuRI;
+   src: url(../fonts/Ubuntu-RI.ttf) format('truetype');
+}
+@font-face {
+   font-family: ubuntuBI;
+   src: url(../fonts/Ubuntu-BI.ttf) format('truetype');
+}
+
+.card-title h4 {
+    font-family: ubuntuRI;
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
 .card-blue {
     border-top: 5px solid rgb(20, 141, 200) !important;
     border-radius: 6px 6px 1px 1px !important;
-    padding: 10px 3px !important;
+    padding: 10px 0 0 0 !important;
+    border-right: 1px solid rgb(220,220,220);
+    border-bottom: 1px solid rgb(220,220,220);
+    border-left: 1px solid rgb(220,220,220);
+}
+
+.card-footer-blue {
+    background: rgb(20, 141, 200);
+    color: white;
+    min-height: 50px;
+    padding-top: 10px;
+    text-align: center;
 }
 
 .card-green {
-    border-top: 5px solid rgb(10, 220, 120)!important;
-    padding: 10px 3px !important;
-    border-right: 1px solid rgb(220,220,220)!important;
-    border-bottom: 1px solid rgb(220,220,220)!important;
-    border-left: 1px solid rgb(220,220,220)!important;
-    border-radius: 6px 6px 3px 3px!important;
-    margin: 10px!important;
+    border-top: 5px solid rgba(38, 185, 154, 0.88);!important;
+    border-radius: 6px 6px 1px 1px !important;
+    padding: 10px 0 0 0 !important;
+    border-right: 1px solid rgb(220,220,220);
+    border-bottom: 1px solid rgb(220,220,220);
+    border-left: 1px solid rgb(220,220,220);
+}
+
+.card-footer-green {
+    background: rgba(38, 195, 154, 0.88);
+    color: white;
+    min-height: 50px;
+    padding-top: 10px;
+    text-align: center;
 }
 
 .well .card-avatar{
@@ -35,6 +78,8 @@
 
 .well .card-footer {
     background: rgb(50, 150, 230);
+    min-height: 50px;
+    padding-top: 10px;
     text-align: center;
 }
 
@@ -45,13 +90,53 @@
 
 .card-black {
     border-top: 5px solid rgb(20, 20, 20);
-    padding: 10px 5px;
+    border-radius: 6px 6px 1px 1px !important;
+    padding: 10px 0 0 0 !important;
     border-right: 1px solid rgb(220,220,220);
     border-bottom: 1px solid rgb(220,220,220);
     border-left: 1px solid rgb(220,220,220);
-    border-radius: 6px 6px 3px 3px;
-    box-shadow: 0 3px 7px 3px rgba(1,1,1,.1);
-    background: white;
+}
+
+.card-footer-black {
+    background: rgb(20, 20, 20);
+    color: white;
+    min-height: 50px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.card-orange {
+    border-top: 5px solid rgba(239, 101, 20, 0.88);
+    border-radius: 6px 6px 1px 1px !important;
+    padding: 10px 0 0 0 !important;
+    border-right: 1px solid rgb(220,220,220);
+    border-bottom: 1px solid rgb(220,220,220);
+    border-left: 1px solid rgb(220,220,220);
+}
+
+.card-footer-orange {
+    background: rgba(239, 100, 20, 0.88);
+    color: white;
+    min-height: 50px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.card-naatik{
+    border-top: 5px solid rgba(38,47,150,0.75);
+    border-radius: 6px 6px 1px 1px !important;
+    padding: 10px 0 0 0 !important;
+    border-right: 1px solid rgb(220,220,220);
+    border-bottom: 1px solid rgb(220,220,220);
+    border-left: 1px solid rgb(220,220,220);
+}
+
+.card-footer-naatik {
+    background: rgba(38,47,150,0.85);
+    color: white;
+    min-height: 50px;
+    padding-top: 10px;
+    text-align: center;
 }
 
 .card-primary{
@@ -78,18 +163,40 @@
     margin: 5px!important;
 }
 
-.card-naatik{
-    border-top: 5px solid rgb(38,47,150);
-    padding: 10px 5px;
-    border-right: 1px solid rgb(220,220,220);
-    border-bottom: 1px solid rgb(220,220,220);
-    border-left: 1px solid rgb(220,220,220);
-    border-radius: 6px 6px 3px 3px;
-    box-shadow: 0 3px 7px 3px rgba(1,1,1,.1);
-    background: white;
-    margin: 5px!important;
+.card-body {
+    padding: 10px 10px;
+    text-align: justify;
+    min-height: 200px;
+    font-family: ubuntuR;
+    font-size: 15px;
 }
 
+.card-footer-basic {
+    background: rgba(235,235,235,0.5);
+    font-size: 16px;
+    color: rgba(10,10,10,0.8);
+    min-height: 30px;
+    padding-top: 8px;
+    text-align: right;
+}
+
+.card-footer-basic a{
+    padding: 0 15px;
+    color: rgba(80,80,80,0.8);
+}
+
+.card-footer-basic a:hover{
+    cursor: pointer;
+    color: rgba(0,200,180,0.88);
+}
+
+.panel-body{
+    text-align: justify;
+    min-height: 200px;
+    max-height: 200px;
+    font-size: 16px;
+    overflow-x: hidden;
+}
 
 
 .line-head {

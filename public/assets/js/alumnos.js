@@ -7,11 +7,12 @@ var Alumnos = {
         this.checkIfExistTutor();
         this.getLevels();
         this.getClassInfo();
+        this.getGroupsByCourse();
     },
 
     defaultGetStudents: function(){
         let that = this;
-        var view = sessionStorage.getItem('st_alive')
+        var view = sessionStorage.getItem('st_alive');
         $('#second_head').hide();
         if (view === '5') {
             that.displayAllStudents(view);
@@ -47,13 +48,15 @@ var Alumnos = {
                 switch(parseInt(activo)) {
                     case 1: $('#club').html(data);
                         break;
-                    case 2: $('#primary').html(data);
+                    case 2: $('#primary').html(data); 
                         break;
-                    case 3: $('#adolescent').html(data);
+                    case 3: $('#adolescent').html(data); 
                         break;
-                    case 4: $('#adult').html(data);
+                    case 4: $('#adult').html(data); 
                         break;
                 }
+                that.addStudentInGroup();
+                that.setStudentID();
                 that.tables(activo);
                 that.getStudentProfile();
             }
@@ -71,6 +74,8 @@ var Alumnos = {
                 $('#head_menu').show();
                 $('#all_students').html(data);
 
+                that.addStudentInGroup(); 
+                that.setStudentID();
                 that.tables(activo);
                 that.getStudentProfile();
             }
@@ -179,12 +184,10 @@ var Alumnos = {
                     type: 'POST',
                     url: _root_ + 'alumno/obtenerNivelesCurso',
                     success: function(a){
-                        // console.log(a);
                         var option = '<option value="">Seleccione...</option>';
                         if (a !== 'null') {
                             var res = JSON.parse(a);
                             for (var i = 0; i < res.length; i++) {
-                                // console.log(res[i].level);
                                 option = option + '<option value="'+res[i].id+'">'+res[i].level+'</option>';
                             }
                         } else {
@@ -245,6 +248,79 @@ var Alumnos = {
         });
     },
 
+    getGroupsByCourse: function(){
+        let that = this;
+        $('#course').on('change', function(){
+            if ($(this).val() !== '') {
+                $.ajax({
+                    data: { curso: $(this).val() },
+                    synch: 'true',
+                    type: 'POST',
+                    url: _root_ + 'alumno/obtenerNivelesCurso',
+                    success: function(data){
+                        var option = '<option value="">Seleccione...</option>';
+                        if (data !== 'null') {
+                            var res = JSON.parse(data);
+                            for (var i = 0; i < res.length; i++) {
+                                option = option + '<option value="'+res[i].id+'">'+res[i].level+'</option>';
+                            }
+                        } else {
+                            option = '<option value="">Curso sin grupos</option>';
+                        }
+                        
+                        $('#groups').html(option);
+                    }
+                });
+            }
+        });
+    },
+
+    setStudentID: function(){
+        let that = this;
+        $('.adding_group').on('click', function(){
+            var student = $(this).data('student');
+            $('#alumno_id').val(student);
+        });
+    },
+
+    addStudentInGroup: function() {
+        let that = this;
+        $('#add_in_group').on('click', function(){
+            var alumno = $('#alumno_id').val(),
+                curso  = $('#course').val(),
+                clase  = $('#groups').val();
+                // console.log(alumno, clase);
+            $.ajax({
+                data: { alumno: alumno, clase: clase },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'alumno/agregarAlumnoGrupo',
+                success: function(data){
+                    if (data !== '0') {
+                        $('#add_to_group').modal('hide');
+                        $('#feed_msg').addClass('alert-success');
+                        $('#message').text('Información actualizada correctamente.');
+                        $('#feed_msg').show();
+                        that.displayStudents(curso);
+                    } else {
+                        $('#add_to_group').modal('hide');
+                        
+                        $('#feed_msg').addClass('alert-danger');
+                        $('#message').text('No se pudo completar el proceso, intente de nuevo.');
+                        $('#feed_msg').show();
+                    }
+
+                    var view = sessionStorage.getItem('st_alive');
+                    if (view === '5') {
+                        that.displayAllStudents(view);
+                    } else {
+                       that.displayStudents(view); 
+                    }
+                }
+            });
+        });
+    },
+
     activeData: function() {
 
         $('#tutor_yes').click(function() {
@@ -276,6 +352,11 @@ var Alumnos = {
         });
 
         $('#fecha_inicio').datepicker({
+            format: "yyyy-mm-dd",
+            autoclose: true
+        });
+
+        $('#bornday').datepicker({
             format: "yyyy-mm-dd",
             autoclose: true
         });

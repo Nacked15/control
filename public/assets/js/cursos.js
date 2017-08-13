@@ -32,36 +32,6 @@ var Cursos = {
         });
     },
 
-    getCourses: function () {
-        let that = this;
-        $.ajax({
-            synch: 'true',
-            type: 'POST',
-            url: _root_ + 'curso/obtenerCursos',
-            success: function(data){
-                $('#cursos_list').html(data);
-                that.tables();
-                // that.deleteClase();
-                // that.getFrmEditClass();
-            }
-        });
-    },
-
-    getGroups: function () {
-        let that = this;
-        $.ajax({
-            synch: 'true',
-            type: 'POST',
-            url: _root_ + 'curso/obtenerGrupos',
-            success: function(data){
-                $('#grupos_list').html(data);
-                that.tables();
-                // that.deleteClase();
-                // that.getFrmEditClass();
-            }
-        });
-    },
-
     getFrmNewClass: function() {
         let that = this;
         $('#addClase').on('click', function(){
@@ -106,12 +76,137 @@ var Cursos = {
         });
     },
 
+    getCourses: function () {
+        let that = this;
+        $.ajax({
+            synch: 'true',
+            type: 'POST',
+            url: _root_ + 'curso/obtenerCursos',
+            success: function(data){
+                $('#cursos_list').html(data);
+                that.updateCourse();
+                that.tables();
+            }
+        });
+    },
+
+    updateCourse: function(){
+        let that = this;
+        $('.btn_edit_course').click(function(){
+            var curso = $(this).data('id'),
+                name  = $(this).data('course');
+            $('#course_name').val(name);
+            $('#course_id').val(curso);
+        });
+
+        $('#btn_update_course').click(function(){
+            var id    = $('#course_name').val(),
+                curso = $('#course_id').val();
+
+            $.ajax({
+                data: { id: id, curso: curso },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/editarCurso',
+                success: function(data){
+                    $('#editCourse').modal('hide');
+                    if (data === '1') {
+                        $('#general_snack').attr('data-content', 'Curso actualizado con éxito!');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No se actualizó el curso!');
+                    }
+                    $('#general_snack').snackbar('show');
+                    that.getCourses();
+                }
+            });
+        });
+    },
+
     deleteClase: function() {
         $('.removeClase').on('click', function(){
             var clase_id = $(this).attr('id'),
                 clase_name = $(this).data('name');
                 $('#clase_name').text(clase_name);
                 $('#clase_id').val(clase_id);
+        });
+    },
+
+    getGroups: function () {
+        let that = this;
+        $.ajax({
+            synch: 'true',
+            type: 'POST',
+            url: _root_ + 'curso/obtenerGrupos',
+            success: function(data){
+                $('#grupos_list').html(data);
+                that.deleteGroup();
+                that.updateGroup();
+                that.tables();
+            }
+        });
+    },
+
+    updateGroup: function(){
+        let that = this;
+        $('.btn_edit_group').click(function(){
+            var group = $(this).data('id');
+            var name  = $(this).data('group');
+            $('#group_name').val(name);
+            $('#group_id').val(group);
+            $('#editGroup').modal('show');
+        });
+
+        $('#update_group').click(function(){
+            var grupo = $('#group_name').val(),
+                id    = $('#group_id').val();
+            $.ajax({
+                data: { id: id, grupo: grupo },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/editarGrupo',
+                success: function(data){
+                    $('#editGroup').modal('hide');
+                    if (data === '1') {
+                        $('#general_snack').attr('data-content', 'Grupo actualizado con éxito!');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No se actualizó el grupo!');
+                    }
+                    $('#general_snack').snackbar('show');
+                    that.getGroups();
+                }
+            });
+        });
+    },
+
+    deleteGroup: function() {
+        let that = this;
+        $('.btn_remove_group').click(function(){
+            var group = $(this).data('id');
+            var name  = $(this).data('group');
+            console.log(name);
+            $('#delete_group_id').val(group);
+            $('#g_name').text(name);
+            $('#deleteGroup').modal('show');
+        });
+
+        $('#delete_group').click(function(){
+            var grupo = $('#delete_group_id').val();
+            $.ajax({
+                data: {grupo : grupo },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/eliminarGrupo',
+                success: function(data){
+                    $('#deleteGroup').modal('hide');
+                    if (data === '1') {
+                        $('#general_snack').attr('data-content', 'Grupo eliminado con éxito!');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No se elimino el grupo!');
+                    }
+                    $('#general_snack').snackbar('show');
+                    that.getGroups();
+                }
+            });
         });
     },
 

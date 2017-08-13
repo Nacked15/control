@@ -4,7 +4,7 @@ class AlumnoModel
 {
     public static function getStudentByID($student){
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT a.name, a.surname, a.lastname, a.birthday,
+        $sql = "SELECT a.student_id, a.id_tutor, a.name, a.surname, a.lastname, a.birthday,
                        a.age, a.genre, a.edo_civil, a.cellphone,
                        a.reference, a.sickness, a.medication, a.avatar,
                        a.comment_s, a.status, ad.ocupation,
@@ -26,7 +26,7 @@ class AlumnoModel
     public static function getTutorByID($tutor){
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT namet, surname1, surname2,
+        $sql = "SELECT id_tutor, namet, surname1, surname2,
                        job, cellphone, phone, relationship,
                        phone_alt, relationship_alt 
                 FROM tutors 
@@ -107,7 +107,7 @@ class AlumnoModel
             $id_tutor = 0;
             $tutor = '- - -';
             foreach ($students as $row) {
-                if ((int)$row->id_tutor !== 0) {
+                if ($row->id_tutor !== '0') {
                     $getTutor = $database->prepare("SELECT id_tutor, namet, surname1, surname2
                                                     FROM tutors WHERE id_tutor = :tutor
                                                     LIMIT 1;");
@@ -120,21 +120,21 @@ class AlumnoModel
                 }
                 
                 $alumnos[$row->student_id] = new stdClass();
-                $alumnos[$row->student_id]->id = $row->student_id;
-                $alumnos[$row->student_id]->name = $row->name;
-                $alumnos[$row->student_id]->surname = $row->surname;
+                $alumnos[$row->student_id]->id       = $row->student_id;
+                $alumnos[$row->student_id]->name     = $row->name;
+                $alumnos[$row->student_id]->surname  = $row->surname;
                 $alumnos[$row->student_id]->lastname = $row->lastname;
-                $alumnos[$row->student_id]->avatar = $row->avatar;
+                $alumnos[$row->student_id]->avatar   = $row->avatar;
                 $alumnos[$row->student_id]->tutor_id = $id_tutor;
-                $alumnos[$row->student_id]->tutor = $tutor;
+                $alumnos[$row->student_id]->tutor    = $tutor;
                 $alumnos[$row->student_id]->birthdays = $row->birthday;
-                $alumnos[$row->student_id]->age = $row->age;
-                $alumnos[$row->student_id]->genre = $row->genre;
-                $alumnos[$row->student_id]->clase = $row->clase;
-                $alumnos[$row->student_id]->course = $row->curso;
-                $alumnos[$row->student_id]->group = $row->level;
-                $alumnos[$row->student_id]->study = $row->studies;
-                $alumnos[$row->student_id]->grade = $row->last_grade;
+                $alumnos[$row->student_id]->age      = $row->age;
+                $alumnos[$row->student_id]->genre    = $row->genre;
+                $alumnos[$row->student_id]->clase    = $row->clase;
+                $alumnos[$row->student_id]->course   = $row->curso;
+                $alumnos[$row->student_id]->group    = $row->level;
+                $alumnos[$row->student_id]->study    = $row->studies;
+                $alumnos[$row->student_id]->grade    = $row->last_grade;
             }
             self::displayStudents($alumnos, $curso);
         } else {
@@ -159,13 +159,18 @@ class AlumnoModel
             $students = $query->fetchAll();
 
             $alumos = array();
-            $id_tutor = 0;
-            $tutor = '- - -';
-            $curso = 'Agregar';
-            $grupo = 'Grupo';
-            $clase = 0;
             foreach ($students as $row) {
-                if ((int)$row->id_tutor !== 0) {
+                $id_tutor = 0;
+                $tutor = '- - -';
+                $curso = '<a class="link adding_group"
+                             data-student="'.$row->student_id.'"
+                             data-toggle="modal" 
+                             data-target="#add_to_group"  
+                             title="Agregar grupo"><strong>Agregar a Grupo</strong></a>';
+                $grupo = '';
+                $clase = 0;
+
+                if ($row->id_tutor !== '0') {
                     $getTutor = $database->prepare("SELECT id_tutor, namet, surname1, surname2
                                                     FROM tutors WHERE id_tutor = :tutor
                                                     LIMIT 1;");
@@ -177,7 +182,7 @@ class AlumnoModel
                     }
                 }
 
-                if ($row->class_id != NULL) {
+                if ($row->class_id !== NULL) {
                     $qry = $database->prepare("SELECT c.id as clase, cu.name, l.level 
                                                FROM classes as c, courses as cu, levels as l
                                                WHERE c.id = :clase
@@ -221,7 +226,7 @@ class AlumnoModel
         if (count($alumnos) > 0) {
             echo '<div class="table-responsive">';
                 echo '<table id="tbl_students_'.$curso.'" 
-                             class="table table-bordered table-hover table-striped">';
+                             class="table table-bordered table-hover">';
                     echo '<thead>';
                         echo '<tr class="info">';
                             echo '<th class="text-center">Foto</th>';
@@ -276,6 +281,19 @@ class AlumnoModel
 
         if($query->rowCount() > 0){
             return $query->fetchAll();
+        }
+    }
+
+    public static function AddStudentToClass($alumno, $clase){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $update = $database->prepare("UPDATE groups SET class_id = :clase WHERE student_id = :alumno;");
+        $update = $update->execute(array(':clase' => $clase, ':alumno' => $alumno));
+
+        if ($update) {
+            echo 1;
+        } else {
+            echo 0;
         }
     }
 
@@ -548,4 +566,106 @@ class AlumnoModel
         }
     }
 
+
+    /////////////////////////////////////////////////////////
+    // =  = = = = = = = = UPDATE STUDENTS DATA = = = = = = //
+    /////////////////////////////////////////////////////////
+
+    public static function updateStudentData($student_id, $tutor, $name, $surname, $lastname, $birthdate, $genre, $edo_civil, $cellphone, $reference, $street, $number, $between, $colony, $sickness, $medication, $homestay, $acta, $invoice, $comentario) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $age = H::getAge($birthdate);
+
+        if ($tutor !== 0) {
+            $user = $tutor;
+            $typo = 1;
+        } else {
+            $user = $student_id;
+            $typo = 2;
+        }
+
+        $sql = $database->prepare("UPDATE students SET name       = :name,
+                                                       surname    = :surname,
+                                                       lastname   = :lastname,
+                                                       birthday   = :birthdate,
+                                                       age        = :age,
+                                                       genre      = :genre,
+                                                       edo_civil  = :edo_civil,
+                                                       cellphone  = :cellphone,
+                                                       reference  = :reference,
+                                                       sickness   = :sickness, 
+                                                       medication = :medication,
+                                                       comment_s  = :comentario
+                                    WHERE student_id = :student_id;");
+        $update  =  $sql->execute(array(':name'      => $name,
+                                        ':surname'   => $surname,
+                                        ':lastname'  => $lastname,
+                                        ':birthdate' => $birthdate,
+                                        ':age'       => $age,
+                                        ':genre'     => $genre,
+                                        ':edo_civil' => $edo_civil,
+                                        ':cellphone' => $cellphone,
+                                        ':reference' => $reference,
+                                        ':sickness'  => $sickness,
+                                        ':medication' => $medication,
+                                        ':comentario' => $comentario,
+                                        ':student_id' => $student_id));
+
+        if ($update) {
+            $set_up  =  $database->prepare("UPDATE address 
+                                            SET street     = :calle,
+                                                st_number  = :numero,
+                                                st_between = :entre,
+                                                reference  = :referencia,
+                                                colony     = :colonia
+                                            WHERE user_id  = :user
+                                              AND user_type = :tipo;");
+            $set_up->execute(array(':calle'  => $street,
+                                   ':numero' => $number,
+                                   ':entre'  => $between,
+                                   ':referencia' => $reference,
+                                   'colonia' => $colony,
+                                   ':user'   => $user,
+                                   ':tipo'   => $typo));
+
+            $set_details =  $database->prepare("UPDATE students_details 
+                                                SET facturacion     = :factura,
+                                                    homestay        = :homestay,
+                                                    acta_nacimiento = :acta
+                                                WHERE id_student = :student;");
+            $set_details->execute(array(':factura'  => $invoice,
+                                        ':homestay' => $homestay,
+                                        ':acta'     => $acta,
+                                        ':student'  => $student_id));
+            Session::add('feedback_positive', "Datos actualizados correctamente");
+        }
+    }
+
+    public static function updateTutorData($tutor, $name, $surname, $lastname, $job, $relationship, $phone, $cellphone, $relation_alt, $phone_alt){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $update  =  $database->prepare("UPDATE tutors 
+                                        SET namet     = :name,
+                                            surname1  = :surname,
+                                            surname2  = :lastname,
+                                            job       = :job, 
+                                            phone     = :phone,
+                                            cellphone = :cellphone,
+                                            relationship = :relation,
+                                            phone_alt      = :phone_alt
+                                            relationship_alt = :relation_alt
+                                        WHERE id_tutor = :tutor");
+        $update =$update->execute(array(':name'         => $name,
+                                        ':surname'      => $surname,
+                                        ':lastname'     => $lastname,
+                                        ':job'          => $job,
+                                        ':phone'        => $phorene,
+                                        ':cellphone'    => $cellphone,
+                                        ':relation'     => $relationship,
+                                        ':phone_alt'    => $phone_alt,
+                                        ':relation_alt' => $relation_alt,
+                                        ':tutor'        => $tutor));
+        if ($update) {
+            Session::add('feedback_positive', 'Datos de actualizados correctamente.');
+        }
+    }
 }

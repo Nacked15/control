@@ -5,7 +5,7 @@
                 <div class="logo">
                     <img src="<?php echo Config::get('URL'); ?>assets/img/logo.png" with="50px" height="50px" alt="logo">
                 </div>
-                <h3 class="text-center naatik-title"> <strong>Instituto Naatik</strong></h3>
+                <h3 class="text-center naatik-title"> <strong>NAATIK</strong> S.C.</h3>
             </div>
         </div>
 
@@ -32,18 +32,27 @@
                                    required />
                             </div>
 
-                            <label for="set_remember_me_cookie" class="remember-me-label">
-                                <input type="checkbox" name="set_remember_me_cookie" class="remember-me-checkbox" />
-                                Remember me for 2 weeks
-                            </label>
-
                             <?php if (!empty($this->redirect)) { ?>
                                 <input type="hidden" name="redirect" value="<?php echo $this->encodeHTML($this->redirect); ?>" />
                             <?php } ?>
 
                             <input type="hidden" name="csrf_token" value="<?= Csrf::makeToken(); ?>" />
-                            <div class="col-sm-4 col-sm-offset-4 text-center">
-                                <input type="submit" class="btn btn-deep btn-raised center" value="Ingresar"/>
+                            <div class="col-sm-6">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" 
+                                               name="set_remember_me_cookie" 
+                                               class="remember-me-checkbox" 
+                                               data-toggle='tooltip' 
+                                               data-placement='bottom' 
+                                               data-trigger='hover' 
+                                               title='Mantener sesión abierta'/>
+                                        Guardar Sesión
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <input type="submit" class="btn btn-deep btn-raised btn-sm" value="Ingresar"/>
                             </div>
                         </form>
                     </div>

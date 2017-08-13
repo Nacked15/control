@@ -154,4 +154,24 @@ class UserController extends Controller
         else
             Redirect::to('user/changePassword');
     }
+
+    public function addNewTask(){
+        UserModel::saveNewTask(Request::post('fecha_evento'), Request::post('priority'), Request::post('event'));
+    }
+
+    public function getUserTasks(){
+        UserModel::getUserTasks();
+    }
+
+    public function getTask(){
+        echo json_encode(UserModel::getTaskByID(Request::post('tarea')));
+    }
+
+    public function editUserTask(){
+        UserModel::updateTask(Request::post('evento_id'), Request::post('fecha_evento'), Request::post('priority'), Request::post('event'));
+    }
+
+    public function removeUserTask(){
+        UserModel::deleteUserTask(Request::post('tarea'));
+    }
 }

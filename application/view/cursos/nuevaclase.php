@@ -1,7 +1,7 @@
 <a class='btn btn-naatik btn-sm btn-raised btn-tiny cancel_new right' title='Volver'>
     Cerrar &nbsp;<i class="glyphicon glyphicon-remove"></i>
 </a>
-<h4 class="text-center text-info">Crear Nueva Clase</h4>
+<h4 class="text-center text-info">CREAR NUEVA CLASE</h4>
 
 <form action="<?php echo Config::get('URL');?>curso/nuevaClase" method="POST" class="form-horizontal">
     <div class="row">
@@ -146,15 +146,13 @@
                <div class="col-md-8">
                   <select class="form-control" id="" name="maestro">
                         <option value="">Seleccione...</option>
-                        <?php  
-                        if ($this->maestros) {
+                        <?php if ($this->maestros) {
                             foreach ($this->maestros as $maestro) {
                                 echo '<option value="'.$maestro->user_id.'">
                                         '.$maestro->name.' '.$maestro->lastname.'
                                       </option>';
                             }
-                        }
-                        ?>
+                        } ?>
                     </select>
                </div>
             </div>
@@ -162,8 +160,7 @@
     </div><br>
     <div class="row">
         <div class="col-md-8 col-md-offset-2 col-sm-12 text-center">
-            <!-- <input type="button" class="btn btn-md btn-raised btn-gray left cancel_new" value="CANCELAR"> -->
-            <input type="submit"  class="btn btn-md btn-raised btn-primary" value="CREAR">
+            <input type="submit"  class="btn btn-md btn-raised btn-second" value="CREAR">
         </div>
     </div><br>
 </form>

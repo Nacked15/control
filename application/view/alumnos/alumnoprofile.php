@@ -29,7 +29,15 @@
                 <ul class="card-list">
                     <li>
                         <b>Grupo:</b>
-                        <?= ucwords(strtolower($clase->curso)).' '.ucwords(strtolower($clase->grupo)); ?>
+                        <?php if ($clase): ?>
+                            <?= ucwords(strtolower($clase->curso)).' '.ucwords(strtolower($clase->grupo)); ?>
+                        <?php else: ?>
+                            <a class="link adding_group"
+                               data-student="<?= $alumno->student_id; ?>" 
+                               data-toggle="modal" 
+                               data-target="#add_to_group"  
+                               title="Agregar grupo"><strong>Agregar a Grupo</strong></a>
+                        <?php endif ?>
                     </li>
                     <li><b>Edad:</b> <?= $alumno->age; ?> Años</li>
                     <li><b>Estatus:</b> <?= $alumno->status === '1' ? 'Activo' : 'En espera'; ?></li>
@@ -97,10 +105,13 @@
                                     <strong>Ultimo Grado de estudios: </strong>
                                     <?= $alumno->studies.' '.$alumno->last_grade; ?>
                                 </p>
+                                <?php if ($clase): ?>
                                 <p>
                                     <strong>Inscrito en:</strong>
                                     <?= ucwords(strtolower($clase->curso)).' '.ucwords(strtolower($clase->grupo)); ?>
+                                    
                                 </p>
+                                <?php endif ?>
                                 <p><strong>Becado:</strong> No</p>
                                 <p><strong>Inscrito en la SEP: </strong> No</p>
                             </div>
@@ -136,16 +147,18 @@
                         <div class="col-md-12">
                             <div class="data-box">
                             <h4>Datos Del Alumno</h4>
-                            <form class="form-horizontal">
+                            <form action="<?= Config::get('URL'); ?>alumno/actualizarDatosAlumno" class="form-horizontal" method="POST">
                                 <div class="form-group">
                                     <label for="dia" class="col-sm-12 text-center"><small>Nombre Completo:</small></label>
                                     <div class="col-sm-4">
+                                        <input type="hidden" name="student_id" value="<?= $alumno->student_id; ?>">
+                                        <input type="hidden" name="tutor_id" value="<?= $alumno->id_tutor; ?>">
                                        <input type="text" 
                                               class="form-control text-center" 
                                               id="surname" 
                                               name="surname" 
                                               value="<?= $alumno->surname; ?>"
-                                              pattern="[a-zA-Z\s]{2,60}" 
+                                              pattern="[a-zA-Z\s]{3,60}"
                                               autocomplete="off" required>
                                     </div>
                                     <div class="col-sm-4">
@@ -154,7 +167,7 @@
                                               id="lastname" 
                                               name="lastname" 
                                               value="<?= $alumno->lastname; ?>"
-                                              pattern="[a-zA-Z\s]{2,60}" 
+                                              pattern="[a-zA-Z\s]{3,60}" 
                                               autocomplete="off" required>
                                     </div>
                                     <div class="col-sm-4">
@@ -163,22 +176,20 @@
                                               id="name" 
                                               name="name" 
                                               value="<?= $alumno->name; ?>"
-                                              pattern="[a-zA-Z\s]{2,60}" 
+                                              pattern="[a-zA-Z\s]{3,60}"
                                               autocomplete="off" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 col-sm-6"><small>Fecha de Nacimiento:</small> 
-                                        <input type="tel" 
+                                        <input type="text" 
                                                class="form-control" 
-                                               id="fecha_inicio" 
-                                               name="birthday" 
-                                               value="<?= $alumno->birthday; ?>"
-                                               pattern="[0-9\s]{8,15}"
-                                               autocomplete="off">
+                                               id="bornday" 
+                                               name="birthdate" 
+                                               value="<?= $alumno->birthday; ?>">
                                     </label>
                                     <label class="col-md-4 col-sm-6"><small>Sexo:</small> 
-                                        <select class="form-control" name="genero">
+                                        <select class="form-control" name="genre">
                                             <option <?= $alumno->genre == 'Masculino' ? 'selected' : ''; ?> value="Masculino">Masculino</option>
                                             <option <?= $alumno->genre == 'Femenino' ? 'selected' : ''; ?> value="Femenino">Femenino</option>
                                         </select>
@@ -194,16 +205,15 @@
                                     <label class="col-sm-6"><small>Número Celular:</small> 
                                         <input type="tel" 
                                                class="form-control"  
-                                               name="celular" 
+                                               name="cellphone" 
                                                value="<?= $alumno->cellphone; ?>"
                                                pattern="[0-9\s]{8,15}">
                                     </label>
                                     <label class="col-sm-6"><small>Referencia de Domicilio:</small> 
                                         <input type="tel" 
                                                class="form-control"  
-                                               name="referencia" 
-                                               value="<?= $alumno->reference; ?>"
-                                               pattern="[0-9\s]{8,15}">
+                                               name="reference" 
+                                               value="<?= $alumno->reference; ?>">
                                     </label>
                                 </div>
                                 <div class="form-group">
@@ -211,40 +221,39 @@
                                     <label class="col-md-3 col-sm-4"><small>Calle:</small>
                                        <input type="text" 
                                               class="form-control" 
-                                              name="calle" 
+                                              name="street" 
                                               value="<?= $this->address->street; ?>">
                                     </label>
                                     <label class="col-md-3 col-sm-4"><small>Número:</small>
                                        <input type="text" 
                                               class="form-control" 
-                                              name="numero" 
+                                              name="number" 
                                               value="<?= $this->address->st_number; ?>">
                                     </label>
                                     <label class="col-md-3 col-sm-4"><small>Entre:</small>
                                        <input type="text" 
                                               class="form-control" 
-                                              name="entre" 
+                                              name="between" 
                                               value="<?= $this->address->st_between; ?>">
                                     </label>
                                     <label class="col-md-3 col-sm-4"><small>Colonia:</small>
                                        <input type="text" 
                                               class="form-control"  
-                                              name="colonia" 
-                                              value="<?= $this->address->colony; ?>"
-                                              pattern="[a-zA-Z\s]{2,60}">
+                                              name="colony" 
+                                              value="<?= $this->address->colony; ?>">
                                     </label>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-6"><small>Padecimientos:</small> 
                                         <input type="tel" 
                                                class="form-control"  
-                                               name="padecimiento" 
+                                               name="sickness" 
                                                value="<?= $alumno->sickness; ?>">
                                     </label>
                                     <label class="col-sm-6"><small>Tratamiento:</small> 
                                         <input type="tel" 
                                                class="form-control"  
-                                               name="tratamiento" 
+                                               name="medication" 
                                                value="<?= $alumno->medication; ?>">
                                     </label>
                                 </div>
@@ -293,7 +302,7 @@
                                                 <input type="radio"
                                                        value="0" 
                                                        <?= $alumno->facturacion == '0' ? 'checked' : ''; ?>
-                                                       name="facturacion">
+                                                       name="invoice">
                                                 <span class="circle"></span><span class="check"></span>
                                             </label>
                                             <label></label>
@@ -301,10 +310,15 @@
                                                 <input type="radio" 
                                                        value="1" 
                                                        <?= $alumno->facturacion == '1' ? 'checked' : ''; ?>
-                                                       name="facturacion">
+                                                       name="invoice">
                                                 <span class="circle"></span><span class="check"></span>
                                             </label>
                                         </div>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12"><small>Comentario sobre el alumno(a):</small> 
+                                        <textarea name="comment" rows="3" class="form-control texto"><?= $alumno->comment_s; ?></textarea>
                                     </label>
                                 </div>
                                 <div class="form-group">
@@ -326,11 +340,12 @@
                                 <?php if ($this->tutor):  $tutor = $this->tutor; ?>
                                     <div class="form-group">
                                         <label class="col-sm-12 text-center"><small>Nombre Completo:</small></label>
+                                        <input type="hidden" name="id_tutor" value="<?= $tutor->id_tutor; ?>">
                                         <div class="col-sm-4">
                                             <input type="text" 
                                                    class="form-control text-center" 
                                                    id="apellido_pat" 
-                                                   name="apellido_pat"
+                                                   name="ape_pat"
                                                    pattern="[a-zA-Z\s]{3,60}" 
                                                    value="<?= $tutor->surname1; ?>" 
                                                    autocomplete="off">
@@ -339,7 +354,7 @@
                                             <input type="text" 
                                                    class="form-control text-center" 
                                                    id="apellido_pat" 
-                                                   name="apellido_mat"
+                                                   name="ape_mat"
                                                    pattern="[a-zA-Z\s]{3,60}" 
                                                    value="<?= $tutor->surname2; ?>" 
                                                    autocomplete="off">
@@ -358,10 +373,9 @@
                                         <label class="col-sm-4"><small>Ocupación:</small> 
                                             <input type="tel" 
                                                    class="form-control" 
-                                                   id="tel_celular" 
-                                                   name="tel_celular" 
+                                                   id="ocupacion" 
+                                                   name="ocupacion" 
                                                    value="<?= $tutor->job; ?>"
-                                                   pattern="[0-9\s]{8,15}"
                                                    autocomplete="off">
                                         </label>
                                         <label class="col-sm-4"><small>Parentesco:</small> 
@@ -397,7 +411,7 @@
                                                    autocomplete="off">
                                         </label>
                                         <label class="col-sm-4"><small>Otro Familiar:</small> 
-                                            <select class="form-control " name="parentesco">
+                                            <select class="form-control " name="familiar">
                                                 <option value="">Seleccione...</option>
                                                 <option <?= $tutor->relationship_alt == 'Madre' ? 'selected' : ''; ?> value="Madre">Madre</option>
                                                 <option <?= $tutor->relationship_alt == 'Padre' ? 'selected' : ''; ?> value="Padre">Padre</option>
@@ -410,8 +424,8 @@
                                         <label class="col-sm-4"><small>Teléfono de Familiar:</small> 
                                             <input type="tel" 
                                                    class="form-control" 
-                                                   id="tel_casa" 
-                                                   name="tel_casa" 
+                                                   id="tel_familiar" 
+                                                   name="tel_familiar" 
                                                    value="<?= $tutor->phone_alt; ?>" 
                                                    pattern="[0-9\s]{8,15}"
                                                    autocomplete="off">
@@ -423,7 +437,7 @@
                                         </div>
                                     </div>
                                 <?php else: ?>
-                                    
+                                    <h3>No have tutor</h3>
                                 <?php endif ?>
                             </form>
                             </div>
@@ -490,4 +504,41 @@
         </div>
     </div>
 </div>
+
+<!-- <div id="add_to_group" class="modal fade">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
+                <h4 class="modal-title text-center">Agregar Alumno a Grupo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <div class="form-group">
+                            <label class="col-sm-6"><small>Curso:</small> 
+                                <select class="form-control " id="course">
+                                    <option value="">Seleccione...</option>
+                                    <?php if ($this->cursos): ?>
+                                        <?php foreach ($this->cursos as $curso): ?>
+                                            <option value="<?= $curso->id; ?>"><?= $curso->name; ?></option>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </select>
+                            </label>
+                            <label class="col-sm-6"><small>Grupo:</small> 
+                                <select class="form-control " id="group">
+                                    <option value="">Seleccione...</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-10 col-sm-offset-1 text-center">
+                        <button type="button" id="add_in_group" class="btn btn-sm btn-second btn-raised">Agregar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
 <?php endif ?>
