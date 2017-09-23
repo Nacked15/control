@@ -40,7 +40,13 @@
                         <?php endif ?>
                     </li>
                     <li><b>Edad:</b> <?= $alumno->age; ?> Años</li>
-                    <li><b>Estatus:</b> <?= $alumno->status === '1' ? 'Activo' : 'En espera'; ?></li>
+                    <li><b>Número Celular:</b> <?= $alumno->cellphone; ?></li>
+                    <?php if ($this->tutor):  $tutor = $this->tutor; ?>
+                        <li><b>Tutor: </b><?= $tutor->namet.' '.$tutor->surname1.' '.$tutor->surname2; ?></li>
+                        <li><b>Tel. de Casa: </b><?= $tutor->phone; ?></li>
+                        <li><b>Tel. Celular: </b><?= $tutor->cellphone; ?></li>
+                        <li><b>Tel. Alterno: </b> <?= $tutor->phone_alt; ?></li>
+                    <?php endif ?>
                 </ul>
             </div>
             <div class="card-footer">
@@ -52,97 +58,21 @@
         <div class="bs-component">
             <ul class="nav nav-tabs well line-head" style="margin-bottom: 15px;">
                 <li class="active">
-                    <a href="#personal" data-toggle="tab">ALUMNO</a>
+                    <a href="#info_student" data-toggle="tab">DATOS DEL ALUMNO</a>
                 </li>
                 <li>
-                    <a href="#info_academic" data-toggle="tab">EDITAR DATOS DEL ALUMNO</a>
+                    <a href="#info_tutor" data-toggle="tab">DATOS DEL TUTOR</a>
                 </li>
                 <li>
-                    <a href="#info_tutor" data-toggle="tab">EDITAR DATOS DEL TUTOR</a>
+                    <a href="#update_info" data-toggle="tab">DATOS ACADEMICOS</a>
                 </li>
                 <li>
-                    <a href="#update_info" data-toggle="tab">EDITAR DATOS ACADEMICOS</a>
+                    <a href="#update_map" data-toggle="tab">MAPA</a>
                 </li>
             </ul>
             <div id="myTabContent" class="tab-content well line-body">
                 <?php $this->renderFeedbackMessages(); ?>
-                <div class="tab-pane fade active in" id="personal">
-                    <div class="data-box">
-                        <div class="row">
-                        <div class="col-sm-6">
-                            <h4>Datos Personales</h4>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="col-sm-6">
-                            <p>
-                                <strong>Nombre Completo: </strong>
-                                <?= $alumno->name.' '.$alumno->surname.' '.$alumno->lastname;?>
-                            </p>
-                            <p><strong>Fecha de Nacimiento: </strong><?= H::formatDate($alumno->birthday); ?></p>
-                            <p><strong>Edad:</strong> <?= $alumno->age; ?></p>
-                            <p><strong>Sexo:</strong> <?= $alumno->genre; ?></p>
-                            <p><strong>Estado Civil:</strong> <?= $alumno->edo_civil; ?></p>
-                            <p><strong>Número Celular:</strong> <?= $alumno->cellphone; ?></p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p><strong>Dirección:</strong></p>
-                            <?php if ($this->address): ?>
-                                <p>Calle: <?= $this->address->street; ?>, Número: <?= $this->address->st_number; ?>, Entre: <?= $this->address->st_between; ?>, Colonia: <?= $this->address->colony; ?>.</p>
-                            <?php endif ?>
-                            <p><strong>Referencia Domiciliar:</strong> <?= $alumno->reference; ?></p>
-                            <p><strong>Padecimientos:</strong> <?= $alumno->sickness; ?></p>
-                            <p><strong>Tratamientos:</strong> <?= $alumno->medication; ?></p>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="data-box">
-                            <h4>Datos Academicos</h4>
-                                <p><strong>Ocupación: </strong><?= $alumno->ocupation; ?></p>
-                                <p><strong>Donde:</strong><?= $alumno->workplace; ?></p>
-                                <p>
-                                    <strong>Ultimo Grado de estudios: </strong>
-                                    <?= $alumno->studies.' '.$alumno->last_grade; ?>
-                                </p>
-                                <?php if ($clase): ?>
-                                <p>
-                                    <strong>Inscrito en:</strong>
-                                    <?= ucwords(strtolower($clase->curso)).' '.ucwords(strtolower($clase->grupo)); ?>
-                                    
-                                </p>
-                                <?php endif ?>
-                                <p><strong>Becado:</strong> No</p>
-                                <p><strong>Inscrito en la SEP: </strong> No</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="data-box">
-                                <h4>Datos Del Tutor</h4>
-                                <?php if ($this->tutor):  $tutor = $this->tutor; ?>
-                                    <p><strong>Nombre: </strong><?= $tutor->namet; ?></p>
-                                    <p><strong>Parentesco: </strong><?= $tutor->relationship; ?></p>
-                                    <p><strong>Teléfono de Casa: </strong><?= $tutor->phone; ?></p>
-                                    <p><strong>Teléfono Celular :</strong><?= $tutor->cellphone; ?></p>
-                                    <p>
-                                        <strong>Teléfono Alternativo: </strong>
-                                            <?= $tutor->phone_alt; ?>
-                                    </p>
-                                    <p><strong>Ocupación: </strong><?= $tutor->job; ?></p>
-                                <?php else: ?>
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <h4 class="text-center text-naatik">No Tiene Tutor</h4>
-                                    <br>
-                                    <br>
-                                    <br>
-                                <?php endif ?>
-                            </div>
-                        </div>
-                    </div>     
-                </div>
-                <div class="tab-pane fade" id="info_academic">
+                <div class="tab-pane fade active in" id="info_student">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="data-box">
@@ -500,45 +430,44 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- <div id="add_to_group" class="modal fade">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Agregar Alumno a Grupo</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-10 col-sm-offset-1">
-                        <div class="form-group">
-                            <label class="col-sm-6"><small>Curso:</small> 
-                                <select class="form-control " id="course">
-                                    <option value="">Seleccione...</option>
-                                    <?php if ($this->cursos): ?>
-                                        <?php foreach ($this->cursos as $curso): ?>
-                                            <option value="<?= $curso->id; ?>"><?= $curso->name; ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                </select>
-                            </label>
-                            <label class="col-sm-6"><small>Grupo:</small> 
-                                <select class="form-control " id="group">
-                                    <option value="">Seleccione...</option>
-                                </select>
-                            </label>
+                <div class="tab-pane fade" id="update_map">
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                        <input type="button"
+                               id="btn_marker" 
+                               value="Marcar" 
+                               onclick="addMarkerAtCenter()" 
+                               class="btn btn-info btn-sm" />
                         </div>
-                    </div>
-                    <div class="col-sm-10 col-sm-offset-1 text-center">
-                        <button type="button" id="add_in_group" class="btn btn-sm btn-second btn-raised">Agregar</button>
+                        <div class="col-md-12 text-center">
+                            <div class="coordinates">
+                                <input type="hidden" 
+                                       id="lat" 
+                                       name="lat" 
+                                       class="form-control" 
+                                       onclick="select()" />
+                                <input type="hidden" 
+                                       id="lng" 
+                                       name="lng" 
+                                       class="form-control" 
+                                       onclick="select()" />
+                            </div>
+                            <div id="map">
+                                <div id="map_canvas"></div>
+                                <div id="crosshair">
+                                    <span class="glyphicon glyphicon-move"></span>
+                                </div>
+                                <span id="zoom_level"></span>
+                            </div>
+                            <div class="address">
+                                <span id="formatedAddress">-</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div> -->
+</div>
 <?php endif ?>

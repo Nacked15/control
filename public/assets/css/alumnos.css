@@ -20,7 +20,7 @@
 }
 
 .card .card-title h4 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: #443;
     text-transform: uppercase;
 }
@@ -36,10 +36,30 @@
     text-align: center;
 }
 .card-list {
-    padding-left: 0.5rem;
+    padding-left: 0.1rem;
 }
 .card-list li {
     margin-bottom: 0.8rem;
     border-bottom: 1px solid rgb(235, 235, 235);
     list-style-type: none;
+}
+
+.conv_header h4 {
+    margin-top: 0;
+}
+
+.conv_text {
+    padding-right: 5em;
+    padding-left: 5em;
+}
+
+.conv_sign {
+    margin-bottom: 1em;
+}
+
+div.divider {
+    border-top: 0.2rem solid #330;
+    margin-top: 7em;
+    margin-right: 15px;
+    margin-left: 15px;
 }

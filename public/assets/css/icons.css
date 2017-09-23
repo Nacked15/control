@@ -1,3 +1,12 @@
 .glyphicon {
 	top: 0 !important;
 }
+
+.fa.fa-star{
+    font-size: 1.8rem;
+}
+
+.fa.fa-star.checked{
+    font-size: 1.8rem;
+    color: rgb(230, 250, 10);
+}

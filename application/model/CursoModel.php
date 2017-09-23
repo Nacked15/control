@@ -112,8 +112,11 @@ class CursoModel
     }
 
     public static function getClases() {
+        $usr_type = (int)Session::get('user_account_type');
+
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT c.id as clase_id, c.id_teacher, c.id_schedull, cu.id as id_curso, cu.name as name_curso, 
+        $sql = "SELECT c.id as clase_id, c.id_teacher, c.id_schedull, 
+                       cu.id as id_curso, cu.name as name_curso, 
                        ni.id as id_nivel, ni.level,
                        h.id as id_horario, h.year, h.date_init, 
                        h.date_end, h.hour_init, h.hour_end 
@@ -125,9 +128,18 @@ class CursoModel
                   AND c.id_level  = ni.id
                   AND c.id_schedull = h.id
                   AND c.status = 1
-                ORDER BY cu.id ASC;";
-        $query = $database->prepare($sql);
-        $query->execute();
+                ";
+        if ($usr_type === 3) {
+            $user = Session::get('user_id');
+            $sql .= " AND c.id_teacher = :user ORDER BY cu.id ASC;";
+            $query = $database->prepare($sql);
+            $query->execute(array(':user' => $user));
+        } else {
+            $sql .= " ORDER BY cu.id ASC;";
+            $query = $database->prepare($sql);
+            $query->execute();
+        }
+        
         if ($query->rowCount() > 0) {
             $clases = $query->fetchAll();
             $classe = array();
@@ -169,6 +181,7 @@ class CursoModel
     }
 
     public static function displayClases($classes){
+        $user_type = (int)Session::get('user_account_type');
         $database = DatabaseFactory::getFactory()->getConnection();
 
         if (count($classes) > 0) {
@@ -183,10 +196,11 @@ class CursoModel
                 echo '<th>Dias</th>';
                 echo '<th>Horario</th>';
                 echo '<th>Maestro</th>';
-                echo '<th class="text-center">Opciones</th>';
+                echo $user_type == 1 || $user_type == 2 ? '<th class="text-center">Opciones</th>' : '';
                 echo '</tr>';
             echo '</thead>';
             echo '<tbody>';
+                $counter = 1;
                 foreach ($classes as $clase) {
                     $days = $database->prepare("SELECT hd.id_schedull, hd.id_day, d.day 
                                                 FROM schedull_days as hd, days as d
@@ -195,7 +209,7 @@ class CursoModel
                     $days->execute(array(':horario' => $clase->horario_id));
 
                     echo '<tr>';
-                    echo '<td>'.$clase->id.'</td>';
+                    echo '<td>'.$counter++.'</td>';
                     echo '<td>'.$clase->name.'</td>';
                     echo '<td>'.$clase->inicia.'</td>';
                     echo '<td>'.$clase->termina.'</td>';
@@ -206,6 +220,7 @@ class CursoModel
                     echo '</td>';
                     echo '<td>'.$clase->horario.'</td>';
                     echo '<td>'.$clase->maestro.'</td>';
+                    if ($user_type == 1 || $user_type == 2) {
                     echo '<td class="text-center">
                             <button type="button"
                                     id="'.$clase->id.'"
@@ -222,6 +237,7 @@ class CursoModel
                                         Eliminar
                             </button>
                         </td>';
+                    }
                     echo '</tr>';
                 }
             echo '</tbody>';

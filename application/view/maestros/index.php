@@ -4,7 +4,7 @@
           <li><a href="javascript:void(0)" class="active">Maestros</a></li>
     </ol> 
     <ul class="nav nav-tabs nav-justified nav-submenu" id="second_head" style="margin-bottom: 15px;">
-        <li><a>MAESTROS</a></li>
+        <li class="active"><a>MAESTROS</a></li>
     </ul>   
     <div class="well">
         <div class="row">

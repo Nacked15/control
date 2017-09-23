@@ -5,44 +5,50 @@
     <!-- <div class="well"> -->
     <?php $this->renderFeedbackMessages(); ?>
     <div class="bs-component">
-        <ul class="nav nav-tabs nav-submenu" style="margin-bottom: 15px;">
+        <ul class="nav nav-tabs nav-justified nav-submenu" style="margin-bottom: 15px;">
             <li class="active">
-                <a href="#home" data-toggle="tab">Tareas</a>
+                <a href="#home" data-toggle="tab">TAREAS</a>
             </li>
             <li>
-                <a href="#calendario" data-toggle="tab">Calendario</a>
+                <a href="#calendario" data-toggle="tab">CALENDARIO</a>
             </li>
         </ul>
         <div id="myTabContent" class="tab-content well well-content">
             <div class="tab-pane fade active in" id="home">
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="col-sm-6 text-left" style="margin-bottom: 10px;">
+                        <div class="col-sm-4 text-left" style="margin-bottom: 10px;">
                             <small>Prioridades: </small>
                             <label class=" label label-primary">Normal</label>
                             <label class=" label label-warning">Alta</label>
-                            <label class=" label label-success">Baja</label>
-                            <div class="togglebutton">
-                              <label>
-                                Wi-Fi
-                                <input checked="" type="checkbox">
-                              </label>
-                            </div>
-                            <div class="togglebutton">
-                              <label>
-                                Bluetooth
-                                <input type="checkbox">
-                              </label>
-                            </div>
-                            <div class="form-group">
-                              <div class="checkbox">
+                            <label class=" label label-success">Baja</label> &nbsp;&nbsp;
+                            <lebel class="togglebutton">
                                 <label>
-                                  <input checked="" type="checkbox"> Auto-updates
+                                    Wi-Fi &nbsp;
+                                    <input type="checkbox">
                                 </label>
-                              </div>
+                            </lebel>
+                        </div>
+                        <div class="col-sm-4 text-center" style="margin-bottom: 10px;">
+                            <div class="btn-group">
+                              <a href="javascript:void(0)"
+                                 data-target="#" 
+                                 class="btn btn-sm btn-main btn-raised dropdown-toggle"
+                                 data-toggle="dropdown">&nbsp; Más.. &nbsp;</a>
+                              <a href="javascript:void(0)" 
+                                 data-target="#" 
+                                 class="btn btn-sm btn-main btn-raised dropdown-toggle" 
+                                 data-toggle="dropdown">
+                                 <span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="javascript:void(0)">Detalles</a></li>
+                                <li><a href="javascript:void(0)">Calificaciones</a></li>
+                                <li><a href="javascript:void(0)">Convenio</a></li>
+                                <li><a href="javascript:void(0)">Cambiar Foto</a></li>
+                              </ul>
                             </div>
                         </div>
-                        <div class="col-sm-6 text-right" style="margin-bottom: 15px;">
+                        <div class="col-sm-4 text-right" style="margin-bottom: 15px;">
                             <button type="button" 
                                     class="btn btn-main btn-raised btn-xs btn-add"
                                     data-toggle="modal" 
@@ -242,8 +248,7 @@
             </div>
             <div class="row">
                 <div class="modal-footer col-sm-10 col-sm-offset-1 text-center">
-                    <button type="button" class="btn btn-sm btn-naatik btn-raised left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btn_update_task" class="btn btn-sm btn-second btn-raised right">Guardar</button>
+                    <button type="button" class="btn btn-sm btn-naatik btn-raised" data-dismiss="modal">Cerrar</button>
                 </div>             
             </div>
         </div>

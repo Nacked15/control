@@ -40,6 +40,7 @@ return array(
      */
     'PATH_CONTROLLER' => realpath(dirname(__FILE__).'/../../') . '/application/controller/',
     'PATH_VIEW'      => realpath(dirname(__FILE__).'/../../') . '/application/view/',
+    'PATH_LIBS' => realpath(dirname(__FILE__).'/../../') . '/application/libs/',
     /**
      * Configuration for: Avatar paths
      * Internal path to save avatars. Make sure this folder is writable. The slash at the end is VERY important!
@@ -49,6 +50,7 @@ return array(
     'PATH_PUBLIC' => realpath(dirname(__FILE__).'/../../') . '/public/',
     'CSS' => realpath(dirname(__FILE__).'/../../') . '/public/assets/css/',
     'JS' => realpath(dirname(__FILE__).'/../../') . '/public/assets/js/',
+
     'PATH_AVATARS_PUBLIC' => 'avatars/',
     'PATH_AVATAR_STUDENT' => 'avatars/students/',
     /**

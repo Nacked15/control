@@ -327,14 +327,16 @@ class UserModel
         $database = DatabaseFactory::getFactory()->getConnection();
 
         // get real token from database (and all other data)
-        $query = $database->prepare("SELECT user_id, user_name, user_email, user_password_hash, user_active,
-                                          user_account_type,  user_has_avatar, user_failed_logins, user_last_failed_login
+        $query = $database->prepare("SELECT user_id, user_type, user_name, user_email, 
+                                            user_password_hash, user_active,
+                                            user_account_type,  user_has_avatar, 
+                                            user_failed_logins, user_last_failed_login
                                      FROM users
                                      WHERE user_id = :user_id
                                        AND user_remember_me_token = :user_remember_me_token
                                        AND user_remember_me_token IS NOT NULL
-                                       AND user_provider_type = :provider_type LIMIT 1");
-        $query->execute(array(':user_id' => $user_id, ':user_remember_me_token' => $token, ':provider_type' => 'DEFAULT'));
+                                       LIMIT 1");
+        $query->execute(array(':user_id' => $user_id, ':user_remember_me_token' => $token));
 
         // return one row (we only have one result or nothing)
         return $query->fetch();
@@ -383,7 +385,7 @@ class UserModel
                     echo '<h3 class="panel-title text-center">Para: '.H::formatDate($row->date_todo).'</h3>';
                 echo '</div>';
                 echo '<div class="panel-body">';
-                    echo $row->task;
+                    echo nl2br($row->task);
                 echo '</div>';
                 echo '<div class="card-footer-basic">';
                 echo '<a data-toggle="tooltip" title="Detail" id="'.$row->id_task.'" class="btn_detail_task">

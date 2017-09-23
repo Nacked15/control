@@ -12,7 +12,8 @@ class CursoController extends Controller
     }
 
     public function index() {
-        $this->View->render('cursos/index');
+        $this->View->render('cursos/index', array(
+            'user_type' => Session::get('user_account_type')));
     }
 
     public function obtenerClases(){

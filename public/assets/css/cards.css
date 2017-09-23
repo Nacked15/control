@@ -248,6 +248,7 @@
 
 div.line-body{
   margin-top: 0;
+  min-height: 430px;
   border-radius: 0 0 5px 5px !important;
 }
 

@@ -1,3 +1,4 @@
+<?php $show =  $this->user_type === '1' || $this->user_type === '2';?>
 <div class="container">
     <ol class="breadcrumb">
         <li><a href="javascript:void(0)">Principal</a></li>
@@ -9,9 +10,11 @@
             <li id="t1" class="tab" data-index="1">
                 <a href="#v_clases" data-toggle="tab">CLASES</a>
             </li>
+            <?php if ($show): ?>
             <li id="t2" class="tab" data-index="2">
                 <a href="#v_cursos" data-toggle="tab">CURSOS</a>
             </li>
+            <?php endif ?>
             <li id="t3" class="tab" data-index="3">
                 <a href="#v_horario" data-toggle="tab">HORARIO</a>
             </li>
@@ -21,12 +24,14 @@
             <div class="tab-pane fade in" id="v_clases">
                 <div class="row">
                     <div class="col-sm-12">
+                        <?php if ($show): ?>
                         <button type="button"
                                 id="addClase" 
                                 class="btn btn-sm btn-main btn-raised btn-add">
                                 <i class="glyphicon glyphicon-plus"></i> Nueva Clase
                         </button>
-                        <div class="card-primary" id="lista_clases">
+                        <?php endif ?>
+                        <div style="padding: 4px;" id="lista_clases">
                             <div class="row">
                                 <div class="col-xs-6 col-xs-offset-3 text-center loader">
                                     <h4 class="text-center">Cargando..</h4>
@@ -37,6 +42,7 @@
                     </div>
                 </div>
             </div>
+            <?php if ($show): ?>
             <div class="tab-pane fade in" id="v_cursos">
                 <div class="row">
                     <div class="col-md-6">
@@ -72,10 +78,11 @@
                     </div>
                 </div>
             </div>
+            <?php endif ?>
             <div class="tab-pane fade in" id="v_horario">
                 <div class="row">
-                    <div class="col-md-12 card-primary">
-                        <div id="horario_list">
+                    <div class="col-md-12">
+                        <div class="card-primary" id="horario_list">
                             <div class="row">
                                 <div class="col-xs-6 col-xs-offset-3 text-center loader">
                                     <h4 class="text-center">Cargando..</h4>

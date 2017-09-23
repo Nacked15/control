@@ -7,14 +7,15 @@ class AlumnoController extends Controller
         parent::__construct();
         Auth::checkAuthentication();
 
-        Registry::set('css',array('fileinput.min&assets/css', 'icons&assets/css', 'alumnos&assets/css'));
+        Registry::set('css',array('fileinput.min&assets/css','icons&assets/css','mapa&assets/css','alumnos&assets/css'));
         Registry::set('js', array('fileinput.min&assets/js', 'jquery.dataTables.min&assets/js', 'alumnos&assets/js'));
     }
 
     public function index() {
         $this->View->render('alumnos/index', array(
+            'u_type'    => Session::get('user_account_type'),
             'cursos'    => CursoModel::getCourses()
-            ));
+        ));
     }
 
     public function obtenerAlumnos() {
@@ -22,7 +23,11 @@ class AlumnoController extends Controller
     }
 
     public function obtenerAlumnosTodos() {
-        AlumnoModel::getStudentsAll();
+        AlumnoModel::getStudentsAll(Request::post('vista'));
+    }
+
+    public function obtenerAlumnosBaja() {
+        AlumnoModel::getStudentsCheckout(); 
     }
 
     public function nuevo() {
@@ -37,18 +42,15 @@ class AlumnoController extends Controller
         ));
     }
 
-    public function obtenerPerfilAlumno() {
-        Registry::set('css',array('alumnos&assets/css'));
-        $this->View->renderWithoutHeaderAndFooter('alumnos/alumnoprofile', array(
-            'alumno'  => AlumnoModel::getStudentByID(Request::post('student')),
-            'tutor'   => AlumnoModel::getTutorByID(Request::post('tutor')),
-            'clase'   => AlumnoModel::getClaseByID(Request::post('clase')),
-            'address' => AlumnoModel::getAddressByUser(Request::post('student'), Request::post('tutor')),
-            'cursos'  => CursoModel::getCourses()
+    public function perfilAlumno($alumno) {
+        $this->View->render('alumnos/perfil', array(
+            'alumno'  => AlumnoModel::getStudentProfile($alumno)
         ));
     }
 
     public function actualizarDatosAlumno(){
+        $alumno = Request::post('student_id');
+
         if (Request::post('student_id') && Request::post('name') && Request::post('surname') && Request::post('lastname') && Request::post('genre') && Request::post('edo_civil')) {
             AlumnoModel::updateStudentData(
                 Request::post('student_id'),
@@ -71,17 +73,30 @@ class AlumnoController extends Controller
                 Request::post('acta'),
                 Request::post('invoice'),
                 Request::post('comment')
-                );
-            Redirect::to('alumno/index');
+            );
+            Redirect::to('alumno/perfilAlumno/'.$alumno);
         } else {
             Session::add('feedback_negative', "Falta información para completar el proceso");
-            Redirect::to('alumno/index');
+            Redirect::to('alumno/perfilAlumno/'.$alumno);
         }
     }
 
-    public function actualizarDatosTutos(){
-        if (Request::post('nombre_tutor') && Request::post('ape_pat') && Request::post('ape_mat')) {
-            updateTutosData(
+    public function convenio(){
+        $this->View->render('alumnos/convenio');
+    }
+
+    public function conveniopdf(){
+        $this->View->renderWithoutHeaderAndFooter('alumnos/conveniopdf');
+    }
+
+    public function bajaAlumno(){
+        AlumnoModel::checkOutStudent(Request::post('alumno'), Request::post('estado'));
+    }
+
+    public function actualizarDatosTutor(){
+
+        if (Request::post('id_tutor') && Request::post('nombre_tutor') && Request::post('ape_pat') && Request::post('ape_mat')) {
+            AlumnoModel::updateTutorData(
                 Request::post('id_tutor'),
                 Request::post('nombre_tutor'),
                 Request::post('ape_pat'),
@@ -92,12 +107,48 @@ class AlumnoController extends Controller
                 Request::post('tel_celular'),
                 Request::post('familiar'),
                 Request::post('tel_familiar'));
+            Redirect::to('alumno/perfilAlumno/'.Request::post('alumno'));
+        }  else {
+            Session::add('feedback_negative', "Falta información para completar el proceso");
+            Redirect::to('alumno/perfilAlumno/'.Request::post('alumno'));
+        }
+    }
+
+    public function actualizarDatosAcademicos(){
+        if (Request::post('alumno')) {
+            AlumnoModel::updateAcademicData(
+                Request::post('alumno'),
+                Request::post('ocupacion'),
+                Request::post('lugar_trabajo'),
+                Request::post('nivel_estudio'),
+                Request::post('grado_estudio')
+                );
+            Redirect::to('alumno/perfilAlumno/'.Request::post('alumno'));
+        } else {
+            Session::add('feedback_negative', "Falta información para completar el proceso");
+            Redirect::to('alumno/perfilAlumno/'.Request::post('alumno'));
         }
     }
 
     public function agregarAlumnoGrupo(){
         if (Request::post('alumno') && Request::post('clase')) {
             AlumnoModel::AddStudentToClass(Request::post('alumno'), Request::post('clase'));
+        } else {
+            echo 0;
+        }
+    }
+
+    public function cambiarGrupoAlumno(){
+        if (Request::post('alumno') && Request::post('clase') !== "") {
+            AlumnoModel::ChangeStudentGroup(Request::post('alumno'), Request::post('clase'));
+        } else {
+            echo 0;
+        }
+    }
+
+    public function cambiarGrupoAlumnos(){
+        if (Request::post('alumnos') && Request::post('clase') !== "") {
+            AlumnoModel::ChangeStudentsGroup(Request::post('alumnos'), Request::post('clase'));
         } else {
             echo 0;
         }
@@ -119,6 +170,10 @@ class AlumnoController extends Controller
         if(Request::post('clase')){
             echo json_encode(CursoModel::getDaysByClass(Request::post('clase')));
         }
+    }
+
+    public function obtenerListaFactura() {
+        AlumnoModel::getStudentsInvoiceList();
     }
 
     public function existeTutor() {

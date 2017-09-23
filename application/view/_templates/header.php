@@ -5,13 +5,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="../favicon.ico">
+    <link rel="icon" href="<?php echo Config::get('URL'); ?>favicon.ico">
     <!-- CSS -->
     <link href="<?php echo Config::get('URL'); ?>assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/snackbar.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/material.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/ripples.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/roboto.min.css" rel="stylesheet">
+    <link href="<?php echo Config::get('URL'); ?>assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/fileinput.min.css" rel="stylesheet">
     <link href="<?php echo Config::get('URL'); ?>assets/css/datepicker.css" rel="stylesheet">
@@ -30,7 +31,8 @@
 
 <?php  if (Session::userIsLoggedIn()) { 
     $base_url = Config::get('URL'); 
-    $user     = Session::get('user_name'); ?>
+    $user     = Session::get('user_name'); 
+    $usr_type = (int)Session::get('user_account_type');?>
     <nav class="navbar navbar-naatik nav-main navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -44,7 +46,7 @@
                 </button>
                 <a class="navbar-brand" href="javascript:void(0)">
                     <img class="img-circle" 
-                         src="../favicon.ico" 
+                         src="<?php echo Config::get('URL'); ?>favicon.ico" 
                          alt="user"
                          width="35px"
                          height="35px">
@@ -64,18 +66,24 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="<?= $base_url; ?>alumno">Alumnos</a></li>
-                            <li><a href="<?= $base_url; ?>alumno/nuevo">Nuevo Alumno</a></li>
-                            <li><a href="<?= $base_url; ?>alumno/becados">Becados</a></li>
+                                <a href="<?= $base_url; ?>alumno">Alumnos</a>
+                            </li>
+                            <?php if ($usr_type === 1 || $usr_type === 2): ?>
+                                <li><a href="<?= $base_url; ?>alumno/nuevo">Nuevo Alumno</a></li>
+                                <li><a href="<?= $base_url; ?>alumno/becados">Becados</a></li>
+                            <?php endif ?>
                             <li><a href="<?= $base_url; ?>alumno/sep">Inscritos en la SEP</a></li>
                             <li><a href="<?= $base_url; ?>alumno/notas">Calificaciones</a></li>
-                            <li><a href="<?= $base_url; ?>alumno/baja">De Baja</a></li>
-                            <li><a href="<?= $base_url; ?>alumno/egresados">Egresados</a></li>
+                            <?php if ($usr_type === 1 || $usr_type === 2): ?>
+                                <li><a href="<?= $base_url; ?>alumno/baja">De Baja</a></li>
+                                <li><a href="<?= $base_url; ?>alumno/egresados">Egresados</a></li>
+                            <?php endif ?>
                         </ul>
                     </li>
                     <li <?= View::active($filename, 'cursos') ? ' class="active" ': '';?>>
                         <a href="<?= $base_url; ?>curso">Clases</a>
                     </li>
+                    <?php if ($usr_type === 1 || $usr_type === 2): ?>
                     <li <?= View::active($filename, 'maestros') ? ' class="active" ': '';?>>
                         <a href="<?= $base_url; ?>maestro">Maestros</a>
                     </li>
@@ -85,11 +93,12 @@
                     <li>
                         <a href="javascript:void(0)">Padrinos</a>
                     </li>
+                     <?php endif ?>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="javascript:void(0)">Link</a></li>
                     <li class="dropdown">
-                        <a href="bootstrap-elements.html" 
+                        <a href="javascript:void(0)" 
                            data-target="#" 
                            class="dropdown-toggle" 
                            data-toggle="dropdown">
