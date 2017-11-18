@@ -19,23 +19,14 @@ var Alumnos = {
     defaultGetStudents: function(){
         let that = this;
         var view = sessionStorage.getItem('st_alive');
-        $('#second_head').hide();
-        if (view === '5' || view === '6') {
-            that.displayAllStudents(view);
-        } else {
-           that.displayStudents(view); 
-        }
+        that.displayStudents(view); 
     },
 
     getStudents: function(){
         let that = this;
         $('.menu_student_list li').on('click', function(){ 
             var activo = $(this).data('group');
-            if (activo != 5 && activo != 6) {
-                that.displayStudents(activo);
-            } else {
-                that.displayAllStudents(activo);
-            }
+            that.displayStudents(activo);
             
         }); 
     },
@@ -59,6 +50,10 @@ var Alumnos = {
                         break;
                     case 4: $('#adult').html(data);
                         break;
+                    case 5: $('#penddings').html(data);
+                        break;
+                    case 6: $('#all_students').html(data);
+                        break;
                 }
                 $.material.init();
                 that.selectMultipleStudents(activo);
@@ -69,47 +64,6 @@ var Alumnos = {
                 that.getStudentProfile();
                 that.changeGroupStudentMultiple();
                 that.getInvoiceListStudents();
-            }
-        });
-    },
-
-    displayAllStudents: function(activo){
-        let that = this;
-        $.ajax({
-            data: { vista: activo },
-            synch: 'true',
-            type: 'POST',
-            url: _root_ + 'alumno/obtenerAlumnosTodos',
-            success: function(data){
-                if (activo == 5) {
-                    $('#all_students').html(data);
-                } else {
-                    $('#penddings').html(data);
-                }
-                $.material.init();
-                that.addStudentInGroup();
-                that.changeGroupStudent(); 
-                that.setStudentID();
-                that.tables(activo);
-                that.getStudentProfile();
-                that.selectMultipleStudents(activo);
-                that.changeGroupStudentMultiple();
-                that.getInvoiceListStudents();
-            }
-        });
-    },
-
-    displayStudentsCheckout: function(){
-        let that = this;
-        $.ajax({
-            synch: 'true',
-            type: 'POST',
-            url: _root_ + 'alumno/obtenerAlumnosBaja',
-            success: function(data){
-                $('#checkout_list').html(data);
-                $('#tbl_checkout').DataTable();
-                that.checkinStudent();
-                that.getStudentProfile();
             }
         });
     },
@@ -150,19 +104,35 @@ var Alumnos = {
                         break;
                     case 4: $('#adult').html(data);
                         break;
-                    case 5: $('#all_students').html(data);
+                    case 4: $('#penddings').html(data);
+                        break;
+                    case 6: $('#all_students').html(data);
                         break;
                 }
 
                 $('#return_list').click(function(){
                     $('#myTabContent').addClass('well-content');
                     $('#myTabContent').removeClass('body-content');
-                    if (parseInt(curso) !== 5) {
-                        that.displayStudents(curso);
-                    } else {
-                        that.displayAllStudents(curso);
-                    }
+                    that.displayStudents(curso);
                 });
+            }
+        });
+    },
+
+
+
+
+    displayStudentsCheckout: function(){
+        let that = this;
+        $.ajax({
+            synch: 'true',
+            type: 'POST',
+            url: _root_ + 'alumno/obtenerAlumnosBaja',
+            success: function(data){
+                $('#checkout_list').html(data);
+                $('#tbl_checkout').DataTable();
+                that.checkinStudent();
+                that.getStudentProfile();
             }
         });
     },
@@ -357,12 +327,13 @@ var Alumnos = {
                 type: 'POST',
                 url: _root_ + 'alumno/obtenerNivelesCurso',
                 success: function(data){
+                    console.log(data);
                     var option = '';
                     if (data !== 'null') {
                         var res = JSON.parse(data);
                         for (var i = 0; i < res.length; i++) {
-                            var attr = res[i].id_level == grupo ? 'selected' : '';
-                            option = option + '<option '+attr+' value="'+res[i].id+'">'+res[i].level+'</option>';
+                            var attr = res[i].group_id == grupo ? 'selected' : '';
+                            option = option + '<option '+attr+' value="'+res[i].class_id+'">'+res[i].group_name+'</option>';
                         }
                     }
                     $('#grupos').html(option);
@@ -384,7 +355,7 @@ var Alumnos = {
                         if (data !== 'null') {
                             var res = JSON.parse(data);
                             for (var i = 0; i < res.length; i++) {
-                                option = option + '<option value="'+res[i].id+'">'+res[i].level+'</option>';
+                                option = option + '<option value="'+res[i].class_id+'">'+res[i].group_name+'</option>';
                             }
                         } else {
                             option = '<option value="">Curso sin grupos</option>';
@@ -437,11 +408,7 @@ var Alumnos = {
 
                 $('#change_group').modal('hide');
                 var view = sessionStorage.getItem('st_alive');
-                if (view === '5' || view === '6') {
-                    that.displayAllStudents(view);
-                } else {
-                   that.displayStudents(view); 
-                }
+                that.displayStudents(view); 
             }
         });
     },
@@ -472,12 +439,7 @@ var Alumnos = {
                         }
                         $('#change_group').modal('hide');
                         var view = sessionStorage.getItem('st_alive');
-                        if (view === '5' || view === '6') {
-                            that.displayAllStudents(view);
-                        } else {
-                           that.displayStudents(view); 
-                        }
-
+                        that.displayStudents(view); 
                     }
                 });
                 that.vars.alumnos = [];
@@ -540,11 +502,7 @@ var Alumnos = {
 
                     //Verificar en que vista debe mantenerse al usuario
                     var view = sessionStorage.getItem('st_alive');
-                    if (view === '5' || view === '6') {
-                        that.displayAllStudents(view);
-                    } else {
-                       that.displayStudents(view); 
-                    }
+                    that.displayStudents(view); 
                 }
             });
         });

@@ -124,3 +124,8 @@ function addMarkerAtCenter() {
         infowindow.open(map,marker);
     });
 }
+
+
+$(document).ready(function(){
+    init_map();
+});

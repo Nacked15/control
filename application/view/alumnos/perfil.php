@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-md-2 col-sm-3 text-left">
                 <a href="<?= Config::get('URL'); ?>alumno" class="btn btn-naatik btn-tiny btn-sm">
-                    Volver &nbsp;<i class="glyphicon glyphicon-remove"></i>
+                    Volver
                 </a>
             </div>           
             <div class="col-md-8 col-sm-6">
@@ -28,7 +28,7 @@
                         <input data-id="<?= $alumno->id; ?>"
                                data-name="<?= $alumno->nombre.' '.$alumno->ape_pat;?>"  
                                id="check_out"
-                               <?= $alumno->baja === '1' ? 'checked' : ''; ?>
+                               <?= $alumno->status !== '1' ? 'checked' : ''; ?>
                                type="checkbox">
                     </label>
                 </div>
@@ -569,9 +569,9 @@
 
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADKOI0m49Qp3bAb_lZt66MhZA2OMgM3lQ"></script>
-<script src="<?php echo Config::get('URL'); ?>assets/js/mapa.js"></script>
+<!-- <script src="<?php //echo Config::get('URL'); ?>assets/js/mapa.js"></script>
 <script>
   $(document).ready(function(){
       init_map();
     });
-</script>
+</script> -->

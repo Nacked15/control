@@ -19,18 +19,25 @@ class AlumnoController extends Controller
     }
 
     public function obtenerAlumnos() {
-        AlumnoModel::getStudents(Request::post('curso'));
+        AlumnoModel::students(Request::post('curso'));
     }
 
-    public function obtenerAlumnosTodos() {
-        AlumnoModel::getStudentsAll(Request::post('vista'));
+    public function perfilAlumno($alumno) {
+        Registry::set('js', array('mapa&assets/js'));
+        $this->View->render('alumnos/perfil', array(
+            'alumno'  => AlumnoModel::studentProfile($alumno)
+        ));
     }
+
+
+
 
     public function obtenerAlumnosBaja() {
         AlumnoModel::getStudentsCheckout(); 
     }
 
     public function nuevo() {
+        Registry::set('js', array('mapa&assets/js'));
         $this->View->render('alumnos/inscribir', array(
             'cursos'    => CursoModel::getCourses(),
             'niveles'   => CursoModel::getLevels(),
@@ -39,12 +46,6 @@ class AlumnoController extends Controller
             'between'   => Session::get('addres_between'),
             'colony'    => Session::get('addres_colony'),
             'address'   => Session::get('address_id')
-        ));
-    }
-
-    public function perfilAlumno($alumno) {
-        $this->View->render('alumnos/perfil', array(
-            'alumno'  => AlumnoModel::getStudentProfile($alumno)
         ));
     }
 

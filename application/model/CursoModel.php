@@ -6,7 +6,7 @@ class CursoModel
     public static function getCourses() {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT id, name 
+        $sql = "SELECT course_id, course 
                 FROM courses";
         $query = $database->prepare($sql);
         $query->execute();    

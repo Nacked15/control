@@ -23,10 +23,10 @@
                 <a href="#adult" data-toggle="tab">AVANZADO</a>
             </li>
             <?php if ($this->u_type === '1' || $this->u_type === '2'): ?>
-            <li data-index="list_penddings" class="list_penddings" data-group="6">
+            <li data-index="list_penddings" class="list_penddings" data-group="5">
                 <a href="#penddings" data-toggle="tab">EN ESPERA</a>
             </li>
-            <li data-index="list_all" class="list_all" data-group="5">
+            <li data-index="list_all" class="list_all" data-group="6">
                 <a href="#all_students" data-toggle="tab">TODOS</a>
             </li>
             <?php endif ?>
@@ -82,7 +82,7 @@
                                     <option value="">Seleccione...</option>
                                     <?php if ($this->cursos): ?>
                                         <?php foreach ($this->cursos as $curso): ?>
-                                            <option value="<?= $curso->id; ?>"><?= $curso->name; ?></option>
+                                            <option value="<?= $curso->course_id; ?>"><?= $curso->course; ?></option>
                                         <?php endforeach ?>
                                     <?php endif ?>
                                 </select>
@@ -120,7 +120,7 @@
                                     <option value="">Seleccione...</option>
                                     <?php if ($this->cursos): ?>
                                         <?php foreach ($this->cursos as $curso): ?>
-                                            <option value="<?= $curso->id; ?>"><?= $curso->name; ?></option>
+                                            <option value="<?= $curso->course_id; ?>"><?= $curso->course; ?></option>
                                         <?php endforeach ?>
                                     <?php endif ?>
                                     <option value="0">EN ESPERA</option>

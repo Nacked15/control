@@ -72,7 +72,7 @@ return array(
     'DB_HOST' => '127.0.0.1',
     'DB_NAME' => 'huge',
     'DB_USER' => 'root',
-    'DB_PASS' => '',
+    'DB_PASS' => 'admin',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
     /**
