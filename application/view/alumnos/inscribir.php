@@ -241,13 +241,13 @@
                                     <input type="hidden" 
                                            id="lat" 
                                            name="lat"
-                                           value="<?= $address->latitud; ?>" 
+                                           value="" 
                                            class="form-control" 
                                            onclick="select()" />
                                     <input type="hidden" 
                                            id="lng" 
                                            name="lng"
-                                           value="<?= $address->longitud; ?>" 
+                                           value="" 
                                            class="form-control" 
                                            onclick="select()" />
                                 </div>

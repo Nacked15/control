@@ -16,7 +16,7 @@ class CursoModel
 
     public static function getLevels() {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT id, level FROM levels";
+        $sql = "SELECT group_id, group_name FROM groups";
         $query = $database->prepare($sql);
         $query->execute();
 
@@ -27,15 +27,13 @@ class CursoModel
         $database = DatabaseFactory::getFactory()->getConnection();
         $commit = true;
         $dias  = (array)$dias;
-        // var_dump($h_inicio);
-        // exit();
         $h_inicio = date('H:i', strtotime($h_inicio));
         $h_salida = date('H:i', strtotime($h_salida));
 
         $database->beginTransaction();
         try{
             //Horario de la clase.
-            $sql = "INSERT INTO schedulles(year, date_init, date_end, hour_init, hour_end) 
+            $sql = "INSERT INTO schedules(year, date_init, date_end, hour_init, hour_end) 
                                     VALUES(:ciclo, :f_inicio, :f_fin, :h_inicio, :h_salida);";
             $query = $database->prepare($sql);
             $query->execute(array(':ciclo'      => $ciclo, 
@@ -49,7 +47,7 @@ class CursoModel
                 //Indicar los dias
                 $error = 0;
                 foreach ($dias as $dia) {
-                    $day = $database->prepare("INSERT INTO schedull_days(id_schedull, id_day)
+                    $day = $database->prepare("INSERT INTO schedul_days(shedul_id, day_id)
                                                                     VALUES(:horario, :dia)");
                     $day->execute(array(':horario' => $horario, ':dia' => $dia));
 
@@ -60,10 +58,10 @@ class CursoModel
 
                 if($error === 0) {
                     $f_registro = H::getTime();
-                    $clase = "INSERT INTO classes(id_course, 
-                                                  id_level, 
-                                                  id_schedull, 
-                                                  id_teacher,
+                    $clase = "INSERT INTO classes(course_id, 
+                                                  group_id, 
+                                                  schedul_id, 
+                                                  teacher_id,
                                                   costo_inscripcion,
                                                   status, 
                                                   created_at)
@@ -115,27 +113,22 @@ class CursoModel
         $usr_type = (int)Session::get('user_account_type');
 
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT c.id as clase_id, c.id_teacher, c.id_schedull, 
-                       cu.id as id_curso, cu.name as name_curso, 
-                       ni.id as id_nivel, ni.level,
-                       h.id as id_horario, h.year, h.date_init, 
-                       h.date_end, h.hour_init, h.hour_end 
-                FROM classes as c, 
-                     courses as cu, 
-                     levels as ni, 
-                     schedulles as h
-                WHERE c.id_course = cu.id
-                  AND c.id_level  = ni.id
-                  AND c.id_schedull = h.id
-                  AND c.status = 1
-                ";
+        $sql = "SELECT c.class_id, c.teacher_id, c.schedul_id, cu.course_id, cu.course,
+                       g.group_id, g.group_name, h.year, h.date_init, h.date_end, h.hour_init, h.hour_end
+                FROM classes as c, courses as cu, 
+                     groups as g, schedules as h
+                WHERE c.course_id  = cu.course_id
+                  AND c.group_id   = g.group_id
+                  AND c.schedul_id = h.schedul_id
+                  AND c.status     = 1";
+
         if ($usr_type === 3) {
             $user = Session::get('user_id');
-            $sql .= " AND c.id_teacher = :user ORDER BY cu.id ASC;";
+            $sql .= " AND c.teacher_id = :user ORDER BY cu.id ASC;";
             $query = $database->prepare($sql);
             $query->execute(array(':user' => $user));
         } else {
-            $sql .= " ORDER BY cu.id ASC;";
+            $sql .= " ORDER BY cu.course_id ASC;";
             $query = $database->prepare($sql);
             $query->execute();
         }
@@ -147,10 +140,10 @@ class CursoModel
 
                 $id_maestro = 0;
                 $maestro = '<a class="link" title="Add teacher">Agregar</a>';
-                if ((int)$clase->id_teacher !== 0) {
+                if ((int)$clase->teacher_id !== 0) {
                     $get = $database->prepare("SELECT user_id, name, lastname FROM users 
                                                WHERE user_type = 3 AND user_id = :user LIMIT 1;");
-                    $get->execute(array(':user' => $clase->id_teacher));
+                    $get->execute(array(':user' => $clase->teacher_id));
 
                     if ($get->rowCount() > 0) {
                         $set = $get->fetch();
@@ -162,15 +155,15 @@ class CursoModel
                 $hora_inicio = date('g:i a', strtotime($clase->hour_init));
                 $hora_salida = date('g:i a', strtotime($clase->hour_end));
 
-                $classe[$clase->clase_id] = new stdClass();
-                $classe[$clase->clase_id]->id = $clase->clase_id;
-                $classe[$clase->clase_id]->name       = $clase->name_curso.' '.$clase->level;
-                $classe[$clase->clase_id]->inicia     = H::formatShortDate($clase->date_init);
-                $classe[$clase->clase_id]->termina    = H::formatShortDate($clase->date_end);
-                $classe[$clase->clase_id]->horario    = $hora_inicio.' - '.$hora_salida;
-                $classe[$clase->clase_id]->maestro_id = $id_maestro;
-                $classe[$clase->clase_id]->maestro    = $maestro;
-                $classe[$clase->clase_id]->horario_id = $clase->id_schedull;
+                $classe[$clase->class_id] = new stdClass();
+                $classe[$clase->class_id]->id = $clase->class_id;
+                $classe[$clase->class_id]->name       = $clase->course.' '.$clase->group_name;
+                $classe[$clase->class_id]->inicia     = H::formatShortDate($clase->date_init);
+                $classe[$clase->class_id]->termina    = H::formatShortDate($clase->date_end);
+                $classe[$clase->class_id]->horario    = $hora_inicio.' - '.$hora_salida;
+                $classe[$clase->class_id]->maestro_id = $id_maestro;
+                $classe[$clase->class_id]->maestro    = $maestro;
+                $classe[$clase->class_id]->horario_id = $clase->schedul_id;
 
 
             }
@@ -202,10 +195,10 @@ class CursoModel
             echo '<tbody>';
                 $counter = 1;
                 foreach ($classes as $clase) {
-                    $days = $database->prepare("SELECT hd.id_schedull, hd.id_day, d.day 
-                                                FROM schedull_days as hd, days as d
-                                                WHERE hd.id_day = d.id
-                                                  AND hd.id_schedull = :horario;");
+                    $days = $database->prepare("SELECT hd.schedul_id, hd.day_id, d.day 
+                                                FROM schedul_days as hd, days as d
+                                                WHERE hd.day_id     = d.day_id
+                                                  AND hd.schedul_id = :horario;");
                     $days->execute(array(':horario' => $clase->horario_id));
 
                     echo '<tr>';
@@ -250,18 +243,18 @@ class CursoModel
 
     public static function getClass($clase) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT cu.name, ni.level, c.id_schedull as horario,
+        $sql = "SELECT cu.course, g.group_name, c.schedul_id,
                        h.year, h.date_init, h.date_end, 
-                       h.hour_init, h.hour_end, c.id, 
-                       c.id_course, c.id_level, c.id_teacher, c.costo_inscripcion
+                       h.hour_init, h.hour_end, c.class_id, 
+                       c.course_id, c.group_id, c.teacher_id, c.costo_inscripcion
                 FROM classes as c, 
                      courses as cu, 
-                     levels as ni, 
-                     schedulles as h
-                WHERE c.id_course = cu.id
-                  AND c.id_level  = ni.id
-                  AND c.id_schedull = h.id 
-                  AND c.id = :clase
+                     groups as g, 
+                     schedules as h
+                WHERE c.course_id  = cu.course_id
+                  AND c.group_id   = g.group_id
+                  AND c.schedul_id = h.schedul_id 
+                  AND c.class_id   = :clase
                 LIMIT 1;";
         $query = $database->prepare($sql);
         $query->execute(array(':clase' => $clase));
@@ -282,28 +275,28 @@ class CursoModel
 
     public static function getDaysByClass($horario) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = $database->prepare("SELECT hd.id_day, d.day
-                                   FROM schedull_days as hd, days as d
-                                   WHERE hd.id_day      = d.id
-                                     AND hd.id_schedull = :horario;");
+        $sql = $database->prepare("SELECT hd.day_id, d.day
+                                   FROM schedul_days as hd, days as d
+                                   WHERE hd.day_id     = d.day_id
+                                     AND hd.schedul_id = :horario;");
         $sql->execute(array(':horario' => $horario));
 
-        $freedays = $database->prepare('SELECT d.id, d.day
+        $freedays = $database->prepare('SELECT d.day_id, d.day
                                         FROM days as d 
-                                            LEFT JOIN schedull_days as hd 
-                                                ON d.id = hd.id_day 
-                                                AND hd.id_schedull = :horario 
-                                        WHERE hd.id_day IS NULL;');
+                                            LEFT JOIN schedul_days as hd 
+                                                ON d.day_id = hd.day_id 
+                                                AND hd.schedul_id = :horario 
+                                        WHERE hd.day_id IS NULL;');
         $freedays->execute(array(':horario' => $horario));
 
         $days = array();
         if ($sql->rowCount() > 0) {
             $rows = $sql->fetchAll();
             foreach ($rows as $key) {
-                $days[$key->id_day] = new stdClass();
-                $days[$key->id_day]->id_day   = $key->id_day;
-                $days[$key->id_day]->name_day = $key->day;
-                $days[$key->id_day]->stat     = 1; 
+                $days[$key->day_id] = new stdClass();
+                $days[$key->day_id]->day_id = $key->day_id;
+                $days[$key->day_id]->day    = $key->day;
+                $days[$key->day_id]->stat   = 1; 
             }
             
         }
@@ -311,10 +304,10 @@ class CursoModel
         if ($freedays->rowCount() > 0) {
             $values = $freedays->fetchAll();
             foreach ($values as $row) {
-                $days[$row->id] = new stdClass();
-                $days[$row->id]->id_day   = $row->id;
-                $days[$row->id]->name_day = $row->day;
-                $days[$row->id]->stat     = 0; 
+                $days[$row->day_id] = new stdClass();
+                $days[$row->day_id]->day_id = $row->day_id;
+                $days[$row->day_id]->day    = $row->day;
+                $days[$row->day_id]->stat   = 0; 
             }
         }
 
@@ -334,32 +327,32 @@ class CursoModel
         $database->beginTransaction();
         try{
             //Horario de la clase.
-            $sql = $database->prepare("UPDATE schedulles
+            $sql = $database->prepare("UPDATE schedules
                                        SET year = :ciclo, 
                                            date_init = :f_inicio,
                                            date_end  = :f_fin,
                                            hour_init = :h_inicio,
                                            hour_end  = :h_salida
-                                       WHERE id = :horario;");
-            $save = $sql->execute(array(':ciclo'      => $ciclo, 
-                                ':f_inicio'   => $f_inicio,
-                                ':f_fin'      => $f_fin,
-                                ':h_inicio'   => $h_inicio,
-                                ':h_salida'    => $h_salida,
-                                ':horario'    => $horario));
+                                       WHERE schedul_id = :horario;");
+            $save = $sql->execute(array(':ciclo'    => $ciclo, 
+                                        ':f_inicio' => $f_inicio,
+                                        ':f_fin'    => $f_fin,
+                                        ':h_inicio' => $h_inicio,
+                                        ':h_salida' => $h_salida,
+                                        ':horario'  => $horario));
 
             if($save){
                 //Indicar los dias
                 $error = 0;
                 foreach ($dias as $dia) {
-                    $check = $database->prepare("SELECT id_day 
-                                                 FROM schedull_days 
-                                                 WHERE id_schedull = :horario 
-                                                   AND id_day      = :day;");
+                    $check = $database->prepare("SELECT day_id
+                                                 FROM schedul_days 
+                                                 WHERE schedul_id = :horario 
+                                                   AND day_id     = :day;");
                     $check->execute(array(':horario' => $horario, ':day' => $dia));
 
                     if($check->rowCount() === 0){
-                        $day = $database->prepare("INSERT INTO schedull_days(id_schedull, id_day)
+                        $day = $database->prepare("INSERT INTO schedul_days(schedul_id, day_id)
                                                                     VALUES(:horario, :dia)");
                         $day->execute(array(':horario' => $horario, ':dia' => $dia));
 
@@ -372,12 +365,12 @@ class CursoModel
                 if($error === 0) {
                     $f_update = H::getTime();
                     $update = "UPDATE classes 
-                              SET id_course  = :curso,
-                                  id_level   = :nivel,
-                                  id_teacher = :maestro,
+                              SET course_id  = :curso,
+                                  group_id   = :nivel,
+                                  teacher_id = :maestro,
                                   costo_inscripcion = :costo,
                                   updated_at = :f_update  
-                              WHERE id = :clase;";
+                              WHERE class_id = :clase;";
 
                     $insert = $database->prepare($update);
                     $set = $insert->execute(array( ':curso'    => $curso,
@@ -419,7 +412,7 @@ class CursoModel
     public static function getCursos() {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT id, name 
+        $sql = "SELECT course_id, course
                 FROM courses";
         $query = $database->prepare($sql);
         $query->execute();    
@@ -428,19 +421,6 @@ class CursoModel
             self::displayCursos($query->fetchAll());
         } else {
             echo '<h4 class="text-center text-info">No hay Cursos</h4>';
-        }
-    }
-
-    public static function getGrupos() {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT id, level FROM levels";
-        $query = $database->prepare($sql);
-        $query->execute();
-
-        if ($query->rowCount() > 0) {
-            self::displayGrupos($query->fetchAll());
-        } else {
-            echo '<h4 class="text-center text-info">No hay Grupos</h4>';
         }
     }
 
@@ -460,12 +440,12 @@ class CursoModel
             echo '<tbody>';
                 foreach ($cursos as $curso) {
                     echo '<tr>';
-                    echo '<td class="text-center">'.$curso->id.'</td>'; 
-                    echo '<td class="text-center">'.$curso->name.'</td>'; 
+                    echo '<td class="text-center">'.$curso->course_id.'</td>'; 
+                    echo '<td class="text-center">'.$curso->course.'</td>'; 
                     echo '<td class="text-center">
                             <button type="button"
-                                    data-id="'.$curso->id.'"
-                                    data-course="'.$curso->name.'" 
+                                    data-id="'.$curso->course_id.'"
+                                    data-course="'.$curso->course.'" 
                                     class="btn btn-xs btn-info btn-raised btn_edit_course"
                                     data-toggle="modal" 
                                     data-target="#editCourse" >Editar</button>
@@ -482,7 +462,7 @@ class CursoModel
 
     public static function newCourse($curso){
         $database = DatabaseFactory::getFactory()->getConnection();
-        $insert = $database->prepare("INSERT INTO courses(name) VALUES(:curso);");
+        $insert = $database->prepare("INSERT INTO courses(course) VALUES(:curso);");
         $insert->execute(array(':curso' => $curso));
 
         echo $insert->rowCount() > 0 ? 1 : 0;
@@ -490,13 +470,26 @@ class CursoModel
 
     public static function updateCourse($id, $curso){
         $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->prepare("UPDATE courses SET name = :curso WHERE id = :id;");
+        $query = $database->prepare("UPDATE courses SET course = :curso WHERE course_id = :id;");
         $update = $query->execute(array(':curso' => $curso, ':id' => $id));
 
         if ($update) {
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+    public static function getGrupos() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT group_id, group_name FROM groups";
+        $query = $database->prepare($sql);
+        $query->execute();
+
+        if ($query->rowCount() > 0) {
+            self::displayGrupos($query->fetchAll());
+        } else {
+            echo '<h4 class="text-center text-info">No hay Grupos</h4>';
         }
     }
 
@@ -516,18 +509,18 @@ class CursoModel
             echo '<tbody>';
                 foreach ($grupos as $nivel) {
                     echo '<tr>';
-                    echo '<td class="text-center">'.$nivel->id.'</td>'; 
-                    echo '<td class="text-center">'.$nivel->level.'</td>'; 
+                    echo '<td class="text-center">'.$nivel->group_id.'</td>'; 
+                    echo '<td class="text-center">'.$nivel->group_name.'</td>'; 
                     echo '<td class="text-center">
                             <button type="button"
-                                    data-id="'.$nivel->id.'"
-                                    data-group="'.$nivel->level.'" 
+                                    data-id="'.$nivel->group_id.'"
+                                    data-group="'.$nivel->group_name.'" 
                                     class="btn btn-xs btn-info btn-raised btn_edit_group"
                                     data-toggle="tooltip" 
                                     title="Edit">Editar</button>
                             <button type="button" 
-                                    data-id="'.$nivel->id.'"
-                                    data-group="'.$nivel->level.'"
+                                    data-id="'.$nivel->group_id.'"
+                                    data-group="'.$nivel->group_name.'"
                                     class="btn btn-xs btn-danger btn-raised btn_remove_group"
                                     data-toggle="tooltip" 
                                     title="Delete">Borrar</button>
@@ -544,7 +537,7 @@ class CursoModel
 
     public static function newGroup($grupo){
         $database = DatabaseFactory::getFactory()->getConnection();
-        $insert = $database->prepare("INSERT INTO levels(level) VALUES(:grupo);");
+        $insert = $database->prepare("INSERT INTO groups(group_name) VALUES(:grupo);");
         $insert->execute(array(':grupo' => $grupo));
 
         echo $insert->rowCount() > 0 ? 1 : 0;
@@ -553,7 +546,7 @@ class CursoModel
     public static function updateGroup($id, $grupo){
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->prepare("UPDATE levels SET level = :grupo WHERE id = :id;");
+        $query = $database->prepare("UPDATE groups SET group_name = :grupo WHERE group_id = :id;");
         $update = $query->execute(array(':grupo' => $grupo, ':id' => $id));
 
         if ($update) {
@@ -566,7 +559,7 @@ class CursoModel
     public static function deleteGroup($grupo){
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $delete = $database->prepare("DELETE FROM levels WHERE id = :grupo;");
+        $delete = $database->prepare("DELETE FROM groups WHERE group_id = :grupo;");
         $delete->execute(array(':grupo' => $grupo));
 
         if ($delete->rowCount() > 0) {

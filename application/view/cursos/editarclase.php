@@ -3,7 +3,7 @@
     Cerrar &nbsp;<i class="glyphicon glyphicon-remove"></i>
 </a>
 <h4 class="text-center">
-    DATOS DE: <strong class="text-info"><?= $this->clase->name.' '.$this->clase->level; ?></strong>
+    DATOS DE: <strong class="text-info"><?= $this->clase->course.' '.$this->clase->group_name; ?></strong>
 </h4>
 <form action="<?= Config::get('URL'); ?>curso/actualizarClase" id="frm_update_clase" method="POST" class="form-horizontal">
     <div class="row">
@@ -16,16 +16,18 @@
                         <?php
                         if ($this->cursos) {
                             foreach ($this->cursos as $curso) {
-                                if ($this->clase->id_course === $curso->id) {
-                                    echo '<option selected value="'.$curso->id.'">'.$curso->name.'</option>';
+                                if ($this->clase->course_id === $curso->course_id) {
+                                    echo '<option selected value="'.$curso->course_id.'">'.
+                                            $curso->course.
+                                         '</option>';
                                 } else {
-                                    echo '<option value="'.$curso->id.'">'.$curso->name.'</option>';
+                                    echo '<option value="'.$curso->course_id.'">'.$curso->course.'</option>';
                                 }
                             }
                         }
                         ?>
                     </select>
-                    <input type="hidden" name="clase_id" value="<?= $this->clase->id; ?>">
+                    <input type="hidden" name="clase_id" value="<?= $this->clase->class_id; ?>">
                 </div>
             </div>
         </div>
@@ -38,10 +40,12 @@
                         <?php  
                         if ($this->niveles) {
                             foreach ($this->niveles as $nivel) {
-                                if ($this->clase->id_level == $nivel->id ) {
-                                    echo '<option selected value="'.$nivel->id.'">'.$nivel->level.'</option>';
+                                if ($this->clase->group_id == $nivel->group_id ) {
+                                    echo '<option selected value="'.$nivel->group_id.'">'
+                                            .$nivel->group_name.
+                                         '</option>';
                                 } else {
-                                    echo '<option value="'.$nivel->id.'">'.$nivel->level.'</option>';
+                                    echo '<option value="'.$nivel->group_id.'">'.$nivel->group_name.'</option>';
                                 }
                                 
                             }
@@ -64,7 +68,7 @@
                            name="f_inicio"
                            value="<?= $this->clase->date_init; ?>" 
                            required>
-                    <input type="hidden" name="horario" value="<?= $this->clase->horario; ?>">
+                    <input type="hidden" name="horario" value="<?= $this->clase->schedul_id; ?>">
                 </div>
             </div>
         </div>
@@ -116,9 +120,9 @@
                         if ($this->diasclase) {
                             foreach ($this->diasclase as $key) {
                                 if ((int)$key->stat === 1) {
-                                    echo '<option selected value="'.$key->id_day.'">'.$key->name_day.'</option>';
+                                    echo '<option selected value="'.$key->day_id.'">'.$key->day.'</option>';
                                 } else {
-                                    echo '<option value="'.$key->id_day.'">'.$key->name_day.'</option>';
+                                    echo '<option value="'.$key->day_id.'">'.$key->day.'</option>';
                                 }
                             }
                         }
@@ -180,7 +184,7 @@
                         <?php  
                         if ($this->maestros) {
                             foreach ($this->maestros as $maestro) {
-                                if ($this->clase->id_teacher === $maestro->user_id) {
+                                if ($this->clase->teacher_id === $maestro->user_id) {
                                     echo '<option selected value="'.$maestro->user_id.'">
                                         '.$maestro->name.' '.$maestro->lastname.'
                                       </option>';

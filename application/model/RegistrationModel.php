@@ -186,8 +186,7 @@ class RegistrationModel
                                    user_name, 
                                    user_password_hash, 
                                    user_email, 
-                                   user_creation_timestamp, 
-                                   user_activation_hash, 
+                                   user_creation_timestamp,  
                                    user_active)
                     VALUES (:real_name, 
                             :lastname, 
@@ -195,8 +194,7 @@ class RegistrationModel
                             :user_name, 
                             :user_password_hash, 
                             :user_email, 
-                            :user_creation_timestamp, 
-                            :user_activation_hash, 
+                            :user_creation_timestamp,  
                             :user_active)";
 
         $query = $database->prepare($sql);
@@ -207,10 +205,15 @@ class RegistrationModel
                               ':user_password_hash' => $user_password_hash,
                               ':user_email' => $user_email,
                               ':user_creation_timestamp' => $user_creation_timestamp,
-                              ':user_activation_hash' => $user_activation_hash,
                               ':user_active' => 1));
         $count =  $query->rowCount();
         if ($count === 1) {
+            if ((int)$user_type === 3) {
+                $sql = $database->prepare("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1;");
+                $sql->execute();
+                $teacher = $sql->fetch()->user_id;
+                PhotosModel::createAvatar($teacher, 'teacher', $_FILES['avatar_file']);
+            }
             return true;
         }
 

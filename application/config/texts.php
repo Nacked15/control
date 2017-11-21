@@ -26,7 +26,7 @@ return array(
     "FEEDBACK_EMAIL_REPEAT_WRONG" => "Email and email repeat are not the same",
     "FEEDBACK_EMAIL_AND_PASSWORD_FIELDS_EMPTY" => "Email and password fields were empty.",
     "FEEDBACK_USERNAME_SAME_AS_OLD_ONE" => "Sorry, that username is the same as your current one. Please choose another one.",
-    "FEEDBACK_USERNAME_ALREADY_TAKEN" => "El Nombre de Usuario ya esta registrado, Por favos, indique otro.",
+    "FEEDBACK_USERNAME_ALREADY_TAKEN" => "El Nombre de Usuario ya esta registrado, Por favor, indique otro.",
     "FEEDBACK_USER_EMAIL_ALREADY_TAKEN" => "El correo ya esta registrado. Por favor seleccione otro.",
     "FEEDBACK_USERNAME_CHANGE_SUCCESSFUL" => "Your username has been changed successfully.",
     "FEEDBACK_USERNAME_AND_PASSWORD_FIELD_EMPTY" => "Username and password fields were empty.",

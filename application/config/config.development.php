@@ -47,12 +47,14 @@ return array(
      */
     'PATH_AVATARS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/',
     'PATH_AVATARS_STUDENTS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/students/',
+    'PATH_AVATARS_USERS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/users/',
     'PATH_PUBLIC' => realpath(dirname(__FILE__).'/../../') . '/public/',
     'CSS' => realpath(dirname(__FILE__).'/../../') . '/public/assets/css/',
     'JS' => realpath(dirname(__FILE__).'/../../') . '/public/assets/js/',
 
     'PATH_AVATARS_PUBLIC' => 'avatars/',
     'PATH_AVATAR_STUDENT' => 'avatars/students/',
+    'PATH_AVATAR_USER'   => 'avatars/users/',
     /**
      * Configuration for: Default controller and action
      */
@@ -70,7 +72,7 @@ return array(
      */
     'DB_TYPE' => 'mysql',
     'DB_HOST' => '127.0.0.1',
-    'DB_NAME' => 'huge',
+    'DB_NAME' => 'naatik',
     'DB_USER' => 'root',
     'DB_PASS' => 'admin',
     'DB_PORT' => '3306',
