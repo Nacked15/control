@@ -157,3 +157,33 @@
         </div>
     </div>
 </div>
+
+<div id="modalDeleteStudent" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
+                <h4 class="modal-title text-center">Eliminar Alumno <strong id="alumno_name"></strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="hidden" class="form-control text-center" id="alumno_id" />
+                            <p class="text-center text-info">¿Está seguro de querer eliminar al alumno?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="modal-footer col-sm-8 col-sm-offset-2 text-center">
+                        <input type="button" 
+                               data-dismiss="modal" 
+                               class="btn btn-md btn-raised btn-gray left" 
+                               value="CANCELAR">
+                        <input type="button" class="btn btn-md btn-raised btn-danger right" value="ELIMINAR">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

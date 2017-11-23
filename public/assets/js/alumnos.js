@@ -621,6 +621,40 @@ var Alumnos = {
         });
     },
 
+    //TODO: pendigs
+    deleteStudent: function(){
+        let that = this;
+        $('.btnDeleteStudent').on('click', function(){
+            var alumno_id = $(this).attr('id'),
+                alumno_name = $(this).data('name');
+            $('#alumno_id').val(alumno_id);
+            $('#alumno_name').text(alumno_name);
+            $('#modalDeleteStudent').modal('show');
+        });
+    },
+
+    confirmDelete: function(){
+        let that = this;
+        $('#confirmDeleteStudent').on('click', function(){
+            var alumno = $('#alumno_id').val();
+            $.ajax({
+                data: { alumno: alumno },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'alumno/eliminarAlumno',
+                success: function(data){
+                    var response = JSON.parse(data);
+                    if (response === 1) {
+                        $('#general_snack').attr('data-content', 'Alumno eliminado correctamente!');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No fue posible eliminar al alumno!');
+                    }
+                    $('#modalDeleteStudent').modal('hide');
+                }
+            });
+        });
+    },
+
     activeData: function() {
 
         $('#tutor_yes').click(function() {

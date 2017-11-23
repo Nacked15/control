@@ -1268,4 +1268,18 @@ class AlumnoModel
             Session::add('feedback_negative', "Error al actualizar, intente de nuevo por favor!");
         }
     }
+
+    //We don´t erase the student info from de DB, just give a deleted status
+    public static function deleteStudent($student){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE students SET deleted = 1 WHERE student_id = :student;");
+        $deleted = $query->execute(array(':student' => $student));
+
+        if ($deleted) {
+            return 1;
+        }
+
+        return 0;
+    }
 }

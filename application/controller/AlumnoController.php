@@ -321,4 +321,10 @@ class AlumnoController extends Controller
         $this->View->render('user/editUsername');
     }
 
+    public function eliminarAlumno() {
+        if (Request::post('alumno')) {
+            echo json_encode(AlumnoModel::deleteStudent(Request::post('alumno')));
+        }
+    }
+
 }
