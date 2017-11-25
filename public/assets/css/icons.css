@@ -10,3 +10,30 @@
     font-size: 1.8rem;
     color: rgb(230, 250, 10);
 }
+
+/*Indicadores, viñetas*/
+.o-blue{
+  padding-right: 6px;
+  color: rgb(20, 141, 200);
+}
+
+.o-green{
+  padding-right: 6px;
+  color: rgb(20, 200, 140);
+}
+
+.o-purple{
+  padding-right: 6px;
+  color: rgb(180, 20, 250);
+}
+
+.o-yellow{
+  padding-right: 6px;
+  font-size: 14px;
+  color: rgb(190, 250, 10);
+}
+
+.o-red{
+  padding-right: 6px;
+  color: rgb(250, 20, 40);
+}

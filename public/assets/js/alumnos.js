@@ -14,6 +14,8 @@ var Alumnos = {
         this.getGroupsByCourse();
         this.checkoutStudent();
         this.displayStudentsCheckout();
+        this.confirmDelete();
+        this.confirmDeleteStudents();
     },
 
     defaultGetStudents: function(){
@@ -57,13 +59,15 @@ var Alumnos = {
                 }
                 $.material.init();
                 that.selectMultipleStudents(activo);
-                that.addStudentInGroup();
+                that.setStudentInGroup();
                 that.changeGroupStudent();
                 that.setStudentID();
                 that.tables(activo);
                 that.getStudentProfile();
                 that.changeGroupStudentMultiple();
                 that.getInvoiceListStudents();
+                that.deleteStudent();
+                that.deleteSelectedStudents();
             }
         });
     },
@@ -119,9 +123,6 @@ var Alumnos = {
         });
     },
 
-
-
-
     displayStudentsCheckout: function(){
         let that = this;
         $.ajax({
@@ -170,7 +171,6 @@ var Alumnos = {
                 $('#exist_tutor').removeClass('mini-box');
             }
         });
-
     },
 
     useTutor: function(){
@@ -477,7 +477,7 @@ var Alumnos = {
         });
     },
 
-    addStudentInGroup: function() {
+    setStudentInGroup: function() {
         let that = this;
         $('#add_in_group').on('click', function(){
             var alumno = $('#alumno_id').val(),
@@ -635,7 +635,7 @@ var Alumnos = {
 
     confirmDelete: function(){
         let that = this;
-        $('#confirmDeleteStudent').on('click', function(){
+        $('#btnConfirmDeleteStudent').on('click', function(){
             var alumno = $('#alumno_id').val();
             $.ajax({
                 data: { alumno: alumno },
@@ -652,6 +652,63 @@ var Alumnos = {
                     $('#modalDeleteStudent').modal('hide');
                 }
             });
+        });
+    },
+
+    deleteSelectedStudents: function(){
+        let that = this;
+        $('.delete_multi').click(() => {
+            var alumnos = [], j=0;
+            $.each($('.check_one'), function(i, item) {
+                if ($(this).prop("checked")) {
+                    alumnos[j] = $(this).val();
+                    j++;
+                }
+            });
+
+            $("#course_list").val('');
+            $("#grupos").val('');
+
+            if (alumnos.length > 0) {
+                $('#selected_students').text(j);
+                that.vars.alumnos = alumnos;
+                $('#modalDeleteSelectedStudent').modal('show');
+            } else {
+                $('#general_snack').attr('data-content', 'Seleccione al menos a un Alumno!');
+                $('#general_snack').snackbar('show');
+                $('.snackbar').addClass('snackbar-green');
+            }
+        });
+    },
+
+    confirmDeleteStudents: function(clase){
+        let that = this;
+        $('#btnConfirmDeleteStudents').on('click', function(){
+            if (that.vars.alumnos.length > 0) {
+                var alumnos = that.vars.alumnos;
+                $.ajax({
+                    data: { alumnos: alumnos },
+                    synch: 'true',
+                    type: 'POST',
+                    url: _root_ + 'alumno/eliminarAlumnos',
+                    success: function(data){
+                        var response = JSON.parse(data);
+                        if (data === 1) {
+                            $('#general_snack').attr('data-content', 'Alumnos eliminados correctamente!');
+                            $('#general_snack').snackbar('show');
+                            $('.snackbar').addClass('snackbar-blue');
+                        } else {
+                            $('#general_snack').attr('data-content', 'Error desconocido: Intente de nuevo!');
+                            $('#general_snack').snackbar('show');
+                            $('.snackbar').addClass('snackbar-red');
+                        }
+                        $('#modalDeleteSelectedStudent').modal('hide');
+                        var view = sessionStorage.getItem('st_alive');
+                        that.displayStudents(view); 
+                    }
+                });
+                that.vars.alumnos = [];
+            }
         });
     },
 

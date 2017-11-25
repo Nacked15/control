@@ -1,7 +1,7 @@
 
         <span data-toggle=snackbar
               data-content=""
-              data-timeout="3000"
+              data-timeout="3500"
               data-html-allowed="true"
               id="general_snack">
         </span>

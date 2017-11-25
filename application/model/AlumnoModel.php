@@ -172,17 +172,36 @@ class AlumnoModel
                                                data-tutor="'.$row->id_tutor.'"
                                                data-clase="'.$row->id_grupo.'"
                                                data-curso="'.$curso.'">
-                                                <span class="o-blue glyphicon glyphicon-chevron-right"></span> Perfil</a>
+                                                <span class="o-blue glyphicon glyphicon-chevron-right"></span> 
+                                                Perfil
+                                            </a>
                                         </li>';
-                                echo    '<li><a href="'.Config::get('URL').'alumno/convenio">
-                                            <span class="o-green glyphicon glyphicon-chevron-right"></span> Convenio</a></li>';
-                                echo    '<li><a href="javascript:void(0)">
-                                                <span class="o-purple glyphicon glyphicon-chevron-right"></span> Cambiar Foto
+                                echo    '<li>
+                                            <a href="'.Config::get('URL').'alumno/convenio">
+                                                <span class="o-purple glyphicon glyphicon-chevron-right"></span> 
+                                                Convenio
+                                            </a></li>';
+                                echo    '<li>
+                                            <a href="javascript:void(0)">
+                                                <span class="o-green glyphicon glyphicon-chevron-right"></span>
+                                                Cambiar Foto
                                             </a>
                                         </li>';
                                 }
-                                echo   '<li><a href="'.Config::get('URL').'evaluaciones/index/'.$row->id.'">
-                                            <span class="o-red glyphicon glyphicon-chevron-right"></span> Calificaciones</a>
+                                echo   '<li>
+                                            <a href="'.Config::get('URL').'evaluaciones/index/'.$row->id.'">
+                                                <span class="o-yellow glyphicon glyphicon-chevron-right"></span>
+                                                Calificaciones
+                                            </a>
+                                        </li>';
+                                echo   '<li>
+                                            <a  href="javascript:void(0)" 
+                                                class="btnDeleteStudent" 
+                                                id="'.$row->id.'"
+                                                data-name="'.$row->nombre.' '.$row->apellido.'">
+                                                <span class="o-red glyphicon glyphicon-chevron-right"></span>
+                                                Eliminar
+                                            </a>
                                         </li>';
                                 echo '</ul>';
                             echo '</div>';
@@ -200,21 +219,25 @@ class AlumnoModel
                           </td>';
                     echo '<td class="text-center">
                             <button type="button" class="btn btn-xs mini btn-second change_multi">
-                                Cambiar de Grupo</button>
+                                Cambiar de Grupo
+                            </button>
                           </td>';
                     echo '<td class="text-center">
                             <button type="button" class="btn btn-xs mini btn-warning tekedown_multi">
-                                Dar De Baja</button>
+                                Dar De Baja
+                            </button>
                           </td>';
                     echo '<td class="text-center">
                             <button type="button" class="btn btn-xs mini btn-danger delete_multi">
-                                Eliminar</button>
+                                Eliminar
+                            </button>
                           </td>';
                     echo '<td class="text-center">
                           </td>';
                     echo '<td class="text-center">
                             <button type="button" class="btn btn-xs mini btn-green invoice_list">
-                            Facturación</button>
+                                Facturación
+                            </button>
                           </td>';
                     echo '</tr>';
                     echo '</tfoot>';
@@ -1281,5 +1304,22 @@ class AlumnoModel
         }
 
         return 0;
+    }
+
+    public static function deleteStudents($students){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $success = 1;
+        foreach ($students as $student) {
+            $query = $database->prepare("UPDATE students SET deleted = 1 WHERE student_id = :student;");
+            $deleted = $query->execute(array(':student' => $student));
+
+            if (!$deleted) { //Si no se puede eliminar al alumno
+                $success = 0;
+                break;
+            }
+        }
+
+        return $success;
     }
 }

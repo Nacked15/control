@@ -161,16 +161,53 @@
 <div id="modalDeleteStudent" class="modal fade">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header modal-delete">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Eliminar Alumno <strong id="alumno_name"></strong></h4>
+                <h4 class="modal-title text-center">Eliminar Alumno</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="form-group">
                         <div class="col-sm-12">
                             <input type="hidden" class="form-control text-center" id="alumno_id" />
-                            <p class="text-center text-info">¿Está seguro de querer eliminar al alumno?</p>
+                            <p class="text-center text-info">
+                                ¿Está seguro de querer eliminar a: <br> <strong id="alumno_name"></strong>?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="modal-footer col-md-10 col-md-offset-1 text-center">
+                        <input type="button" 
+                               data-dismiss="modal" 
+                               class="btn btn-sm btn-raised btn-gray left" 
+                               value="CANCELAR">
+                        <input type="button"
+                               id="btnConfirmDeleteStudent" 
+                               class="btn btn-sm btn-raised btn-danger right" 
+                               value="ELIMINAR">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalDeleteSelectedStudent" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
+                <h4 class="modal-title text-center">Eliminar Alumnos</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="hidden" class="form-control text-center" id="alumno_id" />
+                            <p class="text-center text-info">
+                                ¿Está seguro de querer eliminar a los <strong id="selected_students"></strong> alumnos seleccionados?
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -180,7 +217,10 @@
                                data-dismiss="modal" 
                                class="btn btn-md btn-raised btn-gray left" 
                                value="CANCELAR">
-                        <input type="button" class="btn btn-md btn-raised btn-danger right" value="ELIMINAR">
+                        <input type="button" 
+                               class="btn btn-md btn-raised btn-danger right" 
+                               id="btnConfirmDeleteStudents"
+                               value="ELIMINAR">
                     </div>
                 </div>
             </div>

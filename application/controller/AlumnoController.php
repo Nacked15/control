@@ -327,4 +327,10 @@ class AlumnoController extends Controller
         }
     }
 
+    public function eliminarAlumnos() {
+        if (Request::post('alumnos')) {
+            echo json_encode(AlumnoModel::deleteStudents((array)Request::post('alumnos')));
+        }
+    }
+
 }
