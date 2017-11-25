@@ -1316,7 +1316,7 @@ class AlumnoModel
 
             if (!$deleted) { //Si no se puede eliminar al alumno
                 $success = 0;
-                break;
+                return $success;
             }
         }
 

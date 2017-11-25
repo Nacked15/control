@@ -196,7 +196,7 @@
 <div id="modalDeleteSelectedStudent" class="modal fade">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header modal-delete">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
                 <h4 class="modal-title text-center">Eliminar Alumnos</h4>
             </div>
@@ -215,10 +215,10 @@
                     <div class="modal-footer col-sm-8 col-sm-offset-2 text-center">
                         <input type="button" 
                                data-dismiss="modal" 
-                               class="btn btn-md btn-raised btn-gray left" 
+                               class="btn btn-sm btn-raised btn-gray left" 
                                value="CANCELAR">
                         <input type="button" 
-                               class="btn btn-md btn-raised btn-danger right" 
+                               class="btn btn-sm btn-raised btn-danger right" 
                                id="btnConfirmDeleteStudents"
                                value="ELIMINAR">
                     </div>

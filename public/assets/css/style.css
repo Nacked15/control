@@ -41,7 +41,7 @@ body {
   margin-bottom: 0 !important;
 	padding: 10px 30px !important;
 	text-transform: uppercase;
-  background: rgba(29,27,196,.87) !important;
+  background: rgba(29,25,198,.92) !important;
   /*background: #22254F !important;*/
 }
 
@@ -300,7 +300,7 @@ a.btn-tiny {
 }
 
 .btn-deep {
-  background: rgba(29,27,196,.8)!important;
+  background: rgba(27,26,198,.92)!important;
   color: white !important;
 }
 

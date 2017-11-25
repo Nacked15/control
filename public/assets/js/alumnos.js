@@ -645,9 +645,14 @@ var Alumnos = {
                 success: function(data){
                     var response = JSON.parse(data);
                     if (response === 1) {
+                        console.log(response);
                         $('#general_snack').attr('data-content', 'Alumno eliminado correctamente!');
+                        $('#general_snack').snackbar('show');
+                        $('.snackbar').addClass('snackbar-blue');
                     } else {
                         $('#general_snack').attr('data-content', 'No fue posible eliminar al alumno!');
+                        $('#general_snack').snackbar('show');
+                        $('.snackbar').addClass('snackbar-red');
                     }
                     $('#modalDeleteStudent').modal('hide');
                 }
