@@ -9,6 +9,7 @@ class AlumnoModel
                            g.convenio, sd.studies, sd.lastgrade
                     FROM students as s, students_groups as g, students_details as sd
                     WHERE s.status = 1
+                      AND deleted  = 0
                       AND s.student_id = g.student_id
                       AND s.student_id = sd.student_id";
 

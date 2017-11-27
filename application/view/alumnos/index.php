@@ -212,7 +212,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="modal-footer col-sm-8 col-sm-offset-2 text-center">
+                    <div class="modal-footer col-md-10 col-md-offset-1 text-center">
                         <input type="button" 
                                data-dismiss="modal" 
                                class="btn btn-sm btn-raised btn-gray left" 

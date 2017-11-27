@@ -655,6 +655,8 @@ var Alumnos = {
                         $('.snackbar').addClass('snackbar-red');
                     }
                     $('#modalDeleteStudent').modal('hide');
+                    var view = sessionStorage.getItem('st_alive');
+                    that.displayStudents(view);
                 }
             });
         });
@@ -698,7 +700,7 @@ var Alumnos = {
                     url: _root_ + 'alumno/eliminarAlumnos',
                     success: function(data){
                         var response = JSON.parse(data);
-                        if (data === 1) {
+                        if (response === 1) {
                             $('#general_snack').attr('data-content', 'Alumnos eliminados correctamente!');
                             $('#general_snack').snackbar('show');
                             $('.snackbar').addClass('snackbar-blue');

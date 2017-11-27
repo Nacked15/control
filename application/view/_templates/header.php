@@ -91,7 +91,7 @@
                         <a href="javascript:void(0)">Pagos</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)">Padrinos</a>
+                        <a href="<?= $base_url; ?>padrinos">Padrinos</a>
                     </li>
                      <?php endif ?>
                 </ul>

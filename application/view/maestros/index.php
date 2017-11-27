@@ -1,6 +1,7 @@
+<?php $base_url = Config::get('URL'); ?>
 <div class="container">
     <ol class="breadcrumb">
-          <li><a href="javascript:void(0)">Principal</a></li>
+          <li><a href="<?= $base_url; ?>dashboard">Principal</a></li>
           <li><a href="javascript:void(0)" class="active">Maestros</a></li>
     </ol> 
     <ul class="nav nav-tabs nav-justified nav-submenu" id="second_head" style="margin-bottom: 15px;">
@@ -8,7 +9,7 @@
     </ul>   
     <div class="well">
         <div class="row">
-            <div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1">
+            <div class="col-md-10 col-md-offset-1">
                 <button type="button" 
                         class="btn btn-sm btn-second right btn-raised"
                         id="newTeacher">Nuevo Maestro</button>
