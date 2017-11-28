@@ -37,3 +37,10 @@
   padding-right: 6px;
   color: rgb(250, 20, 40);
 }
+
+
+.mdi-action-done {
+  font-size: 2em;
+  font-weight: bold;
+  color: rgb(210, 210, 210);
+}

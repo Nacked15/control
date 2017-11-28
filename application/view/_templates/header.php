@@ -87,10 +87,10 @@
                     <li <?= View::active($filename, 'maestros') ? ' class="active" ': '';?>>
                         <a href="<?= $base_url; ?>maestro">Maestros</a>
                     </li>
-                    <li>
-                        <a href="javascript:void(0)">Pagos</a>
+                    <li <?= View::active($filename, 'pagos') ? ' class="active" ': '';?>>
+                        <a href="<?= $base_url; ?>pagos">Pagos</a>
                     </li>
-                    <li>
+                    <li <?= View::active($filename, 'padrinos') ? ' class="active" ': '';?>>
                         <a href="<?= $base_url; ?>padrinos">Padrinos</a>
                     </li>
                      <?php endif ?>
