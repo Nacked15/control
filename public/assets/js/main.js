@@ -20,8 +20,10 @@ var Main = {
         $('.main_menu li').on('click', function(){
             sessionStorage.setItem("c_activo", 1);
             sessionStorage.setItem("st_alive", 1);
+            sessionStorage.setItem("plist_alive", 1);
             sessionStorage.setItem("s_activo", 'info_tutor');
             sessionStorage.setItem("a_activo", 'list_club');
+            sessionStorage.setItem("pview_activo", 'paylist_club');
         });
     },
 
@@ -44,9 +46,26 @@ var Main = {
             sessionStorage.setItem("a_activo", activo);
             sessionStorage.setItem("st_alive", alive);
             $("."+activo).addClass('active');
-            // console.log(activo);
+        });
 
-        }); 
+
+        var current_pay = sessionStorage.getItem('pview_activo');
+        if (current_pay !== '' && current_pay !== undefined && current_pay !== null) {
+            $("."+current_pay).addClass('active');
+        } else {
+            $(".paylist_club").addClass('active');
+        }
+
+        $('.menu_pay_list li').on('click', function(){ 
+            let actual = sessionStorage.getItem('pview_activo');
+            $("."+actual).removeClass('active');
+
+            let activo = $(this).data('index');
+            let alive  = $(this).data('group');
+            sessionStorage.setItem("pview_activo", activo);
+            sessionStorage.setItem("plist_alive", alive);
+            $("."+activo).addClass('active');
+        });
     },
 
     tabClasesActive: function() {

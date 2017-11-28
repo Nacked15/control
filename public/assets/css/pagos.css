@@ -1,0 +1,9 @@
+.container.extended {
+	width: 1290px;
+}
+
+@media screen and (max-width: 992px){
+	.container.extended {
+		width: 980px;
+	}
+}
