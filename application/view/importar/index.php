@@ -7,6 +7,7 @@
             <div class="col-md-10 col-md-offset-1">
                 <?php $this->renderFeedbackMessages(); ?>
                 <?php if ($this->alumnos): ?>
+
                 <div class="table-responsive">
                     <table id="example" class="table table-bordered table-hover table-striped">
                         <thead>
@@ -16,18 +17,29 @@
                                 <th>Nombre</th>
                                 <th>Tutor</th>
                                 <th>Grupo</th>
+                                <th>Estatus</th>
                                 <th class="text-center">Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($this->alumnos as $alumno): ?>
-                                <tr class="info">
+                                <tr>
                                     <td><?= $alumno->count; ?></td>
                                     <td><?= $alumno->avatar; ?></td>
-                                    <td><?= $alumno->name.' '.$alumno->surname.' '.$alumno->lastname; ?></td>
-                                    <td><?= $alumno->tutor->name; ?></td>
-                                    <td></td>
-                                    <td class="text-center">Opciones</td>
+                                    <td><?= $alumno->surname.' '.$alumno->lastname.' '.$alumno->name; ?></td>
+                                    <td><?php
+                                        if (count($alumno->tutor) > 0) {
+                                            echo $alumno->tutor['name'].' '.$alumno->tutor['surname'];
+                                        } else {
+                                            echo ' - - - - ';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td><?= $alumno->curso; ?></td>
+                                    <td><?= $alumno->status; ?></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-xs btn-naatik btn-raised">Importar</button>
+                                    </td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>

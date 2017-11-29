@@ -4,7 +4,7 @@ class ImportOldDataModel
 {
 	public static function importStudents() {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$query = $database->prepare("SELECT * FROM naatikdb.student;");
+		$query = $database->prepare("SELECT * FROM naatikdb.student ORDER BY surname1_s;");
 		$query->execute();
 		$students = array();
 		if ($query->rowCount() > 0) {
@@ -28,6 +28,7 @@ class ImportOldDataModel
 				$students[$alumno->id_student]->description  = $alumno->comment_s;
 				$students[$alumno->id_student]->homestay     = $alumno->homestay;
 				$students[$alumno->id_student]->status       = $alumno->status;
+				$students[$alumno->id_student]->curso        = self::getCourse($alumno->id_student);
 				$students[$alumno->id_student]->tutor        = self::getTutor($alumno->id_tutor);
 				$students[$alumno->id_student]->ubication    = self::getUbicationAddress($alumno->id_tutor);
 				$students[$alumno->id_student]->academic_data = self::getAcademicInfo($alumno->id_student);
@@ -54,32 +55,54 @@ class ImportOldDataModel
 		$datos = array();
 		if ($query->rowCount() > 0) {
 			$tutor = $query->fetch();
-			$datos[$tutor->id_tutor]  =  new stdClass();
-			$datos[$tutor->id_tutor]->id           = $tutor->id_tutor;
-			$datos[$tutor->id_tutor]->name         = ucwords(strtolower($tutor->name_t));
-			$datos[$tutor->id_tutor]->surname      = ucwords(strtolower($tutor->surname1_t));
-			$datos[$tutor->id_tutor]->lastname     = ucwords(strtolower($tutor->surname2_t));
-			$datos[$tutor->id_tutor]->job          = $tutor->job;
-			$datos[$tutor->id_tutor]->phone        = $tutor->phone;
-			$datos[$tutor->id_tutor]->cellphone    = $tutor->cellphone_t;
-			$datos[$tutor->id_tutor]->phone_alt    = $tutor->phone_alt;
-			$datos[$tutor->id_tutor]->relationship = $tutor->relationship;
-			$datos[$tutor->id_tutor]->relationship_alt = $tutor->relationship_alt;
+			$datos['id']           = $tutor->id_tutor;
+			$datos['name']         = ucwords(strtolower($tutor->name_t));
+			$datos['surname']      = ucwords(strtolower($tutor->surname1_t));
+			$datos['lastname']     = ucwords(strtolower($tutor->surname2_t));
+			$datos['job']          = $tutor->job;
+			$datos['phone']        = $tutor->phone;
+			$datos['cellphone']    = $tutor->cellphone_t;
+			$datos['phone_alt']    = $tutor->phone_alt;
+			$datos['relationship'] = $tutor->relationship;
+			$datos['relationship_alt'] = $tutor->relationship_alt;
 			$addr = explode(',', $tutor->address_t);
-			$datos[$tutor->id_tutor]->street  = $addr[0];
-			$datos[$tutor->id_tutor]->number  = $addr[1];
-			$datos[$tutor->id_tutor]->between = $addr[2];
-			$datos[$tutor->id_tutor]->colony  = $addr[3];
+			$datos['street']  = $addr[0];
+			$datos['number']  = $addr[1];
+			$datos['between'] = $addr[2];
+			$datos['colony']  = $addr[3];
 		}
 
 		return $datos;
 	}
 
+	public static function getCourse($student){
+		$database = DatabaseFactory::getFactory()->getConnection();
+
+		$query = $database->prepare("SELECT nc.course, ng.group
+									 FROM naatikdb.academic_info as ai, 
+									      naatikdb.classes as c, 
+									      naatikdb.naatik_course as nc, 
+									      naatikdb.groups_nc as ng
+									 WHERE ai.id_student = :student
+									   AND ai.id_classes = c.id_class
+									   AND c.id_course   = nc.id_course
+									   AND c.id_group    = ng.id_group
+									 LIMIT 1");
+		$query->execute(array(':student' => $student));
+		if ($query->rowCount() > 0) {
+			$data = $query->fetch();
+			$curso = $data->course .' '. $data->group;
+			return $curso;
+		}
+
+		return false;
+	}
+
 	public static function getUbicationAddress($user){
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$query = $database->prepare("SELECT lat as latitud, long as longitud
-									 FROM naatikdb.croquis 
-									 WHERE idtutor = :tutor LIMIT 1;");
+		$query = $database->prepare("SELECT c.lat as latitud, c.long as longitud
+									 FROM naatikdb.croquis as c
+									 WHERE c.idtutor = :tutor LIMIT 1;");
 		$query->execute(array(':tutor' => $user));
 
 		if ($query->rowCount() > 0) {
@@ -100,17 +123,16 @@ class ImportOldDataModel
 		$data = array();
 		if ($query->rowCount() > 0) {
 			$info = $query->fetch();
-			$data[$info->id_student] = new stdClass();
-			$data[$info->id_student]->ocupation    = $info->ocupation;
-			$data[$info->id_student]->studies      = $info->studies;
-			$data[$info->id_student]->level        = $info->level;
-			$data[$info->id_student]->prior_course = $info->prev_course;
-			$data[$info->id_student]->sep          = self::getSEPInfo($info->reg_sep);
-			$data[$info->id_student]->date_init    = $info->date_init_s;
+			$data['ocupatio']     = $info->ocupation;
+			$data['studies']      = $info->studies;
+			$data['level']        = $info->level;
+			$data['prior_course'] = $info->prev_course;
+			$data['sep']          = self::getSEPInfo($info->reg_sep);
+			$data['date_init']    = $info->date_init_s;
 			$date_baja   = $info->date_bajaSt === '0000-00-00' ? NULL : $info->date_bajaSt;
-			$data[$info->id_student]->date_baja    = $date_baja;
+			$data['date_baja']    = $date_baja;
 			$date_egreso = $info->date_egreso === '0000-00-00' ? NULL : $info->date_egreso;
-			$data[$info->id_student]->date_egreso  = $date_egreso;
+			$data['date_egreso']  = $date_egreso;
 		}
 
 		return false;
@@ -152,23 +174,22 @@ class ImportOldDataModel
 		if ($sql->rowCount() > 0) {
 			$pagos = $sql->fetchAll();
 			foreach ($pagos as $pago) {
-				$data[$pago->id_pay] = new stdClass();
-				$data[$pago->id_pay]->ene = $pago->jan;
-				$data[$pago->id_pay]->feb = $pago->feb;
-				$data[$pago->id_pay]->mar = $pago->mar;
-				$data[$pago->id_pay]->abr = $pago->apr;
-				$data[$pago->id_pay]->may = $pago->may;
-				$data[$pago->id_pay]->jun = $pago->jun;
-				$data[$pago->id_pay]->jul = $pago->jul;
-				$data[$pago->id_pay]->ago = $pago->aug;
-				$data[$pago->id_pay]->sep = $pago->sep;
-				$data[$pago->id_pay]->oct = $pago->oct;
-				$data[$pago->id_pay]->nov = $pago->nov;
-				$data[$pago->id_pay]->dic = $pago->dece;
-				$data[$pago->id_pay]->anio = $pago->year_pay;
-				$data[$pago->id_pay]->ciclo = $pago->ciclo;
-				$data[$pago->id_pay]->becado = $pago->becado;
-				$data[$pago->id_pay]->comentario = $pago->comment;
+				$data['ene'] = $pago->jan;
+				$data['feb'] = $pago->feb;
+				$data['mar'] = $pago->mar;
+				$data['abr'] = $pago->apr;
+				$data['may'] = $pago->may;
+				$data['jun'] = $pago->jun;
+				$data['jul'] = $pago->jul;
+				$data['ago'] = $pago->aug;
+				$data['sep'] = $pago->sep;
+				$data['oct'] = $pago->oct;
+				$data['nov'] = $pago->nov;
+				$data['dic'] = $pago->dece;
+				$data['anio'] = $pago->year_pay;
+				$data['ciclo']  = $pago->ciclo;
+				$data['becado']   = $pago->becado;
+				$data['comentario'] = $pago->comment;
 			}
 		}
 
