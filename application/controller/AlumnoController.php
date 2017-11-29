@@ -333,4 +333,10 @@ class AlumnoController extends Controller
         }
     }
 
+    public function importarAlumnos() {
+        $this->View->render('importar/index', array(
+            'alumnos' => ImportOldDataModel::importStudents()
+        ));
+    }
+
 }

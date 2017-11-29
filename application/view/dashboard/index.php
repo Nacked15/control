@@ -22,14 +22,14 @@
                             <label class=" label label-primary">Normal</label>
                             <label class=" label label-warning">Alta</label>
                             <label class=" label label-success">Baja</label> &nbsp;&nbsp;
-                            <lebel class="togglebutton">
+                            <!-- <lebel class="togglebutton">
                                 <label>
                                     Wi-Fi &nbsp;
                                     <input type="checkbox">
                                 </label>
-                            </lebel>
+                            </lebel> -->
                         </div>
-                        <div class="col-sm-4 text-center" style="margin-bottom: 10px;">
+                        <!-- <div class="col-sm-4 text-center" style="margin-bottom: 10px;">
                             <div class="btn-group">
                               <a href="javascript:void(0)"
                                  data-target="#" 
@@ -47,7 +47,7 @@
                                 <li><a href="javascript:void(0)">Cambiar Foto</a></li>
                               </ul>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-sm-4 text-right" style="margin-bottom: 15px;">
                             <button type="button" 
                                     class="btn btn-main btn-raised btn-xs btn-add"

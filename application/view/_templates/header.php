@@ -124,6 +124,9 @@
                                 <a href="<?= $base_url; ?>register/index">Nuevo Usuario</a>
                             </li>
                             <li>
+                                <a href="<?= $base_url; ?>alumno/importarAlumnos">Importar Alumnos</a>
+                            </li>
+                            <li>
                                 <a href="<?= $base_url; ?>login/logout">Cerrar Sesión</a>
                             </li>
                         </ul>
