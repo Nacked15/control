@@ -20,6 +20,5 @@
                    name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /></p>
             <input type="submit"  name="submit_new_password" value="Submit new password" />
         </form>
-
     </div>
 </div>

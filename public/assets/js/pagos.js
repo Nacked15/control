@@ -41,8 +41,16 @@ var Pagos = {
                         break;
                 }
                 $.material.init();
+                that.showModalPay();
                 that.tables(lista);
             }
+        });
+    },
+
+    showModalPay: function() {
+        let that = this;
+        $('.check_pay').on('click', function(){
+            $('#modalPayMonth').modal('show');
         });
     },
 

@@ -11,23 +11,23 @@
     <div class="bs-component">
         <ul class="nav nav-tabs nav-justified nav-submenu menu_student_list" style="margin-bottom: 15px;">
             <li data-index="list_club" class="list_club" data-group="1">
-                <a href="#club" data-toggle="tab">ENGLISH CLUB</a>
+                <a href="#club" data-toggle="tab">ENGLISH CLUB <span class="badge" id="cout1">0</span></a>
             </li>
             <li data-index="list_primary" class="list_primary" data-group="2">
-                <a href="#primary" data-toggle="tab">PRIMARY</a>
+                <a href="#primary" data-toggle="tab">PRIMARY <span class="badge" id="cout2">0</span></a>
             </li>
             <li data-index="list_adols" class="list_adols" data-group="3">
-                <a href="#adolescent" data-toggle="tab">ADOLESCENTES</a>
+                <a href="#adolescent" data-toggle="tab">ADOLESCENTES <span class="badge" id="cout3">0</span></a>
             </li>
             <li data-index="list_adults" class="list_adults" data-group="4">
-                <a href="#adult" data-toggle="tab">AVANZADO</a>
+                <a href="#adult" data-toggle="tab">AVANZADO <span class="badge" id="cout4">0</span></a>
             </li>
             <?php if ($this->u_type === '1' || $this->u_type === '2'): ?>
             <li data-index="list_penddings" class="list_penddings" data-group="5">
-                <a href="#penddings" data-toggle="tab">EN ESPERA</a>
+                <a href="#penddings" data-toggle="tab">EN ESPERA <span class="badge" id="cout5">0</span></a>
             </li>
             <li data-index="list_all" class="list_all" data-group="6">
-                <a href="#all_students" data-toggle="tab">TODOS</a>
+                <a href="#all_students" data-toggle="tab">TODOS <span class="badge" id="cout6">0</span></a>
             </li>
             <?php endif ?>
         </ul>

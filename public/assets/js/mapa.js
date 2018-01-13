@@ -5,21 +5,16 @@ var reverseGeocodedLast;
 var currentReverseGeocodeResponse;
 
 function init_map() {
-    var lati = document.getElementById('lat'),
-        long = document.getElementById('lng');
-        console.log(lati, long);
-    var lat = 19.579994462915835,
-        lon = -88.04420235898436;
-    // if (condition) {
-    //     expression
-    // }
-    var latlng = new google.maps.LatLng(lat, lon);
+    var lati = $('#lat').val(),
+        long = $('#lng').val();
+
+    var latlng = new google.maps.LatLng(19.579994462915835, -88.04420235898436);
     var myOptions = {
         zoom: 3,
         center: latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    map = new google.maps.Map($("#map_canvas"), myOptions);
     geocoder = new google.maps.Geocoder();
     setupEvents();
     centerChanged();
@@ -44,10 +39,9 @@ function setupEvents() {
 
     google.maps.event.addListener(map, 'center_changed', centerChanged);
 
-    google.maps.event.addDomListener(document.getElementById('crosshair'),'dblclick', function() {
+    google.maps.event.addDomListener($('#crosshair'),'dblclick', function() {
        map.setZoom(map.getZoom() + 1);
     });
-
 }
 
 function getCenterLatLngText() {
@@ -59,9 +53,9 @@ function centerChanged() {
     var latlng = getCenterLatLngText();
     var lat    = map.getCenter().lat();
     var lng    = map.getCenter().lng();
-    document.getElementById('lat').value = lat;
-    document.getElementById('lng').value = lng;
-    document.getElementById('formatedAddress').innerHTML = '';
+    $('#lat').val(lat);
+    $('#lng').val(lng);
+    $('#formatedAddress').html('');
     currentReverseGeocodeResponse = null;
 }
 
@@ -74,17 +68,17 @@ function reverseGeocodeResult(results, status) {
     currentReverseGeocodeResponse = results;
     if(status == 'OK') {
         if(results.length == 0) {
-            document.getElementById('formatedAddress').innerHTML = 'None';
+            $('#formatedAddress').html('None');
         } else {
-            document.getElementById('formatedAddress').innerHTML = results[0].formatted_address;
+            $('#formatedAddress').html(results[0].formatted_address);
         }
     } else {
-        document.getElementById('formatedAddress').innerHTML = 'Error';
+        $('#formatedAddress').text('Error');
     }
 }
 
 function geocode() {
-    var address = document.getElementById("address").value+ "Felipe Carrillo PuertoFelipe Carrillo Puerto, Q.R., México";
+    var address = $("#address").val()+ "Felipe Carrillo PuertoFelipe Carrillo Puerto, Q.R., México";
     geocoder.geocode(
         {
             'address': address,
@@ -127,5 +121,5 @@ function addMarkerAtCenter() {
 
 
 $(document).ready(function(){
-    init_map();
+    // init_map();
 });

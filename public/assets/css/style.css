@@ -193,7 +193,7 @@ div.body-content{
 }
 
 div.mini-box{
-  /*background: #efefef;*/
+  background: rgb(244, 247, 168);
   border: 1px dashed #ccc;
   border-radius: 4px;
   margin-top: -10px;

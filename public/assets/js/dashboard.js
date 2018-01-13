@@ -163,18 +163,10 @@ var Dashboard = {
                         $("#del_snack").snackbar("show");
                         $('#delete_task').modal('hide');
                     } 
-                    // else {
-                    //     var notification = new Notification("No se elimino el recordatorio, intente de nuevo!");
-                    //     $('#delete_task').modal('hide');
-                    // }
                 }
             });
         });
     }
-
-    // if (Notification.permission === "granted") {
-    //     var notification = new Notification("Hay Campos vacios!");
-    // }
 
 };
 

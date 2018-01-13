@@ -32,7 +32,7 @@
 <?php  if (Session::userIsLoggedIn()) { 
     $base_url = Config::get('URL'); 
     $user     = Session::get('user_name'); 
-    $usr_type = (int)Session::get('user_account_type');?>
+    $usr_type = (int)Session::get('user_type');?>
     <nav class="navbar navbar-naatik nav-main navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -96,7 +96,6 @@
                      <?php endif ?>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="javascript:void(0)">Link</a></li>
                     <li class="dropdown">
                         <a href="javascript:void(0)" 
                            data-target="#" 
@@ -108,15 +107,7 @@
                             <li>
                                 <a href="<?= $base_url; ?>user">Mi Perfil</a>
                             </li>
-                            <li>
-                                <a href="<?= $base_url; ?>user/editusername">Cambiar Usuario</a>
-                            </li>
-                            <li>
-                                <a href="<?= $base_url; ?>user/changePassword">Cambiar Contraseña</a>
-                            </li>
-                            <li>
-                                <a href="<?= $base_url; ?>user/editAvatar">Cambia Foto</a>
-                            </li>
+                            <?php if ($usr_type === 1 || $usr_type === 2): ?>
                             <li>
                                 <a href="<?= $base_url; ?>profile/index">Usuarios</a>
                             </li>
@@ -126,10 +117,14 @@
                             <li>
                                 <a href="<?= $base_url; ?>alumno/importarAlumnos">Importar Alumnos</a>
                             </li>
+                            <?php endif ?>
                             <li>
                                 <a href="<?= $base_url; ?>login/logout">Cerrar Sesión</a>
                             </li>
                         </ul>
+                        <li>
+                            <a href="javascript:void(0)">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        </li>
                     </li>
                 </ul>
             </div>

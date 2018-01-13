@@ -2,6 +2,14 @@
 	width: 1290px;
 }
 
+table.table>tbody>tr.row_data>td.tiny{
+  padding-top: 3px;
+  padding-bottom: : 3px;
+  font-size: 13px;
+}
+
+
+
 @media screen and (max-width: 992px){
 	.container.extended {
 		width: 980px;

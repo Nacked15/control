@@ -179,7 +179,7 @@
             <div class="form-group">
                <label for="h_salida" class="col-md-4 control-label">Maestro: </label>
                <div class="col-md-8">
-                  <select class="form-control" id="" name="maestro" required="true">
+                  <select class="form-control" id="" name="maestro">
                         <option value="">Seleccione...</option>
                         <?php  
                         if ($this->maestros) {

@@ -68,4 +68,8 @@ class H
         
         return $anio_dif; //edad
     }
+
+    public static function p($data){
+        
+    }
 }

@@ -38,7 +38,16 @@
                                     <td><?= $alumno->curso; ?></td>
                                     <td><?= $alumno->status; ?></td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-xs btn-naatik btn-raised">Importar</button>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-second btn_import"
+                                                id="<?= $alumno->student_id; ?>">
+                                                <?php if ($alumno->xported === "0"): ?>
+                                                    Importar
+                                                <?php else: ?>
+                                                    Importado
+                                                <?php endif ?>
+                                            
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach ?>

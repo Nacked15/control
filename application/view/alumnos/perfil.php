@@ -1,6 +1,6 @@
 <div class="container">
     <ol class="breadcrumb">
-        <li><a href="<?= $base_url; ?>dashboard">Inicio</a></li>
+        <li><a href="<?= Config::get('URL'); ?>dashboard">Inicio</a></li>
         <li><a href="<?= Config::get('URL'); ?>alumno">Alumnos</a></li>
         <li><a href="javascript:void(0)" class="active">Perfil Alumno</a></li>
     </ol>

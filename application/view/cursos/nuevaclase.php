@@ -14,7 +14,7 @@
                         <?php  
                         if ($this->cursos) {
                             foreach ($this->cursos as $curso) {
-                                echo '<option value="'.$curso->id.'">'.$curso->name.'</option>';
+                                echo '<option value="'.$curso->course_id.'">'.$curso->course.'</option>';
                             }
                         }
                         ?>
@@ -31,7 +31,7 @@
                         <?php  
                         if ($this->niveles) {
                             foreach ($this->niveles as $nivel) {
-                                echo '<option value="'.$nivel->id.'">'.$nivel->level.'</option>';
+                                echo '<option value="'.$nivel->group_id.'">'.$nivel->group_name.'</option>';
                             }
                         }
                         ?>
@@ -92,7 +92,7 @@
                         <?php  
                         if ($this->dias) {
                             foreach ($this->dias as $dia) {
-                                echo '<option value="'.$dia->id.'">'.$dia->day.'</option>';
+                                echo '<option value="'.$dia->day_id.'">'.$dia->day.'</option>';
                             }
                         }
                         ?>

@@ -47,33 +47,23 @@
 </div>
 
 <!-- Modal -->
-<div id="add_to_group" class="modal fade">
-    <div class="modal-dialog modal-md">
+<div id="modalPayMonth" class="modal fade">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Agregar Alumno a Grupo</h4>
+                <h4 class="modal-title text-center">Pago Mensual</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-10 col-sm-offset-1">
-                        <p class="text-center"><small>Seleccione un curso de la lista, luego el grupo.</small></p>
+                    <div class="col-sm-12">
                         <input type="hidden" id="alumno_id" class="form-control">
                         <div class="form-group">
-                            <label class="col-sm-6"><small>Curso:</small> 
-                                <select class="form-control " id="course">
-                                    <option value="">Seleccione...</option>
-                                    <?php if ($this->cursos): ?>
-                                        <?php foreach ($this->cursos as $curso): ?>
-                                            <option value="<?= $curso->course_id; ?>"><?= $curso->course; ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
+                                <select class="form-control " id="pay_action">
+                                    <option value="1">Pagar</option>
+                                    <option value="2">Becado</option>
+                                    <option value="3">No Aplica</option>
                                 </select>
-                            </label>
-                            <label class="col-sm-6"><small>Grupo:</small> 
-                                <select class="form-control" id="groups">
-                                </select>
-                            </label>
                         </div>
                     </div>
                     <div class="col-sm-10 col-sm-offset-1 text-center">

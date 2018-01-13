@@ -22,31 +22,194 @@ class AlumnoController extends Controller
         AlumnoModel::students(Request::post('curso'));
     }
 
-    public function perfilAlumno($alumno) {
-        Registry::set('js', array('mapa&assets/js'));
-        $this->View->render('alumnos/perfil', array(
-            'alumno'  => AlumnoModel::studentProfile($alumno)
-        ));
-    }
-
-
-
-
-    public function obtenerAlumnosBaja() {
-        AlumnoModel::getStudentsCheckout(); 
+    public function obtenerCantidadAlumnosXCurso() {
+        $total = array(
+                    'EC' => AlumnoModel::getNumberStudentsByCourse(1),
+                    'PR' => AlumnoModel::getNumberStudentsByCourse(2),
+                    'AD' => AlumnoModel::getNumberStudentsByCourse(3),
+                    'AV' => AlumnoModel::getNumberStudentsByCourse(4),
+                    'NA'  => AlumnoModel::getNumberStudentsByCourse(5),
+                    'TD'  => AlumnoModel::getNumberStudentsByCourse(6)
+                );
+        echo json_encode($total);
     }
 
     public function nuevo() {
-        Registry::set('js', array('mapa&assets/js'));
+        // Session::destroy('activo');
+        if (Session::get('activo') == null) {
+            Session::set('activo', 'info_tutor');
+        }
+        Registry::set('js', array('mapa&assets/js', 'inscripcion&assets/js'));
         $this->View->render('alumnos/inscribir', array(
+            'activeView' => Session::get('activo'),
             'cursos'    => CursoModel::getCourses(),
-            'niveles'   => CursoModel::getLevels(),
-            'street'    => Session::get('addres_street'),
-            'number'    => Session::get('addres_number'),
-            'between'   => Session::get('addres_between'),
-            'colony'    => Session::get('addres_colony'),
-            'address'   => Session::get('address_id')
+            'niveles'   => CursoModel::getGroups(),
+            'street'    => Session::get('address')['street'],
+            'number'    => Session::get('address')['number'],
+            'between'   => Session::get('address')['between'],
+            'colony'    => Session::get('address')['colony']
         ));
+    }
+
+    //Comprobar si existe el tutor en la BD
+    public function existeTutor() {
+        echo json_encode(AlumnoModel::tutorExist(
+            Request::post('name'),
+            Request::post('surname'),
+            Request::post('lastname')
+        ));
+    }
+
+    //Obtener los datos de un tutor dado
+    public function obtenerTutor() {
+        echo json_encode(AlumnoModel::getTutorByID(
+            Request::post('tutor')
+        ));
+    }
+
+    public function guardarDatosTutor(){
+        $tutor = array();
+        if (Request::post('hasTutor') === 'si') {
+                $address = array();
+                $tutor['hastutor'] = true;
+            if (Request::post('tutor_id') === "") {
+                $tutor['exist'] = false;
+            } else {
+                $tutor['exist']    = true;
+                $tutor['tutor_id'] = Request::post('tutor_id');
+            }
+                $tutor['name']         = Request::post('nombre_tutor');
+                $tutor['surname']      = Request::post('apellido_pat');
+                $tutor['lastname']     = Request::post('apellido_mat');
+                $tutor['relationship'] = Request::post('parentesco');
+                $tutor['ocupation']    = Request::post('ocupacion');
+                $tutor['cellphone']    = Request::post('tel_celular');
+                $tutor['phone']        = Request::post('tel_casa');
+                $tutor['phone_alt']    = Request::post('tel_alterno');
+                $tutor['relation_alt'] = Request::post('parentesco_alterno');
+
+                $address['latitud']    = Request::post('lat');
+                $address['longitud']   = Request::post('lng');
+                $address['street']     = Request::post('calle');
+                $address['number']     = Request::post('numero');
+                $address['between']    = Request::post('entre');
+                $address['colony']     = Request::post('colonia');
+                Session::set('address', $address);
+        } else {
+            $tutor['hastutor'] = false;
+            $tutor['latitud']  = Request::post('lat');
+            $tutor['longitud'] = Request::post('lng');
+        }
+
+        Session::set('tutor', $tutor);
+        Session::set('activo', 'info_student');
+        Redirect::to('alumno/nuevo');
+    }
+
+    //Comprobar si existe el alumno en la BD
+    public function existeAlumno() {
+        echo json_encode(AlumnoModel::studentExist(
+            Request::post('name'),
+            Request::post('surname'),
+            Request::post('lastname')
+        ));
+    }
+
+    public function cancelarRegistro(){
+        Session::destroy('tutor');
+        Session::destroy('address');
+        Redirect::to('alumno/nuevo');
+    }
+
+    public function guardarDatosAlumno(){
+        if (Request::post('surname') && Request::post('lastname') && Request::post('name')) {
+            $birthdate = Request::post('year').'-'.Request::post('month').'-'.Request::post('day');
+            $alumno    = array();
+            
+            $alumno['surname']    = Request::post('surname'); 
+            $alumno['lastname']   = Request::post('lastname'); 
+            $alumno['name']       = Request::post('name'); 
+            $alumno['birthdate']  = $birthdate;
+            $alumno['genre']      = Request::post('genero');
+            $alumno['civil_stat'] = Request::post('edo_civil');
+            $alumno['cellphone']  = Request::post('celular');
+            $alumno['reference']  = Request::post('referencia');
+            $alumno['sickness']   = Request::post('padecimiento');
+            $alumno['medication'] = Request::post('tratamiento');
+            $alumno['comment']    = Request::post('comentario');
+            $alumno['invoice']    = Request::post('facturacion'); 
+            $alumno['homestay']   = Request::post('homestay');
+            $alumno['acta']       = Request::post('acta');
+
+            $id = strtotime(H::getTime());
+            $name_avatar = 'student_'.$id;
+            $upload = false;
+            if ($_FILES['avatar_file']['tmp_name'] !== "") {
+                $upload = FotoModel::createAvatar($name_avatar);
+            }
+            if ($upload) {
+                $alumno['avatar']  = $name_avatar;
+            } else {
+                $alumno['avatar']  = strtolower($alumno['genre']);
+            }
+
+            if (!Session::get('tutor')['hastutor'] || Session::get('address') == null) {
+                $address = array();
+                $address['street']     = Request::post('calle');
+                $address['number']     = Request::post('numero');
+                $address['between']    = Request::post('entre');
+                $address['colony']     = Request::post('colonia');
+                Session::set('address', $address);
+            }
+            Session::set('alumno', $alumno);
+            Session::set('activo', 'info_academic');
+            Redirect::to('alumno/nuevo');
+        } else {
+            Session::add('feedback_negative', 'Error al guardar, complete la hoja correctamente e intente de nuevo.');
+            Redirect::to('alumno/nuevo');
+        }
+    }
+
+    public function obtenerNivelesCurso() {
+        if(Request::post('curso')){
+            echo json_encode(AlumnoModel::getLevelsByClass(Request::post('curso')));
+        }
+    }
+
+    public function obtenerInfoClase() {
+        if(Request::post('clase')){
+            echo json_encode(CursoModel::getClass(Request::post('clase')));
+        }
+    }
+
+    public function obtenerDiasClase() {
+        if(Request::post('clase')){
+            echo json_encode(CursoModel::getDaysByClass(Request::post('clase')));
+        }
+    }
+
+    public function guardarDatosAcademicos(){
+        $alumno = Session::get('alumno');
+        $tutor  = Session::get('tutor');
+
+        if ($alumno && $tutor) {
+            AlumnoModel::registerNewStudent(
+                $tutor,
+                $alumno,
+                Request::post('clase'),
+                Request::post('ocupacion'),
+                Request::post('lugar_trabajo'),
+                Request::post('nivel_estudio'),
+                Request::post('grado_estudio'),
+                Request::post('curso_previo'),
+                Request::post('description_previo'),
+                Request::post('f_inicio_alumno'));
+            Session::destroy('activo');
+            Redirect::to('alumno/nuevo');
+        } else {
+            Session::add('feedback_negative', 'Algo ha salido mal, intente de nuevo por favor! :(');
+            Redirect::to('alumno/nuevo');
+        }
     }
 
     public function actualizarDatosAlumno(){
@@ -80,6 +243,17 @@ class AlumnoController extends Controller
             Session::add('feedback_negative', "Falta información para completar el proceso");
             Redirect::to('alumno/perfilAlumno/'.$alumno);
         }
+    }
+
+    public function perfilAlumno($alumno) {
+        Registry::set('js', array('mapa&assets/js'));
+        $this->View->render('alumnos/perfil', array(
+            'alumno'  => AlumnoModel::studentProfile($alumno)
+        ));
+    }
+
+    public function obtenerAlumnosBaja() {
+        AlumnoModel::getStudentsCheckout(); 
     }
 
     public function convenio(){
@@ -155,136 +329,8 @@ class AlumnoController extends Controller
         }
     }
 
-    public function obtenerNivelesCurso() {
-        if(Request::post('curso')){
-            echo json_encode(AlumnoModel::getLevelsByClass(Request::post('curso')));
-        }
-    }
-
-    public function obtenerInfoClase() {
-        if(Request::post('clase')){
-            echo json_encode(CursoModel::getClass(Request::post('clase')));
-        }
-    }
-
-    public function obtenerDiasClase() {
-        if(Request::post('clase')){
-            echo json_encode(CursoModel::getDaysByClass(Request::post('clase')));
-        }
-    }
-
     public function obtenerListaFactura() {
         AlumnoModel::getStudentsInvoiceList();
-    }
-
-    public function existeTutor() {
-        echo json_encode(AlumnoModel::tutorExist(
-            Request::post('name'),
-            Request::post('surname'),
-            Request::post('lastname')
-        ));
-    }
-
-    public function guardarDatosTutor(){
-
-        if (Request::post('apellido_pat') && Request::post('apellido_mat') && Request::post('nombre_tutor') &&Request::post('parentesco') && Request::post('ocupacion') && Request::post('tel_celular') && Request::post('tel_casa') && Request::post('tel_alterno') && Request::post('parentesco_alterno')) {
-            $id_tutor = AlumnoModel::addNewTutor(
-                Request::post('apellido_pat'), 
-                Request::post('apellido_mat'), 
-                Request::post('nombre_tutor'),
-                Request::post('parentesco'),
-                Request::post('ocupacion'),
-                Request::post('tel_celular'),
-                Request::post('tel_casa'),
-                Request::post('tel_alterno'), 
-                Request::post('parentesco_alterno')
-            );
-
-            if ($id_tutor != 0) {
-                AlumnoModel::addNewAddress(
-                    $id_tutor,
-                    Request::post('calle'),
-                    Request::post('numero'),
-                    Request::post('entre'),
-                    Request::post('colonia'),
-                    1);
-                Redirect::to('alumno/nuevo');
-            }
-
-        } else {
-            Redirect::to('alumno/nuevo');
-            Session::add('feedback_negative','Falta información para terminar el proceso.');
-        }
-    }
-
-    public function guardarDatosAlumno(){
-        if (Request::post('surname') && Request::post('lastname') && Request::post('name') && Request::post('day') && Request::post('month') && Request::post('year')) {
-            $birthday = Request::post('year').'-'.Request::post('month').'-'.Request::post('day');
-            
-            $student_id = AlumnoModel::saveNewStudent(
-                            Request::post('surname'), 
-                            Request::post('lastname'), 
-                            Request::post('name'), 
-                            $birthday,
-                            Request::post('genero'),
-                            Request::post('edo_civil'),
-                            Request::post('celular'),
-                            Request::post('referencia'),
-                            Request::post('padecimiento'),
-                            Request::post('tratamiento'),
-                            Request::post('comentario'));
-
-            if ($student_id !== false) {
-                $details = AlumnoModel::saveStudentDetails(
-                            $student_id,
-                            Request::post('facturacion'), 
-                            Request::post('homestay'),
-                            Request::post('acta'));
-
-                if ($details) {
-                    if (Request::post('address') !== '') {
-                        AlumnoModel::updateAddress($student_id, Request::post('address'));
-                    } else {
-                        AlumnoModel::addNewAddress(
-                                        $student_id,
-                                        Request::post('calle'),
-                                        Request::post('numero'),
-                                        Request::post('entre'),
-                                        Request::post('colonia'),
-                                        2);
-                    }
-
-                    $file = $_FILES['avatar_file'];
-                    $name_avatar = 'avatar_student'.$student_id;
-                    FotoModel::createAvatar($student_id, $name_avatar, $file);
-                } else {
-                    AlumnoModel::rollbackStudent($student_id);
-                    Session::add('feedback_negative', 'No se guardo los datos del alumno, intente de nuevo por favor');
-                }
-                Redirect::to('alumno/nuevo');
-            }
-        } else {
-            var_dump(Request::post('surname'), Request::post('lastname'), Request::post('name'), Request::post('day'), Request::post('month'), Request::post('year'));
-        }
-
-    }
-
-    public function guardarDatosAcademicos(){
-        if (Request::post('curso') && Request::post('grupo') && Request::post('clase')) {
-            AlumnoModel::saveAcademicData(
-                Request::post('clase'),
-                Request::post('ocupacion'),
-                Request::post('lugar_trabajo'),
-                Request::post('nivel_estudio'),
-                Request::post('grado_estudio'),
-                Request::post('curso_previo'),
-                Request::post('description_previo'),
-                Request::post('f_inicio_alumno'));
-            Redirect::to('alumno/nuevo');
-        } else {
-            Session::add('feedback_negative', 'Algo ha salido mal, intente de nuevo por favor! :(');
-            Redirect::to('alumno/nuevo');
-        }
     }
 
     public function becados() {
@@ -334,9 +380,14 @@ class AlumnoController extends Controller
     }
 
     public function importarAlumnos() {
+        Registry::set('js', array('jquery.dataTables.min&assets/js','importar&assets/js'));
         $this->View->render('importar/index', array(
             'alumnos' => ImportOldDataModel::importStudents()
         ));
+    }
+
+    public function importarAlumno() {
+        echo json_encode(ImportOldDataModel::importStudent(Request::post('alumno')));
     }
 
 }

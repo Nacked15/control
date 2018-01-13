@@ -17,7 +17,7 @@ class PagosModel
 	public static function showPayList($alumnos, $lista){
         echo '<div class="table">';
             echo '<table id="tbl_paylist_'.$lista.'"
-                         class="table table-bordered table-hover table-condensed">';
+                         class="table table-bordered table-hover table-striped table-condensed">';
                 echo '<thead>';
                     echo '<tr class="info">';
                         echo '<th class="text-center">Alumno</th>';
@@ -34,15 +34,35 @@ class PagosModel
                 echo '<tbody>';
                 foreach ($alumnos as $alumno) {
                 	echo '<tr class="row_data">';
-	                    echo '<td class="text-center txt">'.$alumno->nombre.'</td>';
-	                    echo '<td class="text-center txt"></td>';
-	                    echo '<td class="text-center"><i class="mdi-action-done"></i></td>';
-	                    echo '<td class="text-center"><i class="mdi-action-done"></i></td>';
-	                    echo '<td class="text-center"><i class="mdi-action-done"></i></td>';
-	                    echo '<td class="text-center"><i class="mdi-action-done"></i></td>';
-	                    echo '<td class="text-center"><i class="mdi-action-done"></i></td>';
-	                    echo '<td class="text-center txt">Comentario</td>';
-	                    echo '<td class="text-center">';
+	                    echo '<td class="text-center tiny">'.$alumno->nombre.'</td>';
+	                    echo '<td class="text-center tiny"></td>';
+	                    echo '<td class="text-center tiny">';
+                                echo '<a href="javascript:void(0)" class="check_pay">
+                                        <i class="mdi-action-done"></i>
+                                      </a>';
+                        echo '</td>';
+	                    echo '<td class="text-center tiny">';
+                                echo '<a href="javascript:void(0)" class="check_pay">
+                                        <i class="mdi-action-done"></i>
+                                      </a>';
+                        echo '</td>';
+	                    echo '<td class="text-center tiny">';
+                                echo '<a href="javascript:void(0)" class="check_pay">
+                                        <i class="mdi-action-done"></i>
+                                      </a>';
+                        echo '</td>';
+	                    echo '<td class="text-center tiny">';
+                                echo '<a href="javascript:void(0)" class="check_pay">
+                                        <i class="mdi-action-done"></i>
+                                      </a>';
+                        echo '</td>';
+	                    echo '<td class="text-center tiny">';
+                                echo '<a href="javascript:void(0)" class="check_pay">
+                                        <i class="mdi-action-done"></i>
+                                      </a>';
+                        echo '</td>';
+	                    echo '<td class="text-center tiny">Comentario</td>';
+	                    echo '<td class="text-center tiny">';
 	                    echo '<div class="btn-group">';
 	                        echo '<a href="javascript:void(0)"
 	                                 class="btn btn-main btn-xs btn-raised">Pagar
@@ -64,11 +84,7 @@ class PagosModel
                             Becados
                         </button>
                       </td>';
-                echo '<td class="text-center">
-                        <button type="button" class="btn btn-xs mini btn-danger delete_multi">
-                            Eliminar
-                        </button>
-                      </td>';
+                echo '<td class="text-center"></td>';
                 echo '<td class="text-center"></td>';
                 echo '<td class="text-center"></td>';
                 echo '<td class="text-center"></td>';

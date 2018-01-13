@@ -1,19 +1,19 @@
 var Main = {
 
     initialize: function(){
-        console.log('Main Initialize');
         this.tabClasesDestroy();
         this.tabStudentsActive();
         this.tabClasesActive();
         this.tabNewStActive();
-        // $(".nano").nanoScroller();
-        //= Activar Notificaciones
-        // if (Notification.permission !== "denied") {
-        //     Notification.requestPermission();
-        // }
+
         $('[data-toggle="tooltip"]').tooltip();
         $('[data-toggle="popover"]').popover();
-        // var notification = new Notification("No se elimino el recordatorio, intente de nuevo!");
+
+        $("#photo_input").fileinput({
+            showCaption: true,
+            browseClass: "btn btn-green btn-sm",
+            fileType: "image"
+        });
     },
 
     tabClasesDestroy: function(){
@@ -136,17 +136,7 @@ var Main = {
 
 Main.initialize();
 
-
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
-
-    // var altura = $('nav').offset().top;
-    // $(window).scroll(function(){
-    //     if ($(this).scrollTop() > altura) {
-    //         $('nav').addClass("navbar-fixed-top").fadeIn('800');
-    //     } else{
-    //         $('nav').removeClass("navbar-fixed-top");
-    //     } 
-    // });
 }(jQuery));

@@ -36,25 +36,22 @@ class FotoModel
      * TODO decouple
      * TODO total rebuild
      */
-    public static function createAvatar($student, $avatar, $file)
+    public static function createAvatar($avatar)
     {
         // check avatar folder writing rights, check if upload fits all rules
-        if (self::isAvatarFolderWritable() AND self::validateImageFile($file)) {
+        if (self::isAvatarFolderWritable() AND self::validateImageFile()) {
 
             // create a jpg file in the avatar folder, write marker to database
             $target_file_path = Config::get('PATH_AVATARS_STUDENTS') . $avatar;
-            self::resizeAvatarImage($file['tmp_name'], 
-                                    $target_file_path, 
-                                    Config::get('AVATAR_SIZE'), 
-                                    Config::get('AVATAR_SIZE'));
+            self::resizeAvatarImage($_FILES['avatar_file']['tmp_name'], 
+                                              $target_file_path, 
+                                              Config::get('AVATAR_SIZE'), 
+                                              Config::get('AVATAR_SIZE'));
 
-            $save = self::writeAvatarToDatabase($student, $avatar);
-            if ($save) {
+            if (file_exists($target_file_path.'.jpg')) {
                 return true;
-            } else {
-                return false;
             }
-            
+            return false; 
         }
     }
 
@@ -80,15 +77,15 @@ class FotoModel
      *
      * @return bool
      */
-    public static function validateImageFile($file)
+    public static function validateImageFile()
     {
         if (!isset($_FILES['avatar_file'])) {
             Session::add('feedback_negative', Text::get('FEEDBACK_AVATAR_IMAGE_UPLOAD_FAILED'));
             return false;
         }
 
-        // if input file too big (>5MB)
-        if ($file['size'] > 5000000) {
+        // if input file too big (>8MB)
+        if ($_FILES['avatar_file']['size'] > 8000000) {
             Session::add('feedback_negative', Text::get('FEEDBACK_AVATAR_UPLOAD_TOO_BIG'));
             return false;
         }
@@ -135,7 +132,7 @@ class FotoModel
      * Only works with gif, jpg and png file types. If you want to change this also have a look into
      * method validateImageFile() inside this model.
      */
-    public static function resizeAvatarImage($source_image, $destination, $final_width = 45, $final_height = 45)
+    public static function resizeAvatarImage($source_image, $destination, $final_width, $final_height)
     {
         $imageData = getimagesize($source_image);
         $width     = $imageData[0];
@@ -148,8 +145,8 @@ class FotoModel
 
         switch ($mimeType) {
             case 'image/jpeg': $myImage = imagecreatefromjpeg($source_image); break;
-            case 'image/png': $myImage = imagecreatefrompng($source_image); break;
-            case 'image/gif': $myImage = imagecreatefromgif($source_image); break;
+            case 'image/png':  $myImage = imagecreatefrompng($source_image); break;
+            case 'image/gif':  $myImage = imagecreatefromgif($source_image); break;
             default: return false;
         }
 

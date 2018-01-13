@@ -122,8 +122,8 @@ return array(
     'GRAVATAR_RATING' => 'pg',
     'AVATAR_SIZE' => 100,
     'AVATAR_JPEG_QUALITY' => 85,
-    'AVATAR_DEFAULT_IMAGE_MALE' => 'male.jpg',
-    'AVATAR_DEFAULT_IMAGE_FEMALE' => 'female.jpg',
+    'AVATAR_DEFAULT_IMAGE_MALE' => 'masculino.jpg',
+    'AVATAR_DEFAULT_IMAGE_FEMALE' => 'femenino.jpg',
     'AVATAR_DEFAULT_IMAGE' => 'default.jpg',
     /**
      * Configuration for: Encryption Keys

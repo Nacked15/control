@@ -17,7 +17,7 @@ var Maestros = {
 
             $("#avatar").fileinput({
                 showCaption: true,
-                browseClass: "btn btn-info btn-sm btn-lg",
+                browseClass: "btn btn-info btn-md",
                 fileType: "image"
             });
         });

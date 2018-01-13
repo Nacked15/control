@@ -17,7 +17,7 @@
             <div class="tab-pane fade active in" id="home">
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="col-sm-4 text-left" style="margin-bottom: 10px;">
+                        <div class="col-sm-6 text-left" style="margin-bottom: 10px;">
                             <small>Prioridades: </small>
                             <label class=" label label-primary">Normal</label>
                             <label class=" label label-warning">Alta</label>
@@ -48,7 +48,7 @@
                               </ul>
                             </div>
                         </div> -->
-                        <div class="col-sm-4 text-right" style="margin-bottom: 15px;">
+                        <div class="col-sm-6 text-right" style="margin-bottom: 15px;">
                             <button type="button" 
                                     class="btn btn-main btn-raised btn-xs btn-add"
                                     data-toggle="modal" 
@@ -210,8 +210,12 @@
             </div>
             <div class="row">
                 <div class="modal-footer col-sm-10 col-sm-offset-1 text-center">
-                    <button type="button" class="btn btn-sm btn-naatik btn-raised left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btn_update_task" class="btn btn-sm btn-second btn-raised right">Guardar</button>
+                    <button type="button" class="btn btn-sm btn-gray btn-raised left" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" id="btn_update_task" class="btn btn-sm btn-second btn-raised right">
+                        Guardar
+                    </button>
                 </div>             
             </div>
         </div>
@@ -241,14 +245,16 @@
                         <div class="clearfix"></div>
                         <div class="col-md-12 text-center">
                             <h4 class="text-primary">Descripción:</h4>
-                            <textarea cols="60" rows="15" id="detail_event" disabled></textarea>
+                            <textarea cols="60" rows="10" id="detail_event" disabled></textarea>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="row">
                 <div class="modal-footer col-sm-10 col-sm-offset-1 text-center">
-                    <button type="button" class="btn btn-sm btn-naatik btn-raised" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-sm btn-naatik btn-raised" data-dismiss="modal">
+                        Cerrar
+                    </button>
                 </div>             
             </div>
         </div>
@@ -268,8 +274,12 @@
             </div>
             <div class="row">
                 <div class="modal-footer col-sm-10 col-sm-offset-1 text-center">
-                    <button type="button" id="btn_confirm_delete" class="btn btn-sm btn-second btn-raised left">Eliminar</button>
-                    <button type="button" class="btn btn-sm btn-gray btn-raised right" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-gray btn-raised left" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" id="btn_confirm_delete" class="btn btn-sm btn-second btn-raised right">
+                        Eliminar
+                    </button>
                 </div>
             </div>
         </div>

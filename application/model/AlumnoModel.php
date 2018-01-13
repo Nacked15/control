@@ -4,27 +4,42 @@ class AlumnoModel
 {
     public static function students($curso) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $alumnos = "SELECT s.student_id, s.id_tutor, s.name, s.surname,
-                           s.lastname, s.age, s.genre, s.avatar, g.class_id,
-                           g.convenio, sd.studies, sd.lastgrade
-                    FROM students as s, students_groups as g, students_details as sd
-                    WHERE s.status = 1
-                      AND deleted  = 0
-                      AND s.student_id = g.student_id
-                      AND s.student_id = sd.student_id";
+
+        if ($curso !== '5' && $curso !== '6') {
+            $alumnos = "SELECT s.student_id, s.id_tutor, s.name, s.surname,
+                               s.lastname, s.age, s.genre, s.avatar, g.class_id,
+                               g.convenio, sd.studies, sd.lastgrade
+                        FROM students as s, students_groups as g, students_details as sd, classes as c
+                        WHERE s.status = 1
+                          AND deleted  = 0
+                          AND s.student_id = g.student_id
+                          AND g.class_id   = c.class_id
+                          AND s.student_id = sd.student_id";
+        } else {
+            $alumnos = "SELECT s.student_id, s.id_tutor, s.name, s.surname,
+                               s.lastname, s.age, s.genre, s.avatar, g.class_id,
+                               g.convenio, sd.studies, sd.lastgrade
+                        FROM students as s, students_groups as g, students_details as sd
+                        WHERE s.status = 1
+                          AND deleted  = 0
+                          AND s.student_id = g.student_id
+                          AND s.student_id = sd.student_id";
+        }
+            
 
         switch ($curso) {
             case '1': //-> English club y big tots
-                $alumnos .= ' AND (g.class_id = 1 OR g.class_id = 2) ORDER BY s.student_id ASC';
+           
+                $alumnos .= ' AND (c.course_id = 1 OR c.course_id = 2) ORDER BY s.student_id ASC';
                 break;
-            case '2': //->primary
-                $alumnos .= ' AND g.class_id = 3 ORDER BY s.student_id ASC';
+             case '2': //->primary
+                $alumnos .= ' AND c.course_id = 3 ORDER BY s.student_id ASC';
                 break;
-            case '3': //->primary
-                $alumnos .= ' AND g.class_id = 4 ORDER BY s.student_id ASC';
+            case '3': //->adolescentes
+                $alumnos .= ' AND c.course_id = 4 ORDER BY s.student_id ASC';
                 break;
             case '4': //->adultos y avanzado
-                $alumnos .= ' AND (g.class_id = 5 OR g.class_id = 6) ORDER BY s.student_id ASC';
+                $alumnos .= ' AND (c.course_id = 5 OR c.course_id = 6) ORDER BY s.student_id ASC';
                 break;
             case '5': //->adultos y avanzado
                 $alumnos .= ' AND g.class_id IS NULL ORDER BY s.student_id ASC';
@@ -43,7 +58,7 @@ class AlumnoModel
             foreach ($alumnos as $alumno) {
                 //-> Grupo del Alumno
                 $id_grupo = 0;
-                $grupo = '<a class="link add_to_group"
+                $grupo = '<a class="link adding_group"
                              data-student="'.$alumno->student_id.'"
                              title="Agregar grupo"><strong>Agregar a Grupo</strong></a>';
                 if ($alumno->class_id !== NULL) {
@@ -216,7 +231,6 @@ class AlumnoModel
                     echo '<tr>';
                     echo '<td class="text-center">'.$main_check.'</td>';
                     echo '<td class="text-center">
-                            <label class="label lbl_mini">Marcar</label>
                           </td>';
                     echo '<td class="text-center">
                             <button type="button" class="btn btn-xs mini btn-second change_multi">
@@ -372,200 +386,55 @@ class AlumnoModel
         }
     }
 
-
-
-
-
-
-
-    ///================= OLD
-    public static function getStudents($curso = 1){
+    public static function getNumberStudentsByCourse($course){
         $database = DatabaseFactory::getFactory()->getConnection();
-
-        $u_type = Session::get('user_account_type');
-
-        $sql = "SELECT s.*, c.id as clase, ad.studies, ad.last_grade, g.convenio,
-                       cu.id as course, cu.name as curso, l.id as grupo, l.level
-                FROM students as s,
-                     academic_data as ad,
-                     groups as g,
-                     classes as c,
-                     courses as cu,
-                     levels as l
-                WHERE s.student_id = ad.student_id
-                  AND ad.baja      = 0
-                  AND s.student_id = g.student_id
-                  AND g.class_id   = c.id
-                  AND c.status     = 1
-                  AND c.id_course  = cu.id
-                  AND c.id_level   = l.id ";
-
-        if ($u_type === '3') {
-            $teacher = Session::get('user_id');
-            $sql .= ' AND c.id_teacher = '. $teacher .' ';
-        }
-
-        if ((int)$curso === 4 ) {
-            $sql .= ' AND (cu.id = 5 OR cu.id = 6)';
-            $query = $database->prepare($sql);
-            $query->execute();
-        } else if ((int)$curso === 1) {
-            $sql .= ' AND (cu.id = 1 OR cu.id = 2)';
-            $query = $database->prepare($sql);
-            $query->execute();
+        $total = 0;
+        if ($course !== 5 && $course !== 6) {
+            $alumnos = "SELECT *
+                        FROM students as s, students_groups as g, students_details as sd, classes as c
+                        WHERE s.status = 1
+                          AND deleted  = 0
+                          AND s.student_id = g.student_id
+                          AND g.class_id   = c.class_id
+                          AND s.student_id = sd.student_id";
         } else {
-            $sql .= ' AND cu.id = :curso';
-            $query = $database->prepare($sql);
-            $query->execute(array(':curso' => $curso+1));
+            $alumnos = "SELECT *
+                        FROM students as s, students_groups as g, students_details as sd
+                        WHERE s.status = 1
+                          AND deleted  = 0
+                          AND s.student_id = g.student_id
+                          AND s.student_id = sd.student_id";
         }
 
-        if ($query->rowCount() > 0) {
-            $students = $query->fetchAll();
-
-            $alumos = array();
-            $id_tutor = 0;
-            $tutor = '- - -';
-            foreach ($students as $row) {
-                if ($row->id_tutor !== '0') {
-                    $getTutor = $database->prepare("SELECT id_tutor, namet, surname1, surname2
-                                                    FROM tutors WHERE id_tutor = :tutor
-                                                    LIMIT 1;");
-                    $getTutor->execute(array(':tutor' => $row->id_tutor));
-                    if ($getTutor->rowCount() > 0) {
-                        $info = $getTutor->fetch();
-                        $id_tutor = $info->id_tutor;
-                        $tutor = ucwords(strtolower($info->namet)).' '.ucwords(strtolower($info->surname1));
-                    }
-                }
-
-                $course = '<a class="link change_group"
-                             data-student="'.$row->student_id.'"
-                             data-group="'.$row->grupo.'"
-                             data-course="'.$row->course.'"
-                             data-clase="'.$row->clase.'"
-                             title="Cambiar grupo">'.$row->curso.' '.$row->level.'</a>';
-
-                $alumnos[$row->student_id] = new stdClass();
-                $alumnos[$row->student_id]->id       = $row->student_id;
-                $alumnos[$row->student_id]->name     = ucwords(strtolower($row->name));
-                $alumnos[$row->student_id]->surname  = ucwords(strtolower($row->surname));
-                $alumnos[$row->student_id]->lastname = ucwords(strtolower($row->lastname));
-                $alumnos[$row->student_id]->avatar   = $row->avatar;
-                $alumnos[$row->student_id]->tutor_id = $id_tutor;
-                $alumnos[$row->student_id]->tutor    = $tutor;
-                $alumnos[$row->student_id]->convenio = $row->convenio;
-                $alumnos[$row->student_id]->birthdays = $row->birthday;
-                $alumnos[$row->student_id]->age      = $row->age;
-                $alumnos[$row->student_id]->genre    = $row->genre;
-                $alumnos[$row->student_id]->clase    = $row->clase;
-                $alumnos[$row->student_id]->course   = $course;
-                $alumnos[$row->student_id]->study    = $row->studies;
-                $alumnos[$row->student_id]->grade    = $row->last_grade;
-            }
-            self::displayStudents($alumnos, $curso);
-        } else {
-            echo '<h4 class="text-center text-naatik subheader">No hay Alumnos inscritos en este nivel.</h4>';
+        switch ($course) {
+            case 1: //-> English club y big tots
+                $alumnos .= ' AND (c.course_id = 1 OR c.course_id = 2) ORDER BY s.student_id ASC';
+                break;
+            case 2: //->primary
+                $alumnos .= ' AND c.course_id = 3 ORDER BY s.student_id ASC';
+                break;
+            case 3: //->adolescentes
+                $alumnos .= ' AND c.course_id = 4 ORDER BY s.student_id ASC';
+                break;
+            case 4: //->adultos y avanzado
+                $alumnos .= ' AND (c.course_id = 5 OR c.course_id = 6) ORDER BY s.student_id ASC';
+                break;
+            case 5: //->adultos y avanzado
+                $alumnos .= ' AND g.class_id IS NULL ORDER BY s.student_id ASC';
+                break;
+            default:
+                $alumnos .= ' ORDER BY s.student_id ASC';
+                break;
         }
+        $alumnos = $database->prepare($alumnos);
+        $alumnos->execute();
+
+        if ($alumnos->rowCount() > 0) {
+            $total = $alumnos->rowCount();
+        }
+
+        return $total;
     }
-
-    public static function getStudentsAll($view){
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $sql = "SELECT s.*, ad.studies, ad.last_grade, g.class_id, g.convenio
-                FROM students as s,
-                     academic_data as ad,
-                     groups as g
-                WHERE s.student_id = ad.student_id
-                  AND ad.baja      = 0
-                  AND s.student_id = g.student_id";
-
-        if ($view === '5') {
-            $sql .= ' AND g.class_id IS NOT NULL';
-        } else {
-            $sql .= ' AND g.class_id IS NULL';
-        }
-
-        $query = $database->prepare($sql);
-        $query->execute();
-
-        if ($query->rowCount() > 0) {
-            $students = $query->fetchAll();
-
-            $alumos = array();
-            foreach ($students as $row) {
-                $id_tutor = 0;
-                $tutor = '- - -';
-                $curso = '<a class="link adding_group"
-                             data-student="'.$row->student_id.'"
-                             data-toggle="modal"
-                             data-target="#add_to_group"
-                             title="Agregar grupo"><strong>Agregar a Grupo</strong></a>';
-                $clase = 0;
-
-                if ($row->id_tutor !== '0') {
-                    $getTutor = $database->prepare("SELECT id_tutor, namet, surname1, surname2
-                                                    FROM tutors WHERE id_tutor = :tutor
-                                                    LIMIT 1;");
-                    $getTutor->execute(array(':tutor' => $row->id_tutor));
-                    if ($getTutor->rowCount() > 0) {
-                        $info = $getTutor->fetch();
-                        $id_tutor = $info->id_tutor;
-                        $tutor = ucwords(strtolower($info->namet)).' '.ucwords(strtolower($info->surname1));
-                    }
-                }
-
-                if ($row->class_id !== NULL) {
-                    $qry = $database->prepare("SELECT c.id as clase,
-                                                      cu.id as course,
-                                                      l.id as grupo,
-                                                      cu.name,
-                                                      l.level
-                                               FROM classes as c, courses as cu, levels as l
-                                               WHERE c.id = :clase
-                                                 AND c.id_course = cu.id
-                                                 AND c.id_level  = l.id
-                                               LIMIT 1;");
-                    $qry->execute(array(':clase' => $row->class_id));
-
-                    if ($qry->rowCount() > 0) {
-                        $fila = $qry->fetch();
-                        $clase = $fila->clase;
-                        $curso = '<a class="link change_group"
-                                     data-student="'.$row->student_id.'"
-                                     data-group="'.$fila->grupo.'"
-                                     data-course="'.$fila->course.'"
-                                     data-clase="'.$fila->clase.'"
-                                     title="Cambiar grupo">'.$fila->name.' '.$fila->level.'</a>';
-
-                    }
-                }
-
-                $alumnos[$row->student_id] = new stdClass();
-                $alumnos[$row->student_id]->id = $row->student_id;
-                $alumnos[$row->student_id]->name      = ucwords(strtolower($row->name));
-                $alumnos[$row->student_id]->surname   = ucwords(strtolower($row->surname));
-                $alumnos[$row->student_id]->lastname  = ucwords(strtolower($row->lastname));
-                $alumnos[$row->student_id]->avatar    = $row->avatar;
-                $alumnos[$row->student_id]->tutor_id  = $id_tutor;
-                $alumnos[$row->student_id]->tutor     = $tutor;
-                $alumnos[$row->student_id]->birthdays = $row->birthday;
-                $alumnos[$row->student_id]->convenio  = $row->convenio;
-                $alumnos[$row->student_id]->age   = $row->age;
-                $alumnos[$row->student_id]->genre = $row->genre;
-                $alumnos[$row->student_id]->clase = $clase;
-                $alumnos[$row->student_id]->course= $curso;
-                $alumnos[$row->student_id]->study = $row->studies;
-                $alumnos[$row->student_id]->grade = $row->last_grade;
-            }
-            self::displayStudents($alumnos, $view);
-        } else {
-            echo '<h4 class="text-center text-naatik subheader">No hay Alumnos para mostrar.</h4>';
-            if ($view === '6') {
-                echo '<h4 class="text-center text-info">Aquí se mostraran todos aquellos alumnos que no esten asignados a un grupo o clase.</h4><br><br>';
-            }
-        }
-    }
-    //=========================
 
     public static function getLevelsByClass($id) {
         $database = DatabaseFactory::getFactory()->getConnection();
@@ -585,7 +454,7 @@ class AlumnoModel
     public static function AddStudentToClass($alumno, $clase){
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $update = $database->prepare("UPDATE groups SET class_id = :clase WHERE student_id = :alumno;");
+        $update = $database->prepare("UPDATE students_groups SET class_id = :clase WHERE student_id = :alumno;");
         $update = $update->execute(array(':clase' => $clase, ':alumno' => $alumno));
 
         if ($update) {
@@ -727,6 +596,11 @@ class AlumnoModel
                                             fecha_baja = :fecha
                                         WHERE student_id = :alumno;");
         $update = $checkout->execute(array(':estado' => $estado, ':fecha' => $fecha, ':alumno' => $alumno));
+
+        if ($update && $estado === 0) {
+            $state = $database->prepare("UPDATE students_groups SET state = 0 WHERE student_id = :alumno");
+            $state->execute(array(':alumno' => $alumno));
+        }
 
         echo $update ? 1 : 0;
     }
@@ -889,6 +763,7 @@ class AlumnoModel
             echo '<h4 class="text-center text-primary subheader">No hay Alumnos de baja.</h4>';
         }
     }
+
     ////////////////////////////////////////////////////////////////////
     //= = = = = = = C R E A T E   N E W   S T U D E N T = = = = = = = //
     ////////////////////////////////////////////////////////////////////
@@ -899,11 +774,11 @@ class AlumnoModel
         $surname  = '%'.$surname.'%';
         $lastname = '%'.$lastname.'%';
 
-        $sql = "SELECT id_tutor, namet, surname1, surname2, job, cellphone, phone, relationship, phone_alt
+        $sql = "SELECT id_tutor, namet, surnamet, lastnamet, job, cellphone, phone, relationship, phone_alt
                 FROM tutors
                 WHERE namet    LIKE :name
-                  AND surname1 LIKE :surname
-                  AND surname2 LIKE :lastname;";
+                  AND surnamet LIKE :surname
+                  AND lastnamet LIKE :lastname;";
         $query = $database->prepare($sql);
         $query->execute(array(':name' => $name, ':surname' => $surname, ':lastname' => $lastname));
 
@@ -912,100 +787,500 @@ class AlumnoModel
         }
     }
 
-    public static function addNewTutor($surname, $lastname, $name, $relation, $job, $tel_celular, $tel_casa, $tel_alt, $relation_alt){
+    public static function getTutorByID($tutor) {
         $database = DatabaseFactory::getFactory()->getConnection();
-
-        $name = ucwords(strtolower($name));
-        $surname = ucwords(strtolower($surname));
-        $lastname = ucwords(strtolower($lastname));
-
-        $registro = H::getTime();
-        $sql = "INSERT INTO tutors(namet, surname1, surname2,
-                                   job, cellphone, phone,
-                                   relationship, phone_alt, relationship_alt, created_at)
-                            VALUES(:name, :surname, :lastname,
-                                   :job, :cellphone, :phone,
-                                   :relation, :phone_alt, :relation_alt, :created_at);";
-        $query = $database->prepare($sql);
-        $query->execute(array(
-                ':name'         => $name,
-                ':surname'      => $surname,
-                ':lastname'     => $lastname,
-                ':job'          => $job,
-                ':cellphone'    => $tel_celular,
-                ':phone'        => $tel_casa,
-                ':relation'     => $relation,
-                ':phone_alt'    => $tel_alt,
-                ':relation_alt' => $relation_alt,
-                ':created_at'   => $registro
-            ));
-
-        if ($query->rowCount() > 0) {
-            Session::set('tutor', $database->lastInsertId());
-            return $database->lastInsertId();
-        } else {
-            return 0;
-        }
-    }
-
-    public static function addNewAddress($user, $street, $number, $between, $colony, $user_type){
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $registro = H::getTime();
-        $sql = "INSERT INTO address(user_id, user_type, street,
-                                    st_number, st_between, colony,
-                                    city, zipcode, state,
-                                    country,created_at)
-                            VALUES(:user, :user_type, :street,
-                                   :st_number, :st_between, :colony,
-                                   :city, :zipcode, :state, :country,
-                                   :register);";
-        $query = $database->prepare($sql);
-        $query->execute(array(
-            ':user'       => $user,
-            ':user_type'  => $user_type,
-            ':street'     => $street,
-            ':st_number'  => $number,
-            ':st_between' => $between,
-            ':colony'     => $colony,
-            ':city'       => 'Felipe Carrillo Puerto',
-            ':zipcode'    => 77200,
-            ':state'      => 'Quintana Roo',
-            ':country'    => 'México',
-            ':register'   => $registro));
-
-        if ($query->rowCount() > 0) {
-            $addres_id = $database->lastInsertId();
-            if ((int)$user_type === 1) {
-                Session::set('addres_street', $street);
-                Session::set('addres_number', $number);
-                Session::set('addres_between', $between);
-                Session::set('addres_colony', $colony);
-                Session::set('address_id', $addres_id );
-
-                Session::add('feedback_positive','Datos del tutor guardados exitosamente.');
-            } else {
-                self::updateAddress($user, $addres_id);
-                Session::add('feedback_positive','Datos del alumno guardados exitosamente.');
-            }
-        } else {
-            self::rollbackTutor($user);
-            Session::add('feedback_negative','Los datos no se han guardado, intente de nuevo por favor.');
-        }
-    }
-
-    public static function rollbackTutor($tutor){
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $sql = $database->prepare("DELETE FROM tutors WHERE id_tutor = :tutor;");
+        $sql =  $database->prepare("SELECT t.*, a.* 
+                                    FROM tutors as t, address as a
+                                    WHERE t.id_tutor = :tutor
+                                      AND t.id_tutor = user_id
+                                      AND user_type  = 1
+                                    LIMIT 1;");
         $sql->execute(array(':tutor' => $tutor));
 
         if ($sql->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
+            return $sql->fetch();
+        }
+
+        return null;
+    }
+
+    public static function studentExist($name, $surname, $lastname){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $name     = '%'.$name.'%';
+        $surname  = '%'.$surname.'%';
+        $lastname = '%'.$lastname.'%';
+
+        $sql = "SELECT s.student_id, s.name, s.surname, s.lastname, g.class_id
+                FROM students as s, students_groups as g
+                WHERE name     LIKE :name
+                  AND surname  LIKE :surname
+                  AND lastname LIKE :lastname
+                  AND s.student_id = g.student_id;";
+        $query = $database->prepare($sql);
+        $query->execute(array(':name' => $name, ':surname' => $surname, ':lastname' => $lastname));
+
+        if ($query->rowCount() > 0) {
+            $alumno = $query->fetch();
+
+            $grupo = 'Espera';
+            if ($alumno->class_id != null) {
+                $clase = $database->prepare("SELECT cu.course, g.group_name 
+                                             FROM classes as c, courses as cu, groups as g
+                                             WHERE c.class_id  = :clase
+                                               AND c.course_id = cu.course_id
+                                               AND c.group_id  = g.group_id;");
+                $clase->execute(array(':clase' => $alumno->class_id));
+                $clase = $clase->fetch();
+                $grupo = $clase->course.' '.$clase->group_name;
+            }
+            $alumno->grupo = $grupo;
+
+            return $alumno;
         }
     }
+
+
+    public static function registerNewStudent($tutor, $alumno, $clase, $ocupation, $workplace, $studies, $lastgrade, $prior_course, $description_prior, $date_init_student){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $commit   = true;
+        $address  = Session::get('address');
+
+        if ((int)$clase === 0) { $clase = NULL; }
+
+        $database->beginTransaction();
+        try{
+            //Guardar datos del tutor, si existe.
+            if ($tutor['hastutor']) {
+                if (!$tutor['exist']) {
+                    $save_tutor  = "INSERT INTO tutors(namet, surnamet, lastnamet, job, cellphone, phone,
+                                                       relationship, phone_alt, relationship_alt)
+                                                VALUES(:name, :surname, :lastname, :job, :cellphone, :phone,
+                                                       :relation, :phone_alt, :relation_alt);";
+                    $query = $database->prepare($save_tutor);
+                    $query->execute(array(':name'         => ucwords(strtolower($tutor['name'])),
+                                          ':surname'      => ucwords(strtolower($tutor['surname'])),
+                                          ':lastname'     => ucwords(strtolower($tutor['lastname'])),
+                                          ':job'          => $tutor['ocupation'],
+                                          ':cellphone'    => $tutor['cellphone'],
+                                          ':phone'        => $tutor['phone'],
+                                          ':relation'     => $tutor['relationship'],
+                                          ':phone_alt'    => $tutor['phone_alt'],
+                                          ':relation_alt' => $tutor['relation_alt']
+                                        ));
+                    if ($query->rowCount() > 0) {
+                        $tutor_id = $database->lastInsertId();
+                        $sql = "INSERT INTO address(user_id, user_type, street, st_number, st_between, colony,
+                                                    city, zipcode, state, country, latitud, longitud)
+                                            VALUES(:user, :user_type, :street, :st_number, :st_between, :colony,
+                                                   :city, :zipcode, :state, :country, :latitud, :longitud);";
+                        $query = $database->prepare($sql);
+                        $query->execute(array(':user'       => $tutor_id,
+                                              ':user_type'  => 1,
+                                              ':street'     => $address['street'],
+                                              ':st_number'  => $address['number'],
+                                              ':st_between' => $address['between'],
+                                              ':colony'     => $address['colony'],
+                                              ':city'       => 'Felipe Carrillo Puerto',
+                                              ':zipcode'    => 77200,
+                                              ':state'      => 'Quintana Roo',
+                                              ':country'    => 'México',
+                                              ':latitud'    => $address['latitud'],
+                                              ':longitud'   => $address['longitud'])
+                                            );
+
+                        if ($query->rowCount() < 1) {
+                            $commit = false;
+                        }
+                    } else {
+                        $commit = false;
+                    }
+                } else {
+                    $update  =  $database->prepare("UPDATE tutors
+                                                    SET namet     = :name, 
+                                                        surnamet  = :surname,
+                                                        lastnamet = :lastname, 
+                                                        job       = :job,
+                                                        phone     = :phone, 
+                                                        cellphone = :cellphone,
+                                                        relationship = :relation, 
+                                                        phone_alt    = :phone_alt,
+                                                        relationship_alt = :relation_alt
+                                                    WHERE id_tutor = :tutor");
+                    $update= $update->execute(array(':name'         => ucwords(strtolower($tutor['name'])),
+                                                    ':surname'      => ucwords(strtolower($tutor['surname'])),
+                                                    ':lastname'     => ucwords(strtolower($tutor['lastname'])),
+                                                    ':job'          => $tutor['ocupation'],
+                                                    ':phone'        => $tutor['phone'],
+                                                    ':cellphone'    => $tutor['cellphone'],
+                                                    ':relation'     => $tutor['relationship'],
+                                                    ':phone_alt'    => $tutor['phone_alt'],
+                                                    ':relation_alt' => $tutor['relation_alt'],
+                                                    ':tutor'        => $tutor['tutor_id'])
+                                                );
+                    if ($update) {
+                        $tutor_id = $tutor['tutor_id'];
+                        $sql = "UPDATE address 
+                                SET street     = :street, st_number  = :st_number, 
+                                    st_between = :st_between, colony = :colony,
+                                    city       = :city,   zipcode    = :zipcode, 
+                                    state      = :state,  country    = :country, 
+                                    latitud    = :latitud, longitud  = :longitud
+                                WHERE user_id  = :user AND user_type = :user_type;";
+                        $query = $database->prepare($sql);
+                        $uptodate = $query->execute(array(':user'       => $tutor_id,
+                                                          ':user_type'  => 1,
+                                                          ':street'     => $address['street'],
+                                                          ':st_number'  => $address['number'],
+                                                          ':st_between' => $address['between'],
+                                                          ':colony'     => $address['colony'],
+                                                          ':city'       => 'Felipe Carrillo Puerto',
+                                                          ':zipcode'    => 77200,
+                                                          ':state'      => 'Quintana Roo',
+                                                          ':country'    => 'México',
+                                                          ':latitud'    => $address['latitud'],
+                                                          ':longitud'   => $address['longitud']
+                                                        ));
+
+                        if (!$uptodate) {
+                            $commit = false;
+                        } 
+                    } else {
+                        $commit = false;
+                    }
+                }
+            } else {
+                $tutor_id = 0;
+            }
+
+            //Guaradar datos del alumno
+            $edad = H::getAge($alumno['birthdate']);
+            $sql =  $database->prepare("INSERT INTO students(id_tutor, name, surname, lastname,
+                                                             birthday, age, genre, edo_civil,
+                                                             cellphone, reference, sickness,
+                                                             medication, avatar, comment_s)
+                                                     VALUES(:tutor, :name, :surname, :lastname,
+                                                            :birthday, :age, :genre, :edo_civil,
+                                                            :cellphone, :reference, :sickness,
+                                                            :medication, :avatar, :comment_s);");
+            $sql->execute(array(':tutor'      => $tutor_id,
+                                ':name'       => $alumno['name'],
+                                ':surname'    => $alumno['surname'],
+                                ':lastname'   => $alumno['lastname'],
+                                ':birthday'   => $alumno['birthdate'],
+                                ':age'        => $edad,
+                                ':genre'      => $alumno['genre'],
+                                ':edo_civil'  => $alumno['civil_stat'],
+                                ':cellphone'  => $alumno['cellphone'],
+                                ':reference'  => $alumno['reference'],
+                                ':sickness'   => $alumno['sickness'],
+                                ':medication' => $alumno['medication'],
+                                ':avatar'     => $alumno['avatar'],
+                                ':comment_s'  => $alumno['comment']));
+
+            if ($sql->rowCount() > 0) {
+                $student_id = $database->lastInsertId();
+
+                //Si no tiene tutor, guardar la dirección del alumno.
+                if (!$tutor['hastutor']) {
+                    $sql = "INSERT INTO address(user_id, user_type, street, st_number, st_between, colony,
+                                                city, zipcode, state, country, latitud, longitud)
+                                        VALUES(:user, :user_type, :street, :st_number, :st_between, :colony,
+                                               :city, :zipcode, :state, :country, :latitud, :longitud);";
+                    $query = $database->prepare($sql);
+                    $query->execute(array(
+                        ':user'       => $student_id,
+                        ':user_type'  => 2,
+                        ':street'     => $address['street'],
+                        ':st_number'  => $address['number'],
+                        ':st_between' => $address['between'],
+                        ':colony'     => $address['colony'],
+                        ':city'       => 'Felipe Carrillo Puerto',
+                        ':zipcode'    => 77200,
+                        ':state'      => 'Quintana Roo',
+                        ':country'    => 'México',
+                        ':latitud'    => $tutor['latitud'],
+                        ':longitud'   => $tutor['longitud']));
+
+                    if ($query->rowCount() < 1) {
+                        $commit = false;
+                    }
+                }
+
+                //Agregar detalles del alumno
+                $details =  $database->prepare("INSERT INTO students_details(student_id, facturacion, homestay,
+                                                                             acta_nacimiento, ocupation,
+                                                                             workplace, studies, lastgrade,
+                                                                             prior_course, prior_comments) 
+                                                                    VALUES(:student, :invoice, :homestay,
+                                                                           :acta, :ocupation, :workplace, 
+                                                                           :studies, :lastgrade, :prior_course, 
+                                                                           :prior_comments)");
+                $details->execute(array(':student'        => $student_id,
+                                        ':invoice'        => $alumno['invoice'],
+                                        ':homestay'       => $alumno['homestay'],
+                                        ':acta'           => $alumno['acta'],
+                                        ':ocupation'      => $ocupation,
+                                        ':workplace'      => $workplace,
+                                        ':studies'        => $studies,
+                                        ':lastgrade'      => $lastgrade,
+                                        ':prior_course'   => $prior_course,
+                                        ':prior_comments' => $description_prior));
+
+                if ($details->rowCount() > 0) {
+                    //Crear lista de pagos mensual.
+                    $pay_list = $database->prepare("INSERT INTO students_pays(student_id)
+                                                                        VALUES(:student);");
+                    $pay_list->execute(array(':student' => $student_id));
+
+                    //Agregar al grupo especificado
+                    $group = $database->prepare("INSERT INTO students_groups(class_id, student_id, date_begin) 
+                                                                    VALUES(:clase, :student, :begin_date)");
+                    $group->execute(array(':clase' => $clase,
+                                          ':student' => $student_id,
+                                          ':begin_date' => $date_init_student));
+                    if ($group->rowCount() < 1) {
+                        $commit = false;
+                    } else {
+                        //Guaradar la foto del alumno.
+                        Session::destroy('tutor');
+                        Session::destroy('alumno');
+                        Session::destroy('address');
+                    }
+                } else {;
+                    $commit = false;
+                }
+            } else {
+                $commit = false;
+            }
+        }catch (PDOException $e) {
+            $commit = false;
+        }
+
+        if (!$commit) {
+            $database->rollBack();
+            Session::add('feedback_negative','Error al registrar al alumno. Complete correctamente los datos e intente de nuevo por favor!');
+            return false;
+        }else {
+            $database->commit();
+            Session::add('feedback_positive','Alumno registrado correctamente!');
+            return true;
+        }
+    }
+
+    public static function saveTutor($tutor){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $commit   = true;
+
+        $database->beginTransaction();
+        try{
+            $save_tutor  = "INSERT INTO tutors(namet, surnamet, lastnamet, job, cellphone, phone,
+                                               relationship, phone_alt, relationship_alt)
+                                        VALUES(:name, :surname, :lastname, :job, :cellphone, :phone,
+                                               :relation, :phone_alt, :relation_alt);";
+            $query = $database->prepare($save_tutor);
+            $query->execute(array(
+                                ':name'         => ucwords(strtolower($tutor['name'])),
+                                ':surname'      => ucwords(strtolower($tutor['surname'])),
+                                ':lastname'     => ucwords(strtolower($tutor['lastname'])),
+                                ':job'          => $tutor['ocupation'],
+                                ':cellphone'    => $tutor['cellphone'],
+                                ':phone'        => $tutor['phone'],
+                                ':relation'     => $tutor['relationship'],
+                                ':phone_alt'    => $tutor['phone_alt'],
+                                ':relation_alt' => $tutor['relation_alt']
+                            ));
+
+            if ($query->rowCount() < 1) {
+                $commit = false;
+            }            
+        } catch (PDOException $e) {
+            $commit = false;
+        }
+
+        $saveAddress = self::saveAddress($database->lastInsertId(), Session::get('address'), 1);
+
+        if (!$commit || !$saveAddress) {
+            $database->rollBack();
+            Session::add('feedback_negative','Error al guardar nuevo tutor!');
+            exit();
+            return false;
+        } else {
+            $database->commit();
+            return $database->lastInsertId();
+        }
+    }
+
+    public static function updateTutor($tutor){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $commit   = true;
+
+        $database->beginTransaction();
+        try{
+            $update  =  $database->prepare("UPDATE tutors
+                                            SET namet        = :name,
+                                                surnamet     = :surname,
+                                                lastnamet    = :lastname,
+                                                job          = :job,
+                                                phone        = :phone,
+                                                cellphone    = :cellphone,
+                                                relationship = :relation,
+                                                phone_alt      = :phone_alt,
+                                                relationship_alt = :relation_alt
+                                            WHERE id_tutor = :tutor");
+            $update= $update->execute(array(':name'         => ucwords(strtolower($tutor['name'])),
+                                            ':surname'      => ucwords(strtolower($tutor['surname'])),
+                                            ':lastname'     => ucwords(strtolower($tutor['lastname'])),
+                                            ':job'          => $tutor['ocupation'],
+                                            ':phone'        => $tutor['phone'],
+                                            ':cellphone'    => $tutor['cellphone'],
+                                            ':relation'     => $tutor['relationship'],
+                                            ':phone_alt'    => $tutor['phone_alt'],
+                                            ':relation_alt' => $tutor['relation_alt'],
+                                            ':tutor'        => $tutor['tutor_id']));
+            if (!$update) {
+                $commit = false;
+            }
+            
+        }catch (PDOException $e) {
+            $commit = false;
+        }
+
+        $updateAddress = self::updateAddress($tutor['tutor_id'], Session::get('address'), 1);
+
+        if (!$commit || !$updateAddress) {
+            $database->rollBack();
+            Session::add('feedback_negative','Error al actualizar tutor!');
+            return false;
+        }else {
+            $database->commit();
+            return (int)$tutor['tutor_id'];
+        }
+    }
+
+    public static function saveAddress($user, $address, $user_type){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $commit   = true;
+
+        $database->beginTransaction();
+        try{
+            $sql = "INSERT INTO address(user_id, user_type, street, st_number, st_between, colony,
+                                        city, zipcode, state, country, latitud, longitud)
+                                VALUES(:user, :user_type, :street, :st_number, :st_between, :colony,
+                                       :city, :zipcode, :state, :country, :latitud, :longitud);";
+            $query = $database->prepare($sql);
+            $query->execute(array(
+                ':user'       => $user,
+                ':user_type'  => $user_type,
+                ':street'     => $address['street'],
+                ':st_number'  => $address['number'],
+                ':st_between' => $address['between'],
+                ':colony'     => $address['colony'],
+                ':city'       => 'Felipe Carrillo Puerto',
+                ':zipcode'    => 77200,
+                ':state'      => 'Quintana Roo',
+                ':country'    => 'México',
+                ':latitud'    => $address['latitud'],
+                ':longitud'   => $address['longitud']));
+
+            if ($query->rowCount() < 1) {
+                $commit = false;
+            }            
+        } catch (PDOException $e) {
+            $commit = false;
+        }
+
+        if (!$commit) {
+            $database->rollBack();
+            Session::add('feedback_negative','Error al guardar direccion!');
+            exit();
+            return false;
+        }else {
+            $database->commit();
+            return true;
+        }
+    }
+
+    public static function updateAddress($user, $address, $user_type){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $commit   = true;
+
+        $database->beginTransaction();
+        try{
+            $sql = "UPDATE address 
+                    SET street     = :street, 
+                        st_number  = :st_number, 
+                        st_between = :st_between, 
+                        colony     = :colony,
+                        city       = :city, 
+                        zipcode    = :zipcode, 
+                        state      = :state, 
+                        country    = :country, 
+                        latitud    = :latitud, 
+                        longitud   = :longitud
+                    WHERE user_id   = :user 
+                      AND user_type = :user_type;";
+            $query = $database->prepare($sql);
+            $query->execute(array(
+                ':user'       => $user,
+                ':user_type'  => $user_type,
+                ':street'     => $address['street'],
+                ':st_number'  => $address['number'],
+                ':st_between' => $address['between'],
+                ':colony'     => $address['colony'],
+                ':city'       => 'Felipe Carrillo Puerto',
+                ':zipcode'    => 77200,
+                ':state'      => 'Quintana Roo',
+                ':country'    => 'México',
+                ':latitud'    => $address['latitud'],
+                ':longitud'   => $address['longitud']));
+
+            if ($query->rowCount() < 1) {
+                $commit = false;
+            }            
+        } catch (PDOException $e) {
+            $commit = false;
+        }
+
+        if (!$commit) {
+            $database->rollBack();
+            Session::add('feedback_negative','Error al actualizar!');
+            return false;
+        }else {
+            $database->commit();
+            return true;
+        }
+    }
+
+    // public static function updateAddress($user, $address){
+    //     $database = DatabaseFactory::getFactory()->getConnection();
+
+    //     $commit   = true;
+
+    //     $database->beginTransaction();
+    //     try{
+            
+    //     }catch (PDOException $e) {
+    //         $commit = false;
+    //     }
+
+    //     if (!$commit) {
+    //         $database->rollBack();
+    //         return false;
+    //     }else {
+    //         $database->commit();
+    //         return true;
+    //     }
+    //     $sql = $database->prepare("UPDATE students
+    //                                SET address_id = :address
+    //                                WHERE student_id = :student;");
+    //     $save = $sql->execute(array(':student' => $student, ':address' => $address));
+
+    //     if ($save) {
+    //         Session::add('feedback_positive','Datos del alumno guardados exitosamente.');
+    //     } else {
+    //         Session::add('feedback_negative','Error al guardar el domicilio.');
+    //     }
+    // }
 
     public static function saveNewStudent($surname, $lastname, $name, $birthday, $genre, $civil_status, $cellphone, $reference, $sickness, $medication, $comment){
 
@@ -1016,47 +1291,47 @@ class AlumnoModel
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $tutor = Session::get('tutor') ? Session::get('tutor') : 0;
-        $edad = H::getAge($birthday);
+            $edad = H::getAge($birthday);
 
-        $sql = $database->prepare("INSERT INTO students(id_tutor,
-                                                        name,
-                                                        surname,
-                                                        lastname,
-                                                        birthday,
-                                                        age,
-                                                        genre,
-                                                        edo_civil,
-                                                        cellphone,
-                                                        reference,
-                                                        sickness,
-                                                        medication,
-                                                        comment_s)
-                                                 VALUES(:tutor,
-                                                        :name,
-                                                        :surname,
-                                                        :lastname,
-                                                        :birthday,
-                                                        :age,
-                                                        :genre,
-                                                        :edo_civil,
-                                                        :cellphone,
-                                                        :reference,
-                                                        :sickness,
-                                                        :medication,
-                                                        :comment_s);");
-        $sql->execute(array(':tutor'      => $tutor,
-                            ':name'       => $name,
-                            ':surname'    => $surname,
-                            ':lastname'   => $lastname,
-                            ':birthday'   => $birthday,
-                            ':age'        => $edad,
-                            ':genre'      => $genre,
-                            ':edo_civil'  => $civil_status,
-                            ':cellphone'  => $cellphone,
-                            ':reference'  => $reference,
-                            ':sickness'   => $sickness,
-                            ':medication' => $medication,
-                            ':comment_s'  => $comment));
+            $sql = $database->prepare("INSERT INTO students(id_tutor,
+                                                            name,
+                                                            surname,
+                                                            lastname,
+                                                            birthday,
+                                                            age,
+                                                            genre,
+                                                            edo_civil,
+                                                            cellphone,
+                                                            reference,
+                                                            sickness,
+                                                            medication,
+                                                            comment_s)
+                                                     VALUES(:tutor,
+                                                            :name,
+                                                            :surname,
+                                                            :lastname,
+                                                            :birthday,
+                                                            :age,
+                                                            :genre,
+                                                            :edo_civil,
+                                                            :cellphone,
+                                                            :reference,
+                                                            :sickness,
+                                                            :medication,
+                                                            :comment_s);");
+            $sql->execute(array(':tutor'      => $tutor,
+                                ':name'       => $name,
+                                ':surname'    => $surname,
+                                ':lastname'   => $lastname,
+                                ':birthday'   => $birthday,
+                                ':age'        => $edad,
+                                ':genre'      => $genre,
+                                ':edo_civil'  => $civil_status,
+                                ':cellphone'  => $cellphone,
+                                ':reference'  => $reference,
+                                ':sickness'   => $sickness,
+                                ':medication' => $medication,
+                                ':comment_s'  => $comment));
 
         if ($sql->rowCount() > 0) {
             return $database->lastInsertId();
@@ -1081,20 +1356,6 @@ class AlumnoModel
             return true;
         } else {
             return false;
-        }
-    }
-
-    public static function updateAddress($student, $address){
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = $database->prepare("UPDATE students
-                                   SET address_id = :address
-                                   WHERE student_id = :student;");
-        $save = $sql->execute(array(':student' => $student, ':address' => $address));
-
-        if ($save) {
-            Session::add('feedback_positive','Datos del alumno guardados exitosamente.');
-        } else {
-            Session::add('feedback_negative','Error al guardar el domicilio.');
         }
     }
 
@@ -1146,14 +1407,6 @@ class AlumnoModel
             $setGroup->execute(array(':clase' => $clase_id, ':alumno' => $student, ':fecha_inicio' => $start_at));
             Session::add('feedback_positive', 'Inscripción completa.');
             // Destroy all sessions variables about the inscription process
-            if (Session::get('tutor'))          { Session::destroy('tutor'); }
-            if (Session::get('addres_street'))  { Session::destroy('addres_street'); }
-            if (Session::get('addres_number'))  { Session::destroy('addres_number'); }
-            if (Session::get('addres_between')) { Session::destroy('addres_between'); }
-            if (Session::get('addres_colony'))  { Session::destroy('addres_colony'); }
-            if (Session::get('address_id'))     { Session::destroy('address_id'); }
-            if (Session::get('student_id'))     { Session::destroy('student_id'); }
-
         } else {
             Session::add('feedback_negative', 'Error al guardar los datos academicos, intentelo de nuevo.');
         }
@@ -1301,6 +1554,8 @@ class AlumnoModel
         $deleted = $query->execute(array(':student' => $student));
 
         if ($deleted) {
+            $update = $database->prepare("UPDATE students_groups SET state = 1 WHERE student_id = :student;");
+            $update->execute(array(':student' => $student));
             return 1;
         }
 

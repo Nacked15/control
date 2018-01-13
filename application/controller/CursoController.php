@@ -13,7 +13,7 @@ class CursoController extends Controller
 
     public function index() {
         $this->View->render('cursos/index', array(
-            'user_type' => Session::get('user_account_type')));
+            'user_type' => Session::get('user_type')));
     }
 
     public function obtenerClases(){
@@ -24,7 +24,7 @@ class CursoController extends Controller
         $this->View->renderWithoutHeaderAndFooter('cursos/nuevaclase', array(
             'dias'      => CursoModel::getDays(),
             'cursos'    => CursoModel::getCourses(),
-            'niveles'   => CursoModel::getLevels(),
+            'niveles'   => CursoModel::getGroups(),
             'maestros'  => MaestroModel::getTeachers()
         ));
     }
@@ -43,7 +43,10 @@ class CursoController extends Controller
                 Request::post('inscripcion'),
                 Request::post('maestro'));
             Redirect::to('curso/index');
-        } 
+        } else {
+            Session::add('feedback_negative','Falta Información para completar el registro.');
+            Redirect::to('curso/index');
+        }
     }
 
     public function formEditarClase() {
@@ -52,7 +55,7 @@ class CursoController extends Controller
             'diasclase' => CursoModel::getDaysByClass(Request::post('horario')),
             'dias'      => CursoModel::getDays(),
             'cursos'    => CursoModel::getCourses(),
-            'niveles'   => CursoModel::getLevels(),
+            'niveles'   => CursoModel::getGroups(),
             'maestros'  => MaestroModel::getTeachers()
         ));
     }
@@ -74,6 +77,15 @@ class CursoController extends Controller
                 Request::post('maestro'));
             Redirect::to('curso/index');
         } 
+    }
+
+    //Obtener numero de alumnos inscritos en la clase.
+    public function obtenerAlumnosClase(){
+        echo json_encode(CursoModel::getNumberStudentsByClass(Request::post('clase')));
+    }
+
+    public function eliminarClase(){
+        echo json_encode(CursoModel::deleteClass(Request::post('clase')));
     }
 
     public function nuevoCurso() {

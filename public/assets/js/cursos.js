@@ -9,6 +9,7 @@ var Cursos = {
         this.getCourses();
         this.getGroups();
         this.getFrmNewClass();
+        this.confirmDeleteClass();
 		this.selectAttr();
 		this.setAttr();
 	},
@@ -151,9 +152,52 @@ var Cursos = {
         $('.removeClase').on('click', function(){
             var clase_id = $(this).attr('id'),
                 clase_name = $(this).data('name');
-                $('#clase_name').text(clase_name);
-                $('#clase_id').val(clase_id);
+            $.ajax({
+                data: {clase : clase_id },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/obtenerAlumnosClase',
+                success: function(data){
+                    let response = JSON.parse(data);
+                    if (response > 0) {
+                        $('#warn_msg').html('<b>NOTA:</b> Esta clase tiene '+ response +' alumnos inscritos, todos pasaran a lista de espera si elimina la clase. ¿Desea continuar?');
+                    }
+                }
+            });
+            $('#clase_name').text(clase_name);
+            $('#delete_clase_id').val(clase_id);
+            $('#deleteClass').modal('show');
         });
+    },
+
+    confirmDeleteClass: function() {
+        let that = this;
+
+        $('#btn_delete_class').click(function(){
+            let clase = $('#delete_clase_id').val();
+            $.ajax({
+                data: {clase : clase },
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/eliminarClase',
+                success: function(data){
+                    let response = JSON.parse(data);
+                    console.log(response);
+                    $('#deleteClass').modal('hide');
+                    if (response) {
+                        $('#general_snack').attr('data-content', 'Clase eliminado con éxito!');
+                        $('#general_snack').snackbar('show');
+                        $('.snackbar').addClass('snackbar-blue');
+                    } else {
+                        $('#general_snack').attr('data-content', 'No se elimino clase!');
+                        $('#general_snack').snackbar('show');
+                        $('.snackbar').addClass('snackbar-red');
+                    }
+                    that.getClasses();
+                }
+            });
+        });
+
     },
 
     newGroup: function(){

@@ -224,12 +224,15 @@
             </div>
             <div class="modal-body">
                 <p class="text-center">¿Eliminar <strong id="clase_name"></strong>?</p>
+                <p class="text-justify text-warning" id="warn_msg"></p>
                 <input type="hidden" id="delete_clase_id">
             </div>
             <div class="row">
-                <div class="modal-footer col-sm-8 col-sm-offset-2 text-center">
+                <div class="modal-footer col-md-10 col-md-offset-1 text-center">
                     <button type="button" class="btn btn-sm btn-gray btn-raised left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-sm btn-danger btn-raised right">Eliminar</button>
+                    <button type="button" 
+                            class="btn btn-sm btn-danger btn-raised right"
+                            id="btn_delete_class">Eliminar</button>
                 </div>
             </div>
         </div>

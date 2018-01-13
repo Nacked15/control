@@ -14,7 +14,7 @@ class CursoModel
         return $query->fetchAll();
     }
 
-    public static function getLevels() {
+    public static function getGroups() {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT group_id, group_name FROM groups";
         $query = $database->prepare($sql);
@@ -47,8 +47,8 @@ class CursoModel
                 //Indicar los dias
                 $error = 0;
                 foreach ($dias as $dia) {
-                    $day = $database->prepare("INSERT INTO schedul_days(shedul_id, day_id)
-                                                                    VALUES(:horario, :dia)");
+                    $day = $database->prepare("INSERT INTO schedul_days(schedul_id, day_id)
+                                                                 VALUES(:horario, :dia)");
                     $day->execute(array(':horario' => $horario, ':dia' => $dia));
 
                     if($day->rowCount() === 0){
@@ -110,7 +110,7 @@ class CursoModel
     }
 
     public static function getClases() {
-        $usr_type = (int)Session::get('user_account_type');
+        $usr_type = (int)Session::get('user_type');
 
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT c.class_id, c.teacher_id, c.schedul_id, cu.course_id, cu.course,
@@ -124,7 +124,7 @@ class CursoModel
 
         if ($usr_type === 3) {
             $user = Session::get('user_id');
-            $sql .= " AND c.teacher_id = :user ORDER BY cu.id ASC;";
+            $sql .= " AND c.teacher_id = :user ORDER BY cu.course_id ASC;";
             $query = $database->prepare($sql);
             $query->execute(array(':user' => $user));
         } else {
@@ -224,8 +224,6 @@ class CursoModel
                             <button type="button"
                                     id="'.$clase->id.'"
                                     data-name="'.$clase->name.'" 
-                                    data-toggle="modal" 
-                                    data-target="#deleteClass" 
                                     class="btn btn-xs btn-danger btn-raised removeClase">
                                         Eliminar
                             </button>
@@ -281,37 +279,9 @@ class CursoModel
                                      AND hd.schedul_id = :horario;");
         $sql->execute(array(':horario' => $horario));
 
-        $freedays = $database->prepare('SELECT d.day_id, d.day
-                                        FROM days as d 
-                                            LEFT JOIN schedul_days as hd 
-                                                ON d.day_id = hd.day_id 
-                                                AND hd.schedul_id = :horario 
-                                        WHERE hd.day_id IS NULL;');
-        $freedays->execute(array(':horario' => $horario));
-
-        $days = array();
         if ($sql->rowCount() > 0) {
-            $rows = $sql->fetchAll();
-            foreach ($rows as $key) {
-                $days[$key->day_id] = new stdClass();
-                $days[$key->day_id]->day_id = $key->day_id;
-                $days[$key->day_id]->day    = $key->day;
-                $days[$key->day_id]->stat   = 1; 
-            }
-            
+            return $sql->fetchAll();      
         }
-
-        if ($freedays->rowCount() > 0) {
-            $values = $freedays->fetchAll();
-            foreach ($values as $row) {
-                $days[$row->day_id] = new stdClass();
-                $days[$row->day_id]->day_id = $row->day_id;
-                $days[$row->day_id]->day    = $row->day;
-                $days[$row->day_id]->stat   = 0; 
-            }
-        }
-
-        return $days;
     }
 
 
@@ -344,6 +314,9 @@ class CursoModel
             if($save){
                 //Indicar los dias
                 $error = 0;
+                if (!self::getCurrentDayCourse($clase, $dias)) {
+                    $error = 1;
+                }
                 foreach ($dias as $dia) {
                     $check = $database->prepare("SELECT day_id
                                                  FROM schedul_days 
@@ -353,7 +326,7 @@ class CursoModel
 
                     if($check->rowCount() === 0){
                         $day = $database->prepare("INSERT INTO schedul_days(schedul_id, day_id)
-                                                                    VALUES(:horario, :dia)");
+                                                                     VALUES(:horario, :dia)");
                         $day->execute(array(':horario' => $horario, ':dia' => $dia));
 
                         if($day->rowCount() === 0){
@@ -407,6 +380,62 @@ class CursoModel
             return true;
         }
 
+    }
+
+    public static function getNumberStudentsByClass($clase) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $count = $database->prepare("SELECT class_id FROM students_groups WHERE class_id = :clase;");
+        $count->execute(array(':clase' => $clase));
+
+        if ($count->rowCount() > 0) {
+            return $count->rowCount();
+        }
+
+        return 0;
+    }
+
+    public static function deleteClass($clase){
+        $database = DatabaseFactory::getFactory()->getConnection(); 
+        $delete = $database->prepare("DELETE FROM classes WHERE class_id = :clase");
+        $delete->execute(array(':clase' => $clase));
+
+        if ($delete->rowCount() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function getCurrentDayCourse($clase, $dias) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = $database->prepare("SELECT sd.schedul_id, sd.day_id 
+                                   FROM classes as c, schedul_days as sd
+                                   WHERE c.class_id = :clase
+                                     AND c.schedul_id = sd.schedul_id;");
+        $sql->execute(array(':clase' => $clase));
+
+        if ($sql->rowCount() > 0) {
+            $days = $sql->fetchAll();
+            $i=0;
+            foreach ($days as $day) {
+                if (in_array($day->day_id, $dias)) {
+                    continue;
+                } else {
+                    $delete = $database->prepare("DELETE FROM schedul_days
+                                                        WHERE schedul_id = :schedul
+                                                          AND day_id     = :day;");
+
+                    $delete->execute(array(':schedul' => $day->schedul_id, ':day' => $day->day_id));
+
+                    if ($delete->rowCount === 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public static function getCursos() {

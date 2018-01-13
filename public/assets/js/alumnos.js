@@ -8,9 +8,9 @@ var Alumnos = {
         this.getStudents();
         this.defaultGetStudents();
         this.activeData();
+        this.studentHasTutor();
         this.checkIfExistTutor();
         this.getLevels();
-        this.getClassInfo();
         this.getGroupsByCourse();
         this.checkoutStudent();
         this.displayStudentsCheckout();
@@ -41,8 +41,6 @@ var Alumnos = {
             type: 'POST',
             url: _root_ + 'alumno/obtenerAlumnos',
             success: function(data){
-                $('#second_head').hide();
-                $('#head_menu').show();
                 switch(parseInt(activo)) {
                     case 1: $('#club').html(data);
                         break;
@@ -58,6 +56,7 @@ var Alumnos = {
                         break;
                 }
                 $.material.init();
+                that.getQuantityStudentsPerCourse();
                 that.selectMultipleStudents(activo);
                 that.setStudentInGroup();
                 that.changeGroupStudent();
@@ -68,6 +67,24 @@ var Alumnos = {
                 that.getInvoiceListStudents();
                 that.deleteStudent();
                 that.deleteSelectedStudents();
+            }
+        });
+    },
+
+    getQuantityStudentsPerCourse: function(){
+        let that = this;
+        $.ajax({
+            synch: 'true',
+            type: 'POST',
+            url: _root_ + 'alumno/obtenerCantidadAlumnosXCurso',
+            success: function(data){
+                let response = JSON.parse(data);
+                    $('#cout1').text(response.EC);
+                    $('#cout2').text(response.PR); 
+                    $('#cout3').text(response.AD);
+                    $('#cout4').text(response.AV);
+                    $('#cout5').text(response.NA);
+                    $('#cout6').text(response.TD);
             }
         });
     },
@@ -138,53 +155,6 @@ var Alumnos = {
         });
     },
 
-    checkIfExistTutor: function(){
-        let that = this;
-        $('#nombre_tutor').keydown(function() {
-            if ($('#nombre_tutor').val().length >= 2) {
-                $.ajax({
-                    data: {
-                        name: $('#nombre_tutor').val(),
-                        surname: $('#apellido_pat').val(),
-                        lastname: $('#apellido_mat').val()
-                    },
-                    synch: 'true',
-                    type: 'POST',
-                    url: _root_ + 'alumno/existeTutor',
-                    success: function(a){
-                        if (a !== 'null') {
-                            var res = JSON.parse(a);
-                            var ask   = '¿Este es el tutor que quiere registrar? <br />';
-                            var tutor = ask+res.namet+' '+res.surname1+' '+res.surname2;
-                            var btnOk = '<a id="btn_yes" data-tutor="'+res.id_tutor+'" class="btn btn-sm btn-info btn-raised">Si</a> ';
-                            var btnNo = ' <a id="btn_not" class="btn btn-sm btn-warning btn-raised">No</a>';
-                            
-                            $('#exist_tutor').addClass('mini-box');
-                            $('#exist_tutor').html('<p class="text-center">'+tutor+'</p>'+btnOk+btnNo);
-
-                            that.useTutor();
-                        }
-                    }
-                });
-            } else {
-                $('#exist_tutor').html('');
-                $('#exist_tutor').removeClass('mini-box');
-            }
-        });
-    },
-
-    useTutor: function(){
-        $('#btn_yes').click(function(){
-            var tutor = $(this).data('tutor');
-        });
-
-        $('#btn_not').click(function(){
-            $('#exist_tutor').hide();
-            $('#exist_tutor').html('');
-            $('#exist_tutor').removeClass('mini-box');
-        });
-    },
-
     getLevels: function() {
         $('#course').change(function(){
             var curso = $(this).val();
@@ -200,62 +170,15 @@ var Alumnos = {
                         var option = '<option value="">Seleccione...</option>';
                         if (a !== 'null') {
                             var res = JSON.parse(a);
+                            console.log(res);
                             for (var i = 0; i < res.length; i++) {
-                                option = option + '<option value="'+res[i].id+'">'+res[i].level+'</option>';
+                                option = option + '<option value="'+res[i].class_id+'">'+res[i].group_name+'</option>';
                             }
                         } else {
                             option = '<option value="">Curso sin grupos</option>';
                         }
                         
                         $('#levelList').html(option);
-                    }
-                });
-            }
-        });
-    },
-
-    //Informacion de la clase->inscribir alumno.
-    getClassInfo: function() {
-        $('#levelList').change(function(){
-            var clase = $(this).val();
-            // console.log(clase);
-            if (clase !== '') {
-                $.ajax({
-                    data: { clase: clase },
-                    synch: 'true',
-                    type: 'POST',
-                    url: _root_ + 'alumno/obtenerInfoClase',
-                    success: function(a){
-                        // console.log(a);
-                        if (a !== 'null') {
-                            $('#clasedata').addClass('mini-box');
-                            var res = JSON.parse(a);
-                            $('#clase_id').val(res.id);
-                            $('#clase_name').text('Clase: '+res.name+' '+res.level);
-                            $('#horario_c').text('Horario: '+res.hour_init+' - '+res.hour_end);
-                            $('#f_inicio').text('Inicia: '+res.date_init);
-                            $('#f_fin').text('Termina: '+res.date_init);
-
-                            $('#fecha_inicio').val(res.date_init);
-
-                            $.ajax({
-                                data: { clase: res.horario },
-                                synch: 'true',
-                                type: 'POST',
-                                url: _root_ + 'alumno/obtenerDiasClase',
-                                success: function(data){
-                                    // console.log(data);
-                                    if (data !== 'null') {
-                                        var r = JSON.parse(data);
-                                        var day = '';
-                                        for (var i = 0; i < r.length; i++) {
-                                            day !== '' ? day = day+', '+ r[i].day : day = day + r[i].day;
-                                        }
-                                        $('#dias').text('Días: '+day);
-                                    }
-                                }
-                            });
-                        }
                     }
                 });
             }
@@ -276,7 +199,7 @@ var Alumnos = {
                         if (data !== 'null') {
                             var res = JSON.parse(data);
                             for (var i = 0; i < res.length; i++) {
-                                option = option + '<option value="'+res[i].id+'">'+res[i].level+'</option>';
+                                option = option + '<option value="'+res[i].class_id+'">'+res[i].group_name+'</option>';
                             }
                         } else {
                             option = '<option value="">Curso sin grupos</option>';
@@ -296,6 +219,7 @@ var Alumnos = {
             $('#course').val('');
             $('#groups').val('');
             $('#alumno_id').val(student);
+            $('#add_to_group').modal('show');
         });
     },
 
@@ -720,55 +644,6 @@ var Alumnos = {
     },
 
     activeData: function() {
-
-        $('#tutor_yes').click(function() {
-            $('#info_tutor').show();
-            $('#continue').text('');
-        });
-
-        $('#tutor_not').click(function() {
-            $('#info_tutor').hide();
-            $('#continue').text('Continúe con los datos del alumno.');
-        });
-        
-        $('.sicknes_detail').hide();
-        $('#isSick_yes').click(function() {
-            $('.sicknes_detail').show();
-        });
-
-        $('#isSick_not').click(function() {
-            $('.sicknes_detail').hide();
-        });
-
-        $('#describa').hide();
-        $('#optionSi').click(function() {
-            $('#describa').show();
-        });
-
-        $('#optionNo').click(function() {
-            $('#describa').hide();
-        });
-
-        $('#fecha_inicio').datepicker({
-            format: "yyyy-mm-dd",
-            autoclose: true
-        });
-
-        $('#bornday').datepicker({
-            format: "yyyy-mm-dd",
-            autoclose: true
-        });
-
-        $('.extra').hide();
-        $('#nivel').change(function(){
-            var nivel = $(this).val();
-            if (nivel === 'Primaria' || nivel === 'Licenciatura') {
-                $('.extra').show();
-            } else {
-                $('.extra').hide();
-            }
-        });
-
         $("#avatar").fileinput({
             showCaption: true,
             browseClass: "btn btn-info btn-sm btn-lg",
