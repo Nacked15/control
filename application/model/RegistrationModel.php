@@ -15,6 +15,7 @@ class RegistrationModel
         $user_email = strip_tags(Request::post('user_email'));
         $user_password_new = Request::post('user_password_new');
         $user_password_repeat = Request::post('user_password_repeat');
+        $user_access_code = Request::post('user_password_new');
 
         // stop registration flow if registrationInputValidation() returns false (= anything breaks the input check rules)
         $validation_result = self::registrationInputValidation(
@@ -53,7 +54,7 @@ class RegistrationModel
         $user_activation_hash = sha1(uniqid(mt_rand(), true));
 
         // write user data to database
-        if (!self::writeNewUserToDatabase($real_name, $last_name, $user_type, $user_name, $user_password_hash, $user_email, time(), $user_activation_hash)) {
+        if (!self::writeNewUserToDatabase($real_name, $last_name, $user_type, $user_name, $user_password_hash, $user_email, time(), $user_activation_hash, $user_access_code)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
             return false; // no reason not to return false here
         }
@@ -176,7 +177,9 @@ class RegistrationModel
     /**
      * Writes the new user's data to the database
      */
-    public static function writeNewUserToDatabase($real_name, $lastname, $user_type, $user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash) {
+    public static function writeNewUserToDatabase($real_name, $lastname, $user_type, $user_name, 
+                                                  $user_password_hash, $user_email, $user_creation_timestamp, 
+                                                  $user_activation_hash, $user_access_code) {
         $database = DatabaseFactory::getFactory()->getConnection();
 
         // write new users data into database
@@ -185,7 +188,8 @@ class RegistrationModel
                                    user_type,
                                    user_name, 
                                    user_password_hash, 
-                                   user_email, 
+                                   user_email,
+                                   user_access_code,
                                    user_creation_timestamp,  
                                    user_active)
                     VALUES (:real_name, 
@@ -193,7 +197,8 @@ class RegistrationModel
                             :user_type,
                             :user_name, 
                             :user_password_hash, 
-                            :user_email, 
+                            :user_email,
+                            :access_code, 
                             :user_creation_timestamp,  
                             :user_active)";
 
@@ -204,6 +209,7 @@ class RegistrationModel
                               ':user_name' => $user_name,
                               ':user_password_hash' => $user_password_hash,
                               ':user_email' => $user_email,
+                              ':access_code' => $user_access_code,
                               ':user_creation_timestamp' => $user_creation_timestamp,
                               ':user_active' => 1));
         $count =  $query->rowCount();
@@ -212,7 +218,9 @@ class RegistrationModel
                 $sql = $database->prepare("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1;");
                 $sql->execute();
                 $teacher = $sql->fetch()->user_id;
-                PhotosModel::createAvatar($teacher, 'teacher', $_FILES['avatar_file']);
+                if (isset($_FILES['avatar_file']) && $_FILES['avatar_file'] !== null) {
+                    PhotosModel::createAvatar($teacher, 'teacher', $_FILES['avatar_file']);
+                }
             }
             return true;
         }

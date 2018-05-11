@@ -2,6 +2,16 @@
 
 class H
 {
+    public static function getLibrary($libraryName){
+        $libraryPath = Config::get('PATH_LIBS').$libraryName . '.php';
+        if(is_readable($libraryPath)){
+            require_once $libraryPath;
+        }
+        else{
+            throw new Exception('Error de libreria');
+        }
+    }
+
     public static function getTime($formatTime = 'Y-m-d H:i:s'){
         $date = new DateTime();
         $date->setTimezone(new DateTimeZone('America/Cancun'));
@@ -69,7 +79,30 @@ class H
         return $anio_dif; //edad
     }
 
-    public static function p($data){
-        
+    public static function monthName($mes){
+        switch ($mes) {
+            case '01': $month = 'Enero'; break;
+            case '02': $month = 'Febrero'; break;
+            case '03': $month = 'Marzo'; break;
+            case '04': $month = 'Abril'; break;
+            case '05': $month = 'Mayo'; break;
+            case '06': $month = 'Junio'; break;
+            case '07': $month = 'Julio'; break;
+            case '08': $month = 'Agosto'; break;
+            case '09': $month = 'Septiembre'; break;
+            case '10': $month = 'Octubre'; break;
+            case '11': $month = 'Noviembre'; break;
+            case '12': $month = 'Diciembre'; break;
+        }
+
+        return $month;
+    }
+
+    public static function p($array){
+        print("<pre>".print_r($array,true)."</pre>");
+    }
+
+    public static function f($array){
+        print("<pre>".$array."</pre>");
     }
 }

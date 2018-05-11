@@ -8,8 +8,6 @@ var Alumnos = {
         this.getStudents();
         this.defaultGetStudents();
         this.activeData();
-        this.studentHasTutor();
-        this.checkIfExistTutor();
         this.getLevels();
         this.getGroupsByCourse();
         this.checkoutStudent();

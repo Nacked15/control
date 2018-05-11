@@ -52,22 +52,31 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Pago Mensual</h4>
+                <h5 class="modal-title text-center">Mensualidad: <span id="month_name"></span></h5>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <input type="hidden" id="alumno_id" class="form-control">
+                        <p class="text-center">Alumno: <strong id="student_name"></strong></p>
+                        <input type="hidden" id="student_id" class="form-control">
+                        <input type="hidden" id="month_to_pay" class="form-control">
                         <div class="form-group">
-                                <select class="form-control " id="pay_action">
+                                <select class="form-control" id="pay_action">
+                                    <option value="" hidden>- - - &nbsp;&nbsp; Seleccione &nbsp;&nbsp;- - -</option>
                                     <option value="1">Pagar</option>
-                                    <option value="2">Becado</option>
+                                    <!-- Ya no aplica -->
+                                    <!-- <option value="2">Becado</option> -->
                                     <option value="3">No Aplica</option>
+                                    <option value="0">Adeudo</option>
                                 </select>
                         </div>
+                        <h6 class="text-center text-success" id="response"></h6>
                     </div>
-                    <div class="col-sm-10 col-sm-offset-1 text-center">
-                        <button type="button" id="add_in_group" class="btn btn-sm btn-second btn-raised">Agregar</button>
+                    <div class="col-sm-6 text-center">
+                        <button type="button" data-dismiss="modal" class="btn btn-sm btn-default btn-raised">Cancelar</button>
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <button type="button" id="toggle_pay" class="btn btn-sm btn-second btn-raised">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -75,38 +84,26 @@
     </div>
 </div>
 
-<div id="change_group" class="modal fade">
+<div id="add_comment_modal" class="modal fade">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
-                <h4 class="modal-title text-center">Cambiar de Grupo</h4>
+                <h4 class="modal-title text-center">Agregar Comentario</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-10 col-sm-offset-1">
-                        <p class="text-center"><small>Seleccione un curso y grupo a asignar.</small></p>
-                        <input type="hidden" id="alumno_number" class="form-control">
-                        <div class="form-group">
-                            <label class="col-sm-6"><small>Curso:</small> 
-                                <select class="form-control " id="course_list">
-                                    <option value="">Seleccione...</option>
-                                    <?php if ($this->cursos): ?>
-                                        <?php foreach ($this->cursos as $curso): ?>
-                                            <option value="<?= $curso->course_id; ?>"><?= $curso->course; ?></option>
-                                        <?php endforeach ?>
-                                    <?php endif ?>
-                                    <option value="0">EN ESPERA</option>
-                                </select>
-                            </label>
-                            <label class="col-sm-6"><small>Grupo:</small> 
-                                <select class="form-control" id="grupos">
-                                </select>
-                            </label>
+                    <div class="col-sm-12">
+                        <input type="hidden" id="id_alumno" class="form-control">
+                        <div class="form-group row">
+                            <label class="col-sm-12 text-center">Escriba su Comentario:</label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" rows="4" id="comment" name="comment"></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-10 col-sm-offset-1 text-center">
-                        <button type="button" id="do_change_group" class="btn btn-sm btn-second btn-raised">Cambiar</button>
+                    <div class="col-sm-12 text-center">
+                        <button type="button" id="save_comment" class="btn btn-sm btn-second btn-raised">Guardar</button>
                     </div>
                 </div>
             </div>

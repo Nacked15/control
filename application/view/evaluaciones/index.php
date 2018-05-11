@@ -1,7 +1,8 @@
+<?php $base_url = Config::get('URL'); ?>
 <div class="container">
     <ol class="breadcrumb">
-        <li><a href="<?= Config::get('URL'); ?>dashboard">Inicio</a></li>
-        <li><a href="<?= Config::get('URL'); ?>alumno">Alumnos</a></li>
+        <li><a href="<?= $base_url; ?>dashboard">Inicio</a></li>
+        <li><a href="<?= $base_url; ?>alumno">Alumnos</a></li>
         <li><a href="javascript:void(0)" class="active">Calificaciones</a></li>
         <a style="float: right;" href="javascript:void(0)" class="active">
             <strong>Alumno: </strong> <?= $this->alumno; ?>
@@ -12,11 +13,9 @@
         <?php $this->renderFeedbackMessages(); ?>
         <div class="row" id="evaluation_template">
             <div class="col-sm-12 text-center">
-                <button type="button"
-                        id="new_evaluation" 
-                        class="btn btn-sm btn-main btn-raised btn-add">
-                        <i class="glyphicon glyphicon-check o-yellow"></i> Evaluar
-                </button>
+                <a href="<?= $base_url; ?>evaluaciones/evaluar/<?= $this->alumno; ?>" class="btn btn-primary btn-sm">
+                    <i class="glyphicon glyphicon-check o-yellow"></i> Evaluar
+                </a>
             </div>
             <div class="clearfix"></div>
             <div class="col-sm-6">
@@ -28,7 +27,7 @@
                         <h5 class="text-center"><strong>Tema:</strong> The Numbers</h5>
                         <table class="table table-bordered table-hover table-striped">
                             <thead>
-                                <tr class="tb_success">
+                                <tr class="tb_purple">
                                     <th>Achievement</th>
                                     <th>Excellent</th>
                                     <th>Good</th>
@@ -75,7 +74,7 @@
                         <br>
                         <table class="table table-bordered table-hover table-striped">
                             <thead>
-                                <tr class="tb_info">
+                                <tr class="tb_purple">
                                     <th>Effort</th>
                                     <th>Excellent</th>
                                     <th>Good</th>

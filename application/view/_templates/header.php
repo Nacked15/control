@@ -58,7 +58,7 @@
                         <a href="<?= $base_url; ?>dashboard">Home</a>
                     </li>
                     <li class="dropdown <?= View::active($filename, 'alumnos') ? 'active': '';?>">
-                        <a href="bootstrap-elements.html" 
+                        <a href="#" 
                            data-target="#" 
                            class="dropdown-toggle" 
                            data-toggle="dropdown">
@@ -87,8 +87,21 @@
                     <li <?= View::active($filename, 'maestros') ? ' class="active" ': '';?>>
                         <a href="<?= $base_url; ?>maestro">Maestros</a>
                     </li>
-                    <li <?= View::active($filename, 'pagos') ? ' class="active" ': '';?>>
-                        <a href="<?= $base_url; ?>pagos">Pagos</a>
+                    <li class="dropdown <?= View::active($filename, 'pagos') ? 'active': '';?>">
+                        <a href="#" 
+                           data-target="#" 
+                           class="dropdown-toggle" 
+                           data-toggle="dropdown">
+                                Pagos<b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="<?= $base_url; ?>pagos">Pagos</a>
+                            </li>
+                            <li>
+                                <a href="<?= $base_url; ?>pagos/pagos">Adeudos</a>
+                            </li>
+                        </ul>
                     </li>
                     <li <?= View::active($filename, 'padrinos') ? ' class="active" ': '';?>>
                         <a href="<?= $base_url; ?>padrinos">Padrinos</a>
@@ -97,7 +110,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="javascript:void(0)" 
+                        <a href="#" 
                            data-target="#" 
                            class="dropdown-toggle" 
                            data-toggle="dropdown">
@@ -115,7 +128,13 @@
                                 <a href="<?= $base_url; ?>register/index">Nuevo Usuario</a>
                             </li>
                             <li>
+                                <a href="<?= $base_url; ?>alumno/importarClases">Importar Clases</a>
+                            </li>
+                            <li>
                                 <a href="<?= $base_url; ?>alumno/importarAlumnos">Importar Alumnos</a>
+                            </li>
+                            <li>
+                                <a href="<?= $base_url; ?>alumno/alumnosRepetidos">Repetidos</a>
                             </li>
                             <?php endif ?>
                             <li>

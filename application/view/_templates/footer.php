@@ -1,7 +1,7 @@
 
         <span data-toggle=snackbar
               data-content=""
-              data-timeout="3500"
+              data-timeout="3800"
               data-html-allowed="true"
               id="general_snack">
         </span>
@@ -17,11 +17,9 @@
 	<script src="<?php echo Config::get('URL'); ?>assets/js/datepicker.js"></script>
     <script src="<?php echo Config::get('URL'); ?>assets/js/bootstrap-timepicker.min.js"></script>
 	<script src="<?php echo Config::get('URL'); ?>assets/js/fileinput.min.js"></script>
-  <?php if (View::active($filename, 'alumnos')): ?>
-    
-    
-    <!-- <script src="//cdn.jsdelivr.net/velocity/1.1.0/velocity.min.js"></script> -->
-  <?php endif ?>
+    <?php if (View::active($filename, 'alumnos')): ?>
+        
+    <?php endif ?>
     <script src="<?php echo Config::get('URL'); ?>assets/js/main.js"></script>
 	<?php //custom Js
         if(Registry::has('js')){
@@ -31,7 +29,7 @@
 	<script>
 		$(function () {
 		    $.material.init();
-	   });
+	    });
 	</script>
 </body>
 </html>

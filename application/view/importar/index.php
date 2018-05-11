@@ -6,55 +6,10 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <?php $this->renderFeedbackMessages(); ?>
-                <?php if ($this->alumnos): ?>
-
-                <div class="table-responsive">
-                    <table id="example" class="table table-bordered table-hover table-striped">
-                        <thead>
-                            <tr class="info">
-                                <th>#</th>
-                                <th>Foto</th>
-                                <th>Nombre</th>
-                                <th>Tutor</th>
-                                <th>Grupo</th>
-                                <th>Estatus</th>
-                                <th class="text-center">Opciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($this->alumnos as $alumno): ?>
-                                <tr>
-                                    <td><?= $alumno->count; ?></td>
-                                    <td><?= $alumno->avatar; ?></td>
-                                    <td><?= $alumno->surname.' '.$alumno->lastname.' '.$alumno->name; ?></td>
-                                    <td><?php
-                                        if (count($alumno->tutor) > 0) {
-                                            echo $alumno->tutor['name'].' '.$alumno->tutor['surname'];
-                                        } else {
-                                            echo ' - - - - ';
-                                        }
-                                        ?>
-                                    </td>
-                                    <td><?= $alumno->curso; ?></td>
-                                    <td><?= $alumno->status; ?></td>
-                                    <td class="text-center">
-                                        <button type="button" 
-                                                class="btn btn-sm btn-second btn_import"
-                                                id="<?= $alumno->student_id; ?>">
-                                                <?php if ($alumno->xported === "0"): ?>
-                                                    Importar
-                                                <?php else: ?>
-                                                    Importado
-                                                <?php endif ?>
-                                            
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php endif ?>
+                <!-- <button type="button" id="import_teachers" class="btn btn-sm btn-raised btn-success">Importar Maestros</button> -->
+            </div>
+            <div class="col-md-10 col-md-offset-1" id="students_list">
+                
             </div>
         </div>
     </div>

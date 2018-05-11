@@ -89,7 +89,7 @@
     </div>
 </div>
 
-<div id="modalEditTeacher" class="modal fade">
+<div id="modalEditSponsor" class="modal fade">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -99,51 +99,56 @@
             <div class="modal-body">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <form method="post" action="<?php echo Config::get('URL'); ?>maestro/editarMaestro">
+                    <form method="post" action="frmEditSponsor">
                         <div class="col-md-6">
-                            <input type="hidden" class="form-control" id="user_id" name="user_id">
+                            <input type="hidden" class="form-control" id="sponsor_id" name="sponsor_id">
                             <input type="text" 
-                                   pattern="[a-zA-Z\s]{3,60}" 
-                                   id="name"
-                                   name="name"
+                                   id="edit_name"
+                                   name="edit_name"
                                    class="form-control" 
                                    placeholder="Nombre(s)" 
                                    required /><br>
                         </div>
                         <div class="col-md-6">
                         <input type="text" 
-                               pattern="[a-zA-Z\s]{2,64}" 
-                               id="lastname"
-                               name="lastname"
+                               id="edit_lastname"
+                               name="edit_lastname"
                                class="form-control" 
                                placeholder="Apellido(s)" /><br>
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control" disabled>
-                                <option value="3" selected>Maestro</option>
-                            </select><br>
-                            <input type="hidden" class="form-control" name="user_type" value="3">
+                        <input type="text"
+                               id="edit_email"  
+                               name="edit_email"
+                               class="form-control"
+                               placeholder="Correo Electronico" 
+                               required /><br>
                         </div>
                         <div class="col-md-6">
                         <input type="text" 
-                               pattern="[a-zA-Z0-9]{2,64}"
-                               id="user_name"
-                               name="user_name"
+                               id="edit_type"
+                               name="edit_type"
                                class="form-control" 
                                placeholder="Nombre de Usuario" 
                                required /><br>
                         </div>
                         <div class="col-md-12">
-                        <input type="text"
-                               id="user_email"  
-                               name="user_email"
-                               class="form-control"
-                               placeholder="Correo Electronico" 
-                               required /><br>
+                            <label for="group_name">Descripción:</label>
+                            <textarea name="edit_description"
+                                      id="edit_description" 
+                                      rows="3" 
+                                      class="form-control texto" ></textarea>
+                        </div>
+                        <div class="col-md-8 col-md-offset-2 text-center">
+                            <label for="becario">Becario</label>
+                            <select class="form-control" name="edit_becario" id="edit_becario">
+                                <option value=""></option>
+                            </select><br>
                         </div>
                         <div class="col-md-4 col-md-offset-4">
-                            <input type="submit" 
+                            <input type="button" 
                                    value="Actualizar" 
+                                   id="btn_save_sponsor" 
                                    class="btn btn-md btn-second btn-raised center" />
                         </div>
                     </form>
@@ -154,7 +159,7 @@
     </div>
 </div>
 
-<div id="deleteTeacher" class="modal fade">
+<div id="modalDeleteSponsor" class="modal fade">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header modal-delete">

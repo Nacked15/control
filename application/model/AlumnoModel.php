@@ -16,14 +16,25 @@ class AlumnoModel
                           AND g.class_id   = c.class_id
                           AND s.student_id = sd.student_id";
         } else {
-            $alumnos = "SELECT s.student_id, s.id_tutor, s.name, s.surname,
-                               s.lastname, s.age, s.genre, s.avatar, g.class_id,
-                               g.convenio, sd.studies, sd.lastgrade
-                        FROM students as s, students_groups as g, students_details as sd
-                        WHERE s.status = 1
-                          AND deleted  = 0
-                          AND s.student_id = g.student_id
-                          AND s.student_id = sd.student_id";
+            if ($curso == '5') {
+                $alumnos = "SELECT s.student_id, s.id_tutor, s.name, s.surname,
+                                   s.lastname, s.age, s.genre, s.avatar, g.class_id,
+                                   g.convenio, sd.studies, sd.lastgrade
+                            FROM students as s, students_groups as g, students_details as sd
+                            WHERE s.status = 2
+                              AND deleted  = 0
+                              AND s.student_id = g.student_id
+                              AND s.student_id = sd.student_id";
+            } else {
+                $alumnos = "SELECT s.student_id, s.id_tutor, s.name, s.surname,
+                                   s.lastname, s.age, s.genre, s.avatar, g.class_id,
+                                   g.convenio, sd.studies, sd.lastgrade
+                            FROM students as s, students_groups as g, students_details as sd
+                            WHERE s.status = 1
+                              AND deleted  = 0
+                              AND s.student_id = g.student_id
+                              AND s.student_id = sd.student_id";
+            }
         }
             
 
@@ -398,12 +409,21 @@ class AlumnoModel
                           AND g.class_id   = c.class_id
                           AND s.student_id = sd.student_id";
         } else {
-            $alumnos = "SELECT *
-                        FROM students as s, students_groups as g, students_details as sd
-                        WHERE s.status = 1
-                          AND deleted  = 0
-                          AND s.student_id = g.student_id
-                          AND s.student_id = sd.student_id";
+            if ($course == '5') {
+                $alumnos = "SELECT *
+                            FROM students as s, students_groups as g, students_details as sd
+                            WHERE s.status = 2
+                              AND deleted  = 0
+                              AND s.student_id = g.student_id
+                              AND s.student_id = sd.student_id";
+            } else {
+                $alumnos = "SELECT *
+                            FROM students as s, students_groups as g, students_details as sd
+                            WHERE s.status = 1
+                              AND deleted  = 0
+                              AND s.student_id = g.student_id
+                              AND s.student_id = sd.student_id";
+            }
         }
 
         switch ($course) {
@@ -470,7 +490,7 @@ class AlumnoModel
 
         $getAlumnos = "SELECT s.student_id, s.name, s.surname, s.cellphone, s.id_tutor
                        FROM students as s, students_details as sd
-                       WHERE s.student_id   = sd.id_student
+                       WHERE s.student_id   = sd.student_id
                          AND sd.facturacion = 1;";
         $setAlumnos = $database->prepare($getAlumnos);
         $setAlumnos->execute();
@@ -486,7 +506,7 @@ class AlumnoModel
                 $phone3 = '- - - -';
 
                 if ($alumno->id_tutor !== '0') {
-                    $getTutor = "SELECT namet, surname1, surname2, cellphone, phone, phone_alt
+                    $getTutor = "SELECT namet, surnamet, lastnamet, cellphone, phone, phone_alt
                                  FROM tutors
                                  WHERE id_tutor = :tutor
                                  LIMIT 1;";
@@ -496,8 +516,8 @@ class AlumnoModel
                     if ($setTutor->rowCount() > 0) {
                         $datos  = $setTutor->fetch();
                         $tutor  = ucwords(strtolower($datos->namet)).' '.
-                                  ucwords(strtolower($datos->surname1)).' '.
-                                  ucwords(strtolower($datos->surname2));
+                                  ucwords(strtolower($datos->surnamet)).' '.
+                                  ucwords(strtolower($datos->lastnamet));
                         $phone1 = $datos->cellphone != "" ? $datos->cellphone : ' - - - -';
                         $phone2 = $datos->phone != "" ? $datos->phone : ' - - - -';
                         $phone3 = $datos->phone_alt != "" ? $datos->phone_alt : ' - - - -';
@@ -564,6 +584,13 @@ class AlumnoModel
         $change = $database->prepare("UPDATE students_groups SET class_id = :clase WHERE student_id = :alumno;");
         $save = $change->execute(array(':clase' => $clase, ':alumno' => $alumno));
         if ($save) {
+            if ($clase === NULL) {
+                $update_status = $database->prepare("UPDATE students SET status = 2 WHERE student_id = :student;");
+                $update_status->execute(array(':student' => $alumno));
+            } else {
+                $update_status = $database->prepare("UPDATE students SET status = 1 WHERE student_id = :student;");
+                $update_status->execute(array(':student' => $alumno));
+            }
             echo 1;
         } else {
             echo 2;
@@ -1251,36 +1278,6 @@ class AlumnoModel
         }
     }
 
-    // public static function updateAddress($user, $address){
-    //     $database = DatabaseFactory::getFactory()->getConnection();
-
-    //     $commit   = true;
-
-    //     $database->beginTransaction();
-    //     try{
-            
-    //     }catch (PDOException $e) {
-    //         $commit = false;
-    //     }
-
-    //     if (!$commit) {
-    //         $database->rollBack();
-    //         return false;
-    //     }else {
-    //         $database->commit();
-    //         return true;
-    //     }
-    //     $sql = $database->prepare("UPDATE students
-    //                                SET address_id = :address
-    //                                WHERE student_id = :student;");
-    //     $save = $sql->execute(array(':student' => $student, ':address' => $address));
-
-    //     if ($save) {
-    //         Session::add('feedback_positive','Datos del alumno guardados exitosamente.');
-    //     } else {
-    //         Session::add('feedback_negative','Error al guardar el domicilio.');
-    //     }
-    // }
 
     public static function saveNewStudent($surname, $lastname, $name, $birthday, $genre, $civil_status, $cellphone, $reference, $sickness, $medication, $comment){
 
@@ -1550,12 +1547,19 @@ class AlumnoModel
     public static function deleteStudent($student){
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->prepare("UPDATE students SET deleted = 1 WHERE student_id = :student;");
-        $deleted = $query->execute(array(':student' => $student));
+        $timestamp = H::getTime();
+        $query = $database->prepare("UPDATE students 
+                                     SET deleted = 1, 
+                                         deleted_at = :today 
+                                     WHERE student_id = :student;");
+        $deleted = $query->execute(array(':student' => $student, ':today' => $timestamp));
 
         if ($deleted) {
-            $update = $database->prepare("UPDATE students_groups SET state = 1 WHERE student_id = :student;");
-            $update->execute(array(':student' => $student));
+            $update = $database->prepare("UPDATE students_groups 
+                                          SET state = 1, 
+                                              deleted_at = :today 
+                                          WHERE student_id = :student;");
+            $update->execute(array(':student' => $student, ':today' => $timestamp));
             return 1;
         }
 

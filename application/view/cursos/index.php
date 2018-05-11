@@ -259,3 +259,46 @@
         </div>
     </div>
 </div>
+
+<div id="addTeacher" class="modal fade">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header modal-edit">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&nbsp;&times;&nbsp;</button>
+                <h4 class="modal-title text-center" id="chage_teacher_title">Agregar Maestro</h4>
+            </div>
+            <div class="modal-body row">
+                <div class="col-sm-12 text-center">
+                    <div class="form-group">
+                        <label for="maestro" class="col-sm-12">Maestro:</label>
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <select name="maestro" id="maestro" class="form-control">
+                                <option value="" hidden>- - - Seleccione - - -</option>
+                                <?php if ($this->teachers): ?>
+                                    <?php foreach ($this->teachers as $teacher): ?>
+                                        <option value="<?= $teacher->user_id ?>" >
+                                            <?= 
+                                                ucwords(strtolower($teacher->name)).' '.
+                                                ucwords(strtolower($teacher->lastname)); 
+                                            ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                                <option value="0">- - Pendiente - -</option>
+                            </select>
+                            <input type="hidden" id="clase_id">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row modal-footer">
+                <div class="col-sm-6 text-center">
+                    <button type="button" class="btn btn-sm btn-gray btn-raised" data-dismiss="modal">Cancelar</button>
+                </div>
+                <div class="col-sm-6 text-center">
+                    <button type="button" id="add_teacher" class="btn btn-sm btn-second btn-raised">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

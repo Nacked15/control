@@ -23,7 +23,9 @@ class CursoModel
         return $query->fetchAll();
     }
 
-    public static function addNewClass($curso, $grupo, $f_inicio, $f_fin, $ciclo, $dias, $h_inicio, $h_salida, $c_inscripcion, $maestro){
+    public static function addNewClass($curso, $grupo, $f_inicio, $f_fin, $ciclo, $dias, 
+                                       $h_inicio, $h_salida, $c_normal, $c_promocional, 
+                                       $c_inscripcion, $maestro){
         $database = DatabaseFactory::getFactory()->getConnection();
         $commit = true;
         $dias  = (array)$dias;
@@ -62,6 +64,8 @@ class CursoModel
                                                   group_id, 
                                                   schedul_id, 
                                                   teacher_id,
+                                                  costo_normal,
+                                                  costo_promocional,
                                                   costo_inscripcion,
                                                   status, 
                                                   created_at)
@@ -69,16 +73,20 @@ class CursoModel
                                                    :grupo,
                                                    :horario,
                                                    :maestro,
-                                                   :costo,
+                                                   :c_normal,
+                                                   :c_promocional,
+                                                   :c_inscripcion,
                                                    1,
                                                    :f_registro);";
                     $insert = $database->prepare($clase);
-                    $insert->execute(array(':curso'      => $curso,
-                                           ':grupo'      => $grupo,
-                                           ':horario'    => $horario,
-                                           ':maestro'    => $maestro,
-                                           ':costo'      => $c_inscripcion,
-                                           ':f_registro' => $f_registro));
+                    $insert->execute(array(':curso'           => $curso,
+                                           ':grupo'           => $grupo,
+                                           ':horario'         => $horario,
+                                           ':maestro'         => $maestro,
+                                           ':c_normal'        => $c_normal,
+                                           ':c_promocional'   => $c_promocional,
+                                           ':c_inscripcion'   => $c_inscripcion,
+                                           ':f_registro'      => $f_registro));
                     if($insert->rowCount() === 0){
                         $commit = false;
                         Session::add('feedback_negative','Error al crear la clase.');
@@ -109,8 +117,12 @@ class CursoModel
 
     }
 
-    public static function getClases() {
-        $usr_type = (int)Session::get('user_type');
+    public static function getClases($page) {
+        H::getLibrary('paginadorLib');
+        $paginator = new \Paginador();
+        $usr_type  = (int)Session::get('user_type');
+        $filas     = 15;
+        $page      = (int)$page;
 
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT c.class_id, c.teacher_id, c.schedul_id, cu.course_id, cu.course,
@@ -135,11 +147,12 @@ class CursoModel
         
         if ($query->rowCount() > 0) {
             $clases = $query->fetchAll();
-            $classe = array();
-            foreach ($clases as $clase) {
+            $items  = $paginator->paginar($clases, $page, $filas);
+            $classe = [];
+            foreach ($items as $clase) {
 
                 $id_maestro = 0;
-                $maestro = '<a class="link" title="Add teacher">Agregar</a>';
+                $maestro = '<a href="#" class="add-teacher" data-id="'.$clase->class_id.'" title="Add teacher">Agregar</a>';
                 if ((int)$clase->teacher_id !== 0) {
                     $get = $database->prepare("SELECT user_id, name, lastname FROM users 
                                                WHERE user_type = 3 AND user_id = :user LIMIT 1;");
@@ -148,7 +161,12 @@ class CursoModel
                     if ($get->rowCount() > 0) {
                         $set = $get->fetch();
                         $id_maestro = $set->user_id;
-                        $maestro = $set->name.' '.$set->lastname;
+                        $name = $set->name.' '.explode(' ', $set->lastname)[0];
+                        $maestro = '<a href="#" 
+                                       class="change-teacher" 
+                                       data-id="'.$clase->class_id.'"
+                                       data-teacher="'.$id_maestro.'"
+                                       title="Change teacher">'.ucwords(strtolower($name)).'</a>';
                     }
                 }
 
@@ -156,7 +174,7 @@ class CursoModel
                 $hora_salida = date('g:i a', strtotime($clase->hour_end));
 
                 $classe[$clase->class_id] = new stdClass();
-                $classe[$clase->class_id]->id = $clase->class_id;
+                $classe[$clase->class_id]->id         = $clase->class_id;
                 $classe[$clase->class_id]->name       = $clase->course.' '.$clase->group_name;
                 $classe[$clase->class_id]->inicia     = H::formatShortDate($clase->date_init);
                 $classe[$clase->class_id]->termina    = H::formatShortDate($clase->date_end);
@@ -167,19 +185,26 @@ class CursoModel
 
 
             }
-            self::displayClases($classe);
+            $counter = $page > 0 ? (($page*$filas)-$filas) + 1 : 1;
+            self::displayClases($classe, $counter);
+            $paginacion = $paginator->getView('pagination_ajax', 'clases');
+            echo '<div class="row" style="padding-top:0;">';
+                echo '<div class="col-sm-12 text-center">';
+                    echo $paginacion;
+                echo '</div>';
+            echo '</div>';
         } else {
             echo '<h4 class="text-center text-naatik">No hay clases registradas. Haga click en agregar nueva clase para crear clases.</h4>';
         }
     }
 
-    public static function displayClases($classes){
+    public static function displayClases($classes, $counter){
         $user_type = (int)Session::get('user_account_type');
         $database = DatabaseFactory::getFactory()->getConnection();
 
         if (count($classes) > 0) {
             echo '<div class="table-responsive">';
-            echo '<table id="example" class="table table-hover table-striped table-condensed">';
+            echo '<table class="table table-hover table-striped table-condensed">';
             echo '<thead>';
                 echo '<tr class="info">';
                 echo '<th>ID</th>';
@@ -193,7 +218,6 @@ class CursoModel
                 echo '</tr>';
             echo '</thead>';
             echo '<tbody>';
-                $counter = 1;
                 foreach ($classes as $clase) {
                     $days = $database->prepare("SELECT hd.schedul_id, hd.day_id, d.day 
                                                 FROM schedul_days as hd, days as d
@@ -282,6 +306,18 @@ class CursoModel
         if ($sql->rowCount() > 0) {
             return $sql->fetchAll();      
         }
+    }
+
+    public static function setTeacher($class, $teacher){
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        if ((int)$teacher === 0) {
+            $teacher = NULL;
+        }
+
+        $add = $database->prepare("UPDATE classes SET teacher_id = :teacher WHERE class_id = :class;");
+        $save = $add->execute(array(':teacher' => $teacher, ':class' => $class));
+        return $save;
     }
 
 

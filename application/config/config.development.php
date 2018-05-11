@@ -46,6 +46,7 @@ return array(
      * Internal path to save avatars. Make sure this folder is writable. The slash at the end is VERY important!
      */
     'PATH_AVATARS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/',
+    'PATH_BACKUPS' => realpath(dirname(__FILE__).'/../../') . '/public/backups/',
     'PATH_AVATARS_STUDENTS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/students/',
     'PATH_AVATARS_USERS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/users/',
     'PATH_PUBLIC' => realpath(dirname(__FILE__).'/../../') . '/public/',
@@ -71,11 +72,11 @@ return array(
      * DB_CHARSET The charset, necessary for security reasons. Check Database.php class for more info.
      */
     'DB_TYPE' => 'mysql',
-    'DB_HOST' => '127.0.0.1',
+    'DB_HOST' => 'localhost',
     'DB_NAME' => 'control',
     // 'DB_NAME' => 'naatik',
     'DB_USER' => 'root',
-    'DB_PASS' => 'admin',
+    'DB_PASS' => 'pass',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
     /**
@@ -122,8 +123,8 @@ return array(
     'GRAVATAR_RATING' => 'pg',
     'AVATAR_SIZE' => 100,
     'AVATAR_JPEG_QUALITY' => 85,
-    'AVATAR_DEFAULT_IMAGE_MALE' => 'masculino.jpg',
-    'AVATAR_DEFAULT_IMAGE_FEMALE' => 'femenino.jpg',
+    'AVATAR_DEFAULT_IMAGE_MALE' => 'masculino',
+    'AVATAR_DEFAULT_IMAGE_FEMALE' => 'femenino',
     'AVATAR_DEFAULT_IMAGE' => 'default.jpg',
     /**
      * Configuration for: Encryption Keys

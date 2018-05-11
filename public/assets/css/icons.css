@@ -3,11 +3,12 @@
 }
 
 .fa.fa-star{
-    font-size: 1.8rem;
+    font-size: 2.2rem;
+    color: rgb(220, 220, 220);
 }
 
 .fa.fa-star.checked{
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     color: rgb(230, 250, 10);
 }
 
@@ -40,7 +41,46 @@
 
 
 .mdi-action-done {
-  font-size: 2em;
-  font-weight: bold;
   color: rgb(210, 210, 210);
+  font-size: 1.85em;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+}
+
+.mdi-action-done-all {
+  color: rgb(20, 200, 140);
+  font-size: 1.7em;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+}
+
+.mdi-action-beca {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: rgb(240, 100, 10);
+  padding: 0 0 5px 2px;
+  margin: 0;
+}
+
+.mdi-action-na {
+  font-size: 1.35em;
+  font-weight: bold;
+  color: rgb(120, 120, 150);
+  padding: 0;
+  margin: 0;
+}
+
+.mdi-content-create {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: rgb(240, 120, 50);
+  padding: 0;
+  margin: 0;
+}
+
+.tiny {
+  margin: 2px 0;
+  padding: 0;
 }

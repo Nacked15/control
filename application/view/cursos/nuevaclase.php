@@ -130,6 +130,30 @@
         <div class="clearfix"></div>
         <div class="col-md-6">
             <div class="form-group">
+               <label class="col-md-4">Costo Normal: </label>
+               <div class="col-md-8">
+                  <input type="text" 
+                         class="form-control" 
+                         name="c_normal" 
+                         id="c_normal" 
+                         placeholder="200">
+               </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+               <label class="col-md-4 control-label">Costo Promocional: </label>
+               <div class="col-md-8">
+                  <input type="text" 
+                         class="form-control" 
+                         name="c_promocional" 
+                         id="c_promocional" 
+                         placeholder="200">
+               </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
                <label class="col-md-4">Costo Inscripción: </label>
                <div class="col-md-8">
                   <input type="text" 

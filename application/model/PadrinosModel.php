@@ -26,18 +26,25 @@ class PadrinosModel
         return $query->fetchAll();
     }
 
-    public static function getAllSponsors(){
-        $database = DatabaseFactory::getFactory()->getConnection();
+    public static function getAllSponsors($page){
+        H::getLibrary('paginadorLib');
+        $paginator = new \Paginador();
+        $page      = (int)$page;
+        $rows      = 10;
+        $database  = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "SELECT * FROM sponsors;";
         $query = $database->prepare($sql);
         $query->execute();
 
         if ($query->rowCount() > 0) {
-            $sponsors = $query->fetchAll();
+            $result     = $query->fetchAll();
+            $sponsors   = $paginator->paginar($result, $page, $rows);
+            $counter    = $page > 0 ? (($page*$rows)-$rows) + 1 : 1;
+            $paginacion = $paginator->getView('pagination_ajax', 'sponsors');
 
-            echo '<div class="table-responsive card-primary">';
-                echo '<table id="example" class="table table-bordered table-hover table-striped">';
+            echo '<div class="table-responsive">';
+                echo '<table class="table table-bordered table-hover table-striped">';
                     echo '<thead>';
                         echo '<tr class="info">';
                             echo '<th>ID</th>';
@@ -64,11 +71,31 @@ class PadrinosModel
                             echo '<td>'.$sponsor->sp_description.'</td>';
                             echo '<td>'.$status.'</td>';
                             echo '<td>Alumnos Becados</td>';
-                            echo '<td class="text-center">Opciones</td>';
+                            echo '<td class="text-center">';
+                                echo '<button type="buton"
+                                              title="Editar Datos"
+                                              data-sponsor="'.$sponsor->sponsor_id.'" 
+                                              class="btn btn-sm btn-raised btn-info btn_edit_sponsor"
+                                              style="margin-right: 10px;">
+                                                <i class="fa fa-pencil"></i></button>';
+                                echo '<button type="buton"
+                                              title="Eliminar Datos"
+                                              data-sponsor="'.$sponsor->sponsor_id.'"
+                                              data-name="'.$sponsor->sp_name.' '.$sponsor->sp_surname.'" 
+                                              class="btn btn-sm btn-raised btn-danger btn_delete_sp">
+                                                <i class="fa fa-trash"></i></button>';
+                            echo '</td>';
                         echo '</tr>';
                     }
                     echo '</tbody>';
                 echo '</table>';
+            echo '</div>';
+
+            // Paginación
+            echo '<div class="row">';
+                echo '<div class="col-sm-12 text-center">';
+                    echo $paginacion;
+                echo '</div>';
             echo '</div>';
         } else {
             echo '<h4 class="text-center text-naatik subheader">No hay Padrinos registrados aún.</h4>';
@@ -103,23 +130,40 @@ class PadrinosModel
         return 0;
     }
 
-    public static function updateSponsor($sponsor, $name, $surname, $type, $email, $description) {
+    public static function getSponsor($sponsor) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query  =   $database->prepare("SELECT * FROM sponsors
+                                        WHERE sponsor_id = :sponsor
+                                        LIMIT 1;");
+        $query->execute(array(':sponsor' => $sponsor));
+
+        if ($query->rowCount() > 0) {
+            return $query->fetch();
+        }
+
+        return null;
+    }
+
+    public static function updateSponsor($sponsor, $name, $surname, $type, $email, $description, $becario) {
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "UPDATE sponsors 
-		        SET sp_name = :name,
-			        sp_surname = :surname,
-			        sp_type = :type,
-			        sp_email = :email,
+		        SET sp_name        = :name,
+			        sp_surname     = :surname,
+			        sp_type        = :type,
+			        sp_email       = :email,
 			        sp_description = :description
 			    WHERE sponsor_id = :sponsor;";
-        $query = $database->prepare($sql);
-        $update = $query->execute(array(':name' => $name, ':surname' => $surname, ':type' => $type, ':email' => $email, ':description' => $description));    
 
-        if ($update) {
-        	return 1;
-        }
-        return 0;
+        $query = $database->prepare($sql);
+        $update = $query->execute(array(':sponsor'     => $sponsor,
+                                        ':name'        => $name, 
+                                        ':surname'     => $surname, 
+                                        ':type'        => $type, 
+                                        ':email'       => $email, 
+                                        ':description' => $description));    
+
+        return array('success' => $update, 'Message' => 'Datos actualizados');
     }
 
     public static function setActiveSponsor($sponsor) {

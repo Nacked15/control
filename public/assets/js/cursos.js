@@ -1,4 +1,7 @@
 var Cursos = {
+    vars: {
+        currentPage: 0
+    },
 
 	initialize: function(){
 		console.log('Cursos Initialize');
@@ -19,19 +22,79 @@ var Cursos = {
 		$('#tbl_niveles').DataTable();
 	},
 
-    getClasses: function () {
+    getClasses: function (page=0) {
         let that = this;
         $.ajax({
+            data: { page: page },
             synch: 'true',
             type: 'POST',
             url: _root_ + 'curso/obtenerClases',
             success: function(data){
                 $('#lista_clases').html(data);
-                $('#example').DataTable();
+                that.addTeacher();
+                that.navigationPage();
                 $('#addClase').show();
                 that.deleteClase();
                 that.getFrmEditClass();
             }
+        });
+    },
+
+    addTeacher: function(){
+        let that = this;
+        $('.add-teacher').click(function(event){
+            event.preventDefault();
+            $('#clase_id').val($(this).data('id'));
+            $('#maestro').val('');
+            $("#chage_teacher_title").text('Agregar Maestro');
+            $('#addTeacher').modal('show');
+        });
+
+        $('.change-teacher').click(function(event){
+            event.preventDefault();
+            let clase = $(this).data('id'),
+                maestro = $(this).data('teacher');
+
+            $('#clase_id').val(clase);
+            $("#maestro option[value='" + maestro +"']").attr("selected", true);
+            $("#chage_teacher_title").text('Cambiar Maestro');
+            $('#addTeacher').modal('show');
+        });
+
+        // Agregar o Cambiar maestro de la clase
+        $('#add_teacher').click(function(event){
+            event.preventDefault();
+            $.ajax({
+                data: { clase: $('#clase_id').val(), maestro:  $('#maestro').val()},
+                synch: 'true',
+                type: 'POST',
+                url: _root_ + 'curso/agregarMaestro',
+                success: function(saved){
+                    console.log(saved);
+                    if (saved == 'true') {
+                        let page = that.vars.currentPage;
+                        $('#addTeacher').modal('hide');
+                        $('#general_snack').attr('data-content', 'Maestro asignado correctamente!');
+                        $('#general_snack').snackbar('show');
+                        $('.snackbar').addClass('snackbar-blue');
+                        that.getClasses(page);
+                    } else {
+                        $('#general_snack').attr('data-content', 'Error al asignar maestro, intente de nuevo!');
+                        $('#general_snack').snackbar('show');
+                        $('.snackbar').addClass('snackbar-red');
+                    }
+                }
+            });
+            $('#addTeacher').modal('show');
+        });
+    },
+
+    navigationPage: function(lista){
+        let that = this;
+        $(".page-clases").on('click', function(event){
+            event.preventDefault();
+            that.vars.currentPage = parseInt($(this).data("clases"));
+            that.getClasses($(this).data("clases"));
         });
     },
 

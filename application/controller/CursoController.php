@@ -13,11 +13,13 @@ class CursoController extends Controller
 
     public function index() {
         $this->View->render('cursos/index', array(
-            'user_type' => Session::get('user_type')));
+            'user_type' => Session::get('user_type'),
+            'teachers'  => MaestroModel::getTeachers()
+        ));
     }
 
     public function obtenerClases(){
-        CursoModel::getClases();
+        CursoModel::getClases(Request::post('page'));
     }
 
     public function formNewClase() {
@@ -40,6 +42,8 @@ class CursoController extends Controller
                 (array)Request::post('dias'),
                 Request::post('h_inicio'),
                 Request::post('h_salida'),
+                Request::post('c_normal'),
+                Request::post('c_promocional'),
                 Request::post('inscripcion'),
                 Request::post('maestro'));
             Redirect::to('curso/index');
@@ -77,6 +81,13 @@ class CursoController extends Controller
                 Request::post('maestro'));
             Redirect::to('curso/index');
         } 
+    }
+
+    public function agregarMaestro(){
+        echo json_encode(CursoModel::setTeacher(
+                                        Request::post('clase'),
+                                        Request::post('maestro')
+                                    ));
     }
 
     //Obtener numero de alumnos inscritos en la clase.

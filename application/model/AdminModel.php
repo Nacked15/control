@@ -92,4 +92,21 @@ class AdminModel
             return true;
         }
     }
+
+    public static function createBackupDatabase(){
+        // $backup = DatabaseFactory::getFactory()->backupDatabase();
+        // return $backup;
+        // 
+        $db_host = Config::get('DB_HOST'); //Host del Servidor MySQL
+        $db_name = Config::get('DB_NAME'); //Nombre de la Base de datos
+        $db_user = Config::get('DB_USER'); //Usuario de MySQL
+        $db_pass = Config::get('DB_PASS'); //Password de Usuario MySQL
+        $bk_path = Config::get('PATH_BACKUPS'); //Carpeta destino del Backup
+
+        $backup_file = $bk_path . $db_name . '_' .date("Y-m-d-H-i-s") . ".sql";
+        $command = "mysqldump --opt -h $host -u $username -p$password $dbName > $backup_file";
+         
+        $save = system($command,$output);
+        var_dump($save);
+    }
 }

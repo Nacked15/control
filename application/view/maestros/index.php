@@ -14,50 +14,15 @@
                         class="btn btn-sm btn-second right btn-raised"
                         id="newTeacher">Nuevo Maestro</button>
             </div>
-            <div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1">
+            <div class="col-md-10 col-md-offset-1">
                 <?php $this->renderFeedbackMessages(); ?>
-                <div class="table-responsive card-primary">
-                    <?php if($this->maestros){ ?>
-                    <table id="example" class="table table-bordered table-hover table-striped">
-                        <thead>
-                           <tr class="info">
-                              <th>ID</th>
-                              <th>Foto</th>
-                              <th>Nombre</th>
-                              <th>Apellido</th>
-                              <th>Correo Electronico</th>
-                              <th class="text-center">Opciones</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                        <?php  
-                            foreach ($this->maestros as $maestro) {
-                                $img = $maestro->user_avatar === NULL ? 'male' : $maestro->user_avatar;
-                                $file = Config::get('URL').Config::get('PATH_AVATAR_USER').$img;
-                                $avatar = '<img class="foto-mini" src="'.$file.'.jpg" alt="avatar">';
-                                echo '<tr>';
-                                echo '<td>'.$maestro->user_id.'</td>';
-                                echo '<td>'.$avatar.'</td>';
-                                echo '<td>'.$maestro->name.'</td>';
-                                echo '<td>'.$maestro->lastname.'</td>';
-                                echo '<td>'.$maestro->user_email.'</td>';
-                                echo '<td class="text-center">
-                                        <button type="button" 
-                                                class="btn btn-xs btn-info btn-raised editTeacher"
-                                                data-teacher="'.$maestro->user_id.'">
-                                                    Editar</button>
-                                        <button type="button" 
-                                                class="btn btn-xs btn-danger btn-raised"
-                                                data-toggle="modal" 
-                                                data-target="#deleteTeacher">Eliminar</button>
-                                     </td>';
-                                echo '</tr>';
-                            }
-                        ?> 
-                        </tbody>
-                    </table>
-                    <?php } ?>
-                </div>
+            </div>
+            <div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1 text-center" id="tabla_maestros">
+                <!-- Tabla de Maestros -->
+                <br><br>
+                <h4 class="text-center" style="margin-bottom: 0;">Cargando...</h4>
+                <img src="<?= Config::get('URL');?>public/assets/img/loader.gif">
+                <br><br>
             </div>
         </div>
     </div>
@@ -162,62 +127,59 @@
                     <form method="post" action="<?php echo Config::get('URL'); ?>maestro/editarMaestro">
                         <div class="col-md-6">
                             <input type="hidden" class="form-control" id="user_id" name="user_id">
+                            <label>Nombre(s):</label>
                             <input type="text" 
                                    pattern="[a-zA-Z\s]{3,60}" 
                                    id="name"
                                    name="name"
                                    class="form-control" 
                                    placeholder="Nombre(s)" 
-                                   required /><br>
+                                   required />
+                            <br>
                         </div>
                         <div class="col-md-6">
-                        <input type="text" 
-                               pattern="[a-zA-Z\s]{2,64}" 
-                               id="lastname"
-                               name="lastname"
-                               class="form-control" 
-                               placeholder="Apellido(s)" /><br>
+                            <label>Apellido(s):</label>
+                            <input type="text" 
+                                   pattern="[a-zA-Z\s]{2,64}" 
+                                   id="lastname"
+                                   name="lastname"
+                                   class="form-control" 
+                                   placeholder="Apellido(s)" /><br>
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control" disabled>
-                                <option value="3" selected>Maestro</option>
-                            </select><br>
+                            <label>Puesto:</label>
+                            <input type="text" class="form-control" disabled value="Maestro">
+                            <br>
                             <input type="hidden" class="form-control" name="user_type" value="3">
                         </div>
                         <div class="col-md-6">
-                        <input type="text" 
-                               pattern="[a-zA-Z0-9]{2,64}"
-                               id="user_name"
-                               name="user_name"
-                               class="form-control" 
-                               placeholder="Nombre de Usuario" 
-                               required /><br>
-                        </div>
-                        <div class="col-md-12">
-                        <input type="text"
-                               id="user_email"  
-                               name="user_email"
-                               class="form-control"
-                               placeholder="Correo Electronico" 
-                               required /><br>
-                        </div>
-                        <!-- <div class="col-md-6">
-                            <input type="password" 
-                                   name="user_password_new"
+                            <label>Correo Electronico:</label>
+                            <input type="text"
+                                   id="user_email"  
+                                   name="user_email"
                                    class="form-control"
-                                   pattern=".{5,}" 
+                                   placeholder="Correo Electronico" 
+                                   required /><br>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Nombre de Usuario:</label>
+                            <input type="text" 
+                                   pattern="[a-zA-Z0-9]{2,64}"
+                                   id="user_name"
+                                   name="user_name"
+                                   class="form-control" 
+                                   placeholder="Nombre de Usuario" 
+                                   required /><br>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Contraseña:</label>
+                            <input type="text" 
+                                   name="user_password"
+                                   id="user_password"
+                                   class="form-control" 
                                    placeholder="Contraseña" 
                                    required autocomplete="off" /><br>
                         </div>
-                        <div class="col-md-6">
-                            <input type="password" 
-                                   name="user_password_repeat"
-                                   class="form-control"
-                                   pattern=".{5,}" 
-                                   required 
-                                   placeholder="Repita Contraseña" 
-                                   autocomplete="off" /><br>
-                        </div> -->
                         <div class="col-md-4 col-md-offset-4">
                             <input type="submit" 
                                    value="Actualizar" 
@@ -231,7 +193,7 @@
     </div>
 </div>
 
-<div id="deleteTeacher" class="modal fade">
+<div id="modalDeleteTeacher" class="modal fade">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header modal-delete">
@@ -239,13 +201,17 @@
                 <h4 class="modal-title text-center">Eliminar Maestro</h4>
             </div>
             <div class="modal-body">
-                <p class="text-center">¿Eliminar <strong id="clase_name"></strong>?</p>
-                <input type="hidden" id="delete_clase_id">
+                <p class="text-center">¿Eliminar a <strong id="teacher_name"></strong>?</p>
+                <input type="hidden" id="delete_teacher_id">
             </div>
             <div class="row">
-                <div class="modal-footer col-sm-8 col-sm-offset-2 text-center">
-                    <button type="button" class="btn btn-sm btn-gray btn-raised left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-sm btn-danger btn-raised right">Eliminar</button>
+                <div class="modal-footer col-sm-10 col-sm-offset-1 text-center">
+                    <button type="button" 
+                            class="btn btn-sm btn-gray btn-raised left" 
+                            data-dismiss="modal">Cancelar</button>
+                    <button type="button" 
+                            class="btn btn-sm btn-danger btn-raised right" 
+                            id="confirm_delete_teacher">Eliminar</button>
                 </div>
             </div>
         </div>

@@ -22,32 +22,7 @@
                             <label class=" label label-primary">Normal</label>
                             <label class=" label label-warning">Alta</label>
                             <label class=" label label-success">Baja</label> &nbsp;&nbsp;
-                            <!-- <lebel class="togglebutton">
-                                <label>
-                                    Wi-Fi &nbsp;
-                                    <input type="checkbox">
-                                </label>
-                            </lebel> -->
                         </div>
-                        <!-- <div class="col-sm-4 text-center" style="margin-bottom: 10px;">
-                            <div class="btn-group">
-                              <a href="javascript:void(0)"
-                                 data-target="#" 
-                                 class="btn btn-sm btn-main btn-raised dropdown-toggle"
-                                 data-toggle="dropdown">&nbsp; Más.. &nbsp;</a>
-                              <a href="javascript:void(0)" 
-                                 data-target="#" 
-                                 class="btn btn-sm btn-main btn-raised dropdown-toggle" 
-                                 data-toggle="dropdown">
-                                 <span class="caret"></span></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="javascript:void(0)">Detalles</a></li>
-                                <li><a href="javascript:void(0)">Calificaciones</a></li>
-                                <li><a href="javascript:void(0)">Convenio</a></li>
-                                <li><a href="javascript:void(0)">Cambiar Foto</a></li>
-                              </ul>
-                            </div>
-                        </div> -->
                         <div class="col-sm-6 text-right" style="margin-bottom: 15px;">
                             <button type="button" 
                                     class="btn btn-main btn-raised btn-xs btn-add"

@@ -71,6 +71,18 @@ class View
         require Config::get('PATH_VIEW') . $filename . '.php';
     }
 
+
+    public static function renderFilters($filename, $data = null)
+    {
+        if ($data) {
+            foreach ($data as $key => $value) {
+                $this->{$key} = $value;
+            }
+        }
+
+        require Config::get('PATH_VIEW') . '_templates/' .$filename . '.php';
+    }
+
     /**
      * Renders pure JSON to the browser, useful for API construction
      * @param $data

@@ -16,7 +16,7 @@ class PadrinosController extends Controller
     }
 
     public function padrinos() {
-        PadrinosModel::getAllSponsors();
+        PadrinosModel::getAllSponsors(Request::post('page'));
     }
 
     public function nuevoPadrino() {
@@ -29,6 +29,28 @@ class PadrinosController extends Controller
                                                 Request::post('description'),
                                                 Request::post('becario')
             ));
+        }
+    }
+
+    public function obtenerPadrino(){
+        if(Request::post('sponsor')){
+            $this->View->renderJSON(PadrinosModel::getSponsor(Request::post('sponsor')));
+        }
+    }
+
+    public function actualizarPadrino() {
+        if (Request::post('sponsor_id') !== '' && Request::post('edit_name') !== '') {
+            $this->View->renderJSON(PadrinosModel::updateSponsor(
+                                                Request::post('sponsor_id'),
+                                                Request::post('edit_name'),
+                                                Request::post('edit_lastname'),
+                                                Request::post('edit_type'),
+                                                Request::post('edit_email'),
+                                                Request::post('edit_description'),
+                                                Request::post('edit_becario')
+            ));
+        } else {
+            $this->View->renderJSON(array('success' => false, 'message' => 'Falta información'));
         }
     }
 

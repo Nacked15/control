@@ -248,6 +248,10 @@ a.change-photo{
     border:0;
 }
 
+.form-control-sm {
+  height: 22px;
+}
+
 img.loader {
   padding-top: 25px;
 }
@@ -444,6 +448,14 @@ input[type="password"] {
   height: 25px !important;
   font-size: 16px;
   font-family: ubuntuR;
+}
+
+select.form-control {
+  border: 1px solid rgb(150, 150, 150);
+}
+
+textarea.form-control {
+  border: 1px solid rgb(180, 180, 180);
 }
 
 select>option {

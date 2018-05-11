@@ -17,6 +17,10 @@ class MaestroController extends Controller
         ));
     }
 
+    public function tablaMaestros(){
+        MaestroModel::teachersTable(Request::post('page'));
+    }
+
     public function maestro() {
         if(Request::post('maestro')){
             echo json_encode(MaestroModel::getTeacher(Request::post('maestro')));
@@ -24,16 +28,28 @@ class MaestroController extends Controller
     }
 
     public function editarMaestro() {
-        if(Request::post('user_id') && Request::post('name') && Request::post('lastname') && Request::post('user_name')){
+        if(Request::post('user_id') && Request::post('name') && 
+           Request::post('user_name') && Request::post('user_password')){
             MaestroModel::updateTeacher(Request::post('user_id'),
                                         Request::post('name'),
                                         Request::post('lastname'),
+                                        Request::post('user_email'),
                                         Request::post('user_name'),
-                                        Request::post('user_email'));
+                                        Request::post('user_password'));
             Redirect::to('maestro/index');
         } else {
+            H::p(Request::post('user_id'), Request::post('name'), Request::post('lastname'), Request::post('user_name'));
+            exit();
             Session::add('feedback_negative','No se pudo actualizar los datos del maestro por falta de información.');
             Redirect::to('maestro/index');
+        }
+    }
+
+    public function eliminarMaestro(){
+        if(Request::post('maestro')){
+            echo json_encode(MaestroModel::deleteTeacher(Request::post('maestro')));
+        } else {
+            echo json_encode('false');
         }
     }
 
