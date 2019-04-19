@@ -349,7 +349,7 @@ class UserModel
         $user = Session::get('user_id');
         $hoy  = H::getTime('Y-m-d');
 
-        $insert = $database->prepare("INSERT INTO tasks(id_user, task, created_at, date_todo, priority) 
+        $insert = $database->prepare("INSERT INTO tasks(user_id, task, created_at, date_todo, priority) 
                                                  VALUES(:user, :tarea, :creacion, :fecha, :prioridad);");
         $insert->execute(array(':user' => $user, ':tarea' => $tarea, ':creacion' => $hoy, ':fecha' => $fecha, ':prioridad' => $prioridad));
 
@@ -362,7 +362,7 @@ class UserModel
         $user = Session::get('user_id');
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->prepare("SELECT * FROM tasks WHERE id_user = :user;");
+        $query = $database->prepare("SELECT * FROM tasks WHERE user_id = :user;");
         $query->execute(array(':user' => $user));
 
         if ($query->rowCount() > 0) {
@@ -389,13 +389,13 @@ class UserModel
                     echo nl2br($row->task);
                 echo '</div>';
                 echo '<div class="card-footer-basic">';
-                echo '<a data-toggle="tooltip" title="Detail" id="'.$row->id_task.'" class="btn_detail_task">
+                echo '<a data-toggle="tooltip" title="Detail" id="'.$row->task_id.'" class="btn_detail_task">
                         <i class="glyphicon glyphicon-fullscreen"></i>
                      </a>';
-                echo '<a data-toggle="tooltip" title="Edit" id="'.$row->id_task.'" class="btn_edit_task">
+                echo '<a data-toggle="tooltip" title="Edit" id="'.$row->task_id.'" class="btn_edit_task">
                         <i class="glyphicon glyphicon-edit"></i>
                      </a>';
-                echo '<a data-toggle="tooltip" id="'.$row->id_task.'" title="Delete" class="btn_delete_task">
+                echo '<a data-toggle="tooltip" id="'.$row->task_id.'" title="Delete" class="btn_delete_task">
                         <i class="glyphicon glyphicon-trash"></i>
                     </a>';
                 echo '</div>';
@@ -412,8 +412,8 @@ class UserModel
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = $database->prepare("SELECT * FROM tasks 
-                                   WHERE id_task = :tarea 
-                                     AND id_user = :user;");
+                                   WHERE task_id = :tarea 
+                                     AND user_id = :user;");
         $sql->execute(array(':tarea' => $tarea, ':user' => $user));
 
         if ($sql->rowCount() > 0) {
@@ -428,7 +428,7 @@ class UserModel
                                     SET task = :tarea,
                                         date_todo = :fecha,
                                         priority  = :prioridad
-                                    WHERE id_task = :task;");
+                                    WHERE task_id = :task;");
         $save = $sql->execute(array(':tarea' => $tarea,
                                     ':fecha' => $fecha,
                                     ':prioridad' => $prioridad,
@@ -445,7 +445,7 @@ class UserModel
         $user = Session::get('user_id');
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $delete = $database->prepare("DELETE FROM tasks WHERE id_task = :tarea AND id_user = :usuario;");
+        $delete = $database->prepare("DELETE FROM tasks WHERE task_id = :tarea AND user_id = :usuario;");
         $delete->execute(array(':tarea' => $tarea, ':usuario' => $user));
 
         if($delete->rowCount() === 1){
